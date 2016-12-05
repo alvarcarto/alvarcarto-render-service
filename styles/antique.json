@@ -1,0 +1,2346 @@
+{
+    "version": 8,
+    "name": "Vintage",
+    "metadata": {
+        "mapbox:groups": {
+            "1443556291227.081": {
+                "name": "olive",
+                "collapsed": true
+            },
+            "1443556300729.845": {
+                "name": "vintage",
+                "collapsed": true
+            },
+            "1443648437800.5745": {
+                "name": "graticules",
+                "collapsed": true
+            },
+            "1443753078266.6763": {
+                "name": "backgrounds",
+                "collapsed": false
+            },
+            "1443753087749.751": {
+                "name": "terrain",
+                "collapsed": true
+            },
+            "1443753148043.5981": {
+                "name": "labels",
+                "collapsed": false
+            },
+            "1447177683179.7437": {
+                "name": "dup vintage",
+                "collapsed": true
+            }
+        }
+    },
+    "center": [
+        -105.58300896552758,
+        38.99841629078219
+    ],
+    "zoom": 3.3354386325246863,
+    "bearing": 0,
+    "pitch": 0,
+    "sources": {
+        "mapbox://mslee.f67c1615": {
+            "url": "mapbox://mslee.f67c1615",
+            "type": "vector"
+        },
+        "mapbox://mapbox.mapbox-streets-v6": {
+            "url": "mapbox://mapbox.mapbox-streets-v6",
+            "type": "vector"
+        },
+        "mapbox://mslee.0fc2f90a": {
+            "url": "mapbox://mslee.0fc2f90a",
+            "type": "vector"
+        },
+        "mapbox://mapbox.mapbox-terrain-v2": {
+            "url": "mapbox://mapbox.mapbox-terrain-v2",
+            "type": "vector"
+        },
+        "mapbox://mslee.b40752ae": {
+            "url": "mapbox://mslee.b40752ae",
+            "type": "vector"
+        },
+        "mapbox://mslee.3rd3tnlg": {
+            "url": "mapbox://mslee.3rd3tnlg",
+            "type": "vector"
+        }
+    },
+    "sprite": "mapbox://sprites/alvarcarto/ciwaq5i56005g2qnuurw0zr62",
+    "glyphs": "mapbox://fonts/alvarcarto/{fontstack}/{range}.pbf",
+    "layers": [
+        {
+            "id": "background vintage",
+            "type": "background",
+            "metadata": {
+                "mapbox:group": "1443753078266.6763"
+            },
+            "interactive": true,
+            "layout": {
+                "visibility": "visible"
+            },
+            "paint": {
+                "background-color": "#CFB29C",
+                "background-opacity": 1
+            }
+        },
+        {
+            "id": "bg white blend",
+            "type": "fill",
+            "metadata": {
+                "mapbox:group": "1443753078266.6763"
+            },
+            "source": "mapbox://mslee.3rd3tnlg",
+            "source-layer": "earth-boundary",
+            "interactive": true,
+            "filter": [
+                "==",
+                "$type",
+                "Polygon"
+            ],
+            "layout": {
+                "visibility": "visible"
+            },
+            "paint": {
+                "fill-opacity": 0.1,
+                "fill-color": "#fff"
+            }
+        },
+        {
+            "id": "earth texture 2",
+            "metadata": {
+                "mapbox:group": "1443753078266.6763"
+            },
+            "ref": "bg white blend",
+            "interactive": true,
+            "paint": {
+                "fill-pattern": "texture-64",
+                "fill-opacity": 0.8
+            }
+        },
+        {
+            "id": "earth texture 2 copy",
+            "metadata": {
+                "mapbox:group": "1443753078266.6763"
+            },
+            "ref": "bg white blend",
+            "interactive": true,
+            "paint": {
+                "fill-opacity": 0.6,
+                "fill-pattern": "texture-64"
+            }
+        },
+        {
+            "id": "water",
+            "type": "fill",
+            "metadata": {
+                "mapbox:group": "1443556300729.845"
+            },
+            "source": "mapbox://mapbox.mapbox-streets-v6",
+            "source-layer": "water",
+            "interactive": true,
+            "layout": {
+                "visibility": "visible"
+            },
+            "paint": {
+                "fill-opacity": 1,
+                "fill-translate": {
+                    "base": 1,
+                    "stops": [
+                        [
+                            10,
+                            [
+                                0,
+                                0
+                            ]
+                        ],
+                        [
+                            22,
+                            [
+                                0,
+                                0
+                            ]
+                        ]
+                    ]
+                },
+                "fill-color": "rgba(148,126,112,1)"
+            }
+        },
+        {
+            "id": "water texture",
+            "metadata": {
+                "mapbox:group": "1443556300729.845"
+            },
+            "ref": "water",
+            "interactive": true,
+            "paint": {
+                "fill-opacity": {
+                    "base": 1,
+                    "stops": [
+                        [
+                            0,
+                            1
+                        ],
+                        [
+                            4,
+                            1
+                        ],
+                        [
+                            6,
+                            0.25
+                        ]
+                    ]
+                },
+                "fill-translate": {
+                    "base": 1,
+                    "stops": [
+                        [
+                            10,
+                            [
+                                0,
+                                0
+                            ]
+                        ],
+                        [
+                            22,
+                            [
+                                0,
+                                0
+                            ]
+                        ]
+                    ]
+                },
+                "fill-color": "rgba(204,198,137,1)",
+                "fill-pattern": "texture-64"
+            }
+        },
+        {
+            "id": "water texture copy",
+            "metadata": {
+                "mapbox:group": "1443556300729.845"
+            },
+            "ref": "water",
+            "interactive": true,
+            "paint": {
+                "fill-opacity": {
+                    "base": 1,
+                    "stops": [
+                        [
+                            0,
+                            1
+                        ],
+                        [
+                            4,
+                            1
+                        ],
+                        [
+                            5,
+                            0
+                        ]
+                    ]
+                },
+                "fill-translate": {
+                    "base": 1,
+                    "stops": [
+                        [
+                            10,
+                            [
+                                0,
+                                0
+                            ]
+                        ],
+                        [
+                            22,
+                            [
+                                0,
+                                0
+                            ]
+                        ]
+                    ]
+                },
+                "fill-color": "rgba(204,198,137,1)",
+                "fill-pattern": "texture-64"
+            }
+        },
+        {
+            "id": "water texture copy 1",
+            "metadata": {
+                "mapbox:group": "1443556300729.845"
+            },
+            "ref": "water",
+            "interactive": true,
+            "paint": {
+                "fill-opacity": 0.7,
+                "fill-translate": {
+                    "base": 1,
+                    "stops": [
+                        [
+                            10,
+                            [
+                                0,
+                                0
+                            ]
+                        ],
+                        [
+                            22,
+                            [
+                                0,
+                                0
+                            ]
+                        ]
+                    ]
+                },
+                "fill-color": "rgba(204,198,137,1)",
+                "fill-pattern": "texture-64"
+            }
+        },
+        {
+            "id": "water texture copy 2",
+            "metadata": {
+                "mapbox:group": "1443556300729.845"
+            },
+            "ref": "water",
+            "interactive": true,
+            "paint": {
+                "fill-opacity": 0.7,
+                "fill-translate": {
+                    "base": 1,
+                    "stops": [
+                        [
+                            10,
+                            [
+                                0,
+                                0
+                            ]
+                        ],
+                        [
+                            22,
+                            [
+                                0,
+                                0
+                            ]
+                        ]
+                    ]
+                },
+                "fill-color": "rgba(204,198,137,1)",
+                "fill-pattern": "texture-64"
+            }
+        },
+        {
+            "id": "water texture copy 3",
+            "metadata": {
+                "mapbox:group": "1443556300729.845"
+            },
+            "ref": "water",
+            "interactive": true,
+            "paint": {
+                "fill-opacity": 0.7,
+                "fill-translate": {
+                    "base": 1,
+                    "stops": [
+                        [
+                            10,
+                            [
+                                0,
+                                0
+                            ]
+                        ],
+                        [
+                            22,
+                            [
+                                0,
+                                0
+                            ]
+                        ]
+                    ]
+                },
+                "fill-color": "rgba(204,198,137,1)",
+                "fill-pattern": "texture-64"
+            }
+        },
+        {
+            "id": "water2",
+            "type": "fill",
+            "metadata": {
+                "mapbox:group": "1443556300729.845"
+            },
+            "source": "mapbox://mslee.f67c1615",
+            "source-layer": "ne_10m_bathymetry_K_200",
+            "interactive": true,
+            "layout": {
+                "visibility": "visible"
+            },
+            "paint": {
+                "fill-color": "rgba(161,137,122,1)"
+            }
+        },
+        {
+            "id": "water2 (texture)",
+            "metadata": {
+                "mapbox:group": "1443556300729.845"
+            },
+            "ref": "water2",
+            "interactive": true,
+            "paint": {
+                "fill-color": "#CFB29C",
+                "fill-pattern": "texture-64"
+            }
+        },
+        {
+            "id": "water2  (texture) copy",
+            "metadata": {
+                "mapbox:group": "1443556300729.845"
+            },
+            "ref": "water2",
+            "interactive": true,
+            "paint": {
+                "fill-color": "#CFB29C",
+                "fill-pattern": "texture-64"
+            }
+        },
+        {
+            "id": "water2  (texture) copy2",
+            "metadata": {
+                "mapbox:group": "1443556300729.845"
+            },
+            "ref": "water2",
+            "interactive": true,
+            "paint": {
+                "fill-color": "#CFB29C",
+                "fill-pattern": "texture-64"
+            }
+        },
+        {
+            "id": "water2  (texture) copy 2",
+            "metadata": {
+                "mapbox:group": "1443556300729.845"
+            },
+            "ref": "water2",
+            "interactive": true,
+            "paint": {
+                "fill-color": "#CFB29C",
+                "fill-pattern": "texture-64"
+            }
+        },
+        {
+            "id": "water2 (soften)",
+            "metadata": {
+                "mapbox:group": "1443556300729.845"
+            },
+            "ref": "water2",
+            "interactive": true,
+            "paint": {
+                "fill-color": "rgba(207,178,156,1)",
+                "fill-antialias": true,
+                "fill-opacity": 0.2
+            }
+        },
+        {
+            "id": "water3  (texture)",
+            "type": "fill",
+            "metadata": {
+                "mapbox:group": "1443556300729.845"
+            },
+            "source": "mapbox://mslee.f67c1615",
+            "source-layer": "ne_10m_bathymetry_J_1000",
+            "interactive": true,
+            "layout": {
+                "visibility": "visible"
+            },
+            "paint": {
+                "fill-color": "rgba(201,44,44,1)",
+                "fill-pattern": "texture-64",
+                "fill-opacity": 1,
+                "fill-antialias": true
+            }
+        },
+        {
+            "id": "water3 (texture) copy",
+            "metadata": {
+                "mapbox:group": "1443556300729.845"
+            },
+            "ref": "water3  (texture)",
+            "interactive": true,
+            "paint": {
+                "fill-color": "rgba(201,44,44,1)",
+                "fill-pattern": "texture-64",
+                "fill-opacity": 1,
+                "fill-antialias": true
+            }
+        },
+        {
+            "id": "water3 (texture) copy2",
+            "metadata": {
+                "mapbox:group": "1443556300729.845"
+            },
+            "ref": "water3  (texture)",
+            "interactive": true,
+            "paint": {
+                "fill-color": "rgba(201,44,44,1)",
+                "fill-pattern": "texture-64",
+                "fill-opacity": 1,
+                "fill-antialias": true
+            }
+        },
+        {
+            "id": "water3 (texture) copy 2",
+            "metadata": {
+                "mapbox:group": "1443556300729.845"
+            },
+            "ref": "water3  (texture)",
+            "interactive": true,
+            "paint": {
+                "fill-color": "rgba(201,44,44,1)",
+                "fill-pattern": "texture-64",
+                "fill-opacity": 1,
+                "fill-antialias": true
+            }
+        },
+        {
+            "id": "water3 (soften)",
+            "metadata": {
+                "mapbox:group": "1443556300729.845"
+            },
+            "ref": "water3  (texture)",
+            "interactive": true,
+            "paint": {
+                "fill-color": "rgba(207,178,156,1)",
+                "fill-antialias": true,
+                "fill-opacity": 0.45
+            }
+        },
+        {
+            "id": "waterline3",
+            "type": "line",
+            "metadata": {
+                "mapbox:group": "1443556300729.845"
+            },
+            "source": "mapbox://mslee.f67c1615",
+            "source-layer": "ne_10m_bathymetry_J_1000",
+            "interactive": true,
+            "layout": {
+                "visibility": "visible"
+            },
+            "paint": {
+                "line-color": "rgba(77,66,48,1)",
+                "line-blur": 2
+            }
+        },
+        {
+            "id": "water4",
+            "type": "fill",
+            "metadata": {
+                "mapbox:group": "1443556300729.845"
+            },
+            "source": "mapbox://mslee.f67c1615",
+            "source-layer": "ne_10m_bathymetry_I_2000",
+            "interactive": true,
+            "layout": {
+                "visibility": "visible"
+            },
+            "paint": {
+                "fill-color": "rgba(161,137,122,1)"
+            }
+        },
+        {
+            "id": "water4 (texture)",
+            "metadata": {
+                "mapbox:group": "1443556300729.845"
+            },
+            "ref": "water4",
+            "interactive": true,
+            "paint": {
+                "fill-color": "#CFB29C",
+                "fill-pattern": "texture-64"
+            }
+        },
+        {
+            "id": "water4 (texture) copy",
+            "metadata": {
+                "mapbox:group": "1443556300729.845"
+            },
+            "ref": "water4",
+            "interactive": true,
+            "paint": {
+                "fill-color": "#CFB29C",
+                "fill-pattern": "texture-64"
+            }
+        },
+        {
+            "id": "water4 (texture) copy 1",
+            "metadata": {
+                "mapbox:group": "1443556300729.845"
+            },
+            "ref": "water4",
+            "interactive": true,
+            "paint": {
+                "fill-color": "#CFB29C",
+                "fill-pattern": "texture-64"
+            }
+        },
+        {
+            "id": "water4 (texture) copy 2",
+            "metadata": {
+                "mapbox:group": "1443556300729.845"
+            },
+            "ref": "water4",
+            "interactive": true,
+            "paint": {
+                "fill-color": "#CFB29C",
+                "fill-pattern": "texture-64"
+            }
+        },
+        {
+            "id": "water4 (soften)",
+            "metadata": {
+                "mapbox:group": "1443556300729.845"
+            },
+            "ref": "water4",
+            "interactive": true,
+            "paint": {
+                "fill-color": "#CFB29C",
+                "fill-opacity": 0.6
+            }
+        },
+        {
+            "id": "water5",
+            "type": "fill",
+            "metadata": {
+                "mapbox:group": "1443556300729.845"
+            },
+            "source": "mapbox://mslee.f67c1615",
+            "source-layer": "ne_10m_bathymetry_H_3000",
+            "interactive": true,
+            "layout": {
+                "visibility": "visible"
+            },
+            "paint": {
+                "fill-color": "#CFB29C",
+                "fill-opacity": 0.8
+            }
+        },
+        {
+            "id": "water5 tex",
+            "metadata": {
+                "mapbox:group": "1443556300729.845"
+            },
+            "ref": "water5",
+            "interactive": true,
+            "paint": {
+                "fill-color": "#CFB29C",
+                "fill-pattern": "texture-64",
+                "fill-opacity": 1
+            }
+        },
+        {
+            "id": "water fill",
+            "type": "fill",
+            "metadata": {
+                "mapbox:group": "1447177683179.7437"
+            },
+            "source": "mapbox://mapbox.mapbox-streets-v6",
+            "source-layer": "water",
+            "interactive": true,
+            "layout": {
+                "visibility": "none"
+            },
+            "paint": {
+                "fill-opacity": 0.9,
+                "fill-translate": {
+                    "base": 1,
+                    "stops": [
+                        [
+                            10,
+                            [
+                                0,
+                                0
+                            ]
+                        ],
+                        [
+                            22,
+                            [
+                                0,
+                                0
+                            ]
+                        ]
+                    ]
+                },
+                "fill-color": "rgba(194,177,157,1)",
+                "fill-outline-color": "rgba(120,101,92,1)"
+            }
+        },
+        {
+            "id": "water fill copy",
+            "type": "line",
+            "metadata": {
+                "mapbox:group": "1447177683179.7437"
+            },
+            "source": "mapbox://mapbox.mapbox-streets-v6",
+            "source-layer": "water",
+            "interactive": true,
+            "layout": {
+                "visibility": "none"
+            },
+            "paint": {
+                "line-width": 2,
+                "line-color": "rgba(77,66,48,1)",
+                "line-blur": 4,
+                "line-opacity": 0.8
+            }
+        },
+        {
+            "id": "w-texture",
+            "metadata": {
+                "mapbox:group": "1447177683179.7437"
+            },
+            "ref": "water fill",
+            "interactive": true,
+            "paint": {
+                "fill-opacity": 0.15,
+                "fill-translate": {
+                    "base": 1,
+                    "stops": [
+                        [
+                            10,
+                            [
+                                0,
+                                0
+                            ]
+                        ],
+                        [
+                            22,
+                            [
+                                0,
+                                0
+                            ]
+                        ]
+                    ]
+                },
+                "fill-color": "rgba(204,198,137,1)",
+                "fill-pattern": "texture-64",
+                "fill-antialias": true
+            }
+        },
+        {
+            "id": "water fill 2",
+            "type": "fill",
+            "metadata": {
+                "mapbox:group": "1447177683179.7437"
+            },
+            "source": "mapbox://mslee.f67c1615",
+            "source-layer": "ne_10m_bathymetry_K_200",
+            "interactive": true,
+            "layout": {
+                "visibility": "none"
+            },
+            "paint": {
+                "fill-color": "rgba(171,150,128,1)",
+                "fill-outline-color": "rgba(173,141,116,1)",
+                "fill-opacity": 0.25
+            }
+        },
+        {
+            "id": "w-texture 2",
+            "metadata": {
+                "mapbox:group": "1447177683179.7437"
+            },
+            "ref": "water fill 2",
+            "interactive": true,
+            "paint": {
+                "fill-color": "#CFB29C",
+                "fill-pattern": "texture-64",
+                "fill-opacity": 0.15,
+                "fill-antialias": true
+            }
+        },
+        {
+            "id": "waterline2 copy 2",
+            "type": "line",
+            "metadata": {
+                "mapbox:group": "1447177683179.7437"
+            },
+            "source": "mapbox://mslee.f67c1615",
+            "source-layer": "ne_10m_bathymetry_K_200",
+            "interactive": true,
+            "layout": {
+                "visibility": "none"
+            },
+            "paint": {
+                "line-color": "rgba(161,155,137,1)",
+                "line-width": 2,
+                "line-opacity": 1,
+                "line-blur": 2
+            }
+        },
+        {
+            "id": "water fill 3",
+            "type": "fill",
+            "metadata": {
+                "mapbox:group": "1447177683179.7437"
+            },
+            "source": "mapbox://mslee.f67c1615",
+            "source-layer": "ne_10m_bathymetry_J_1000",
+            "interactive": true,
+            "layout": {
+                "visibility": "none"
+            },
+            "paint": {
+                "fill-color": "rgba(168,146,128,1)",
+                "fill-antialias": true,
+                "fill-opacity": 0.25,
+                "fill-outline-color": "rgba(158,138,122,1)"
+            }
+        },
+        {
+            "id": "w-texture 3",
+            "metadata": {
+                "mapbox:group": "1447177683179.7437"
+            },
+            "ref": "water fill 3",
+            "interactive": true,
+            "paint": {
+                "fill-color": "rgba(201,44,44,1)",
+                "fill-pattern": "texture-64",
+                "fill-opacity": 0.25,
+                "fill-antialias": true
+            }
+        },
+        {
+            "id": "waterline 3",
+            "type": "line",
+            "metadata": {
+                "mapbox:group": "1447177683179.7437"
+            },
+            "source": "mapbox://mslee.f67c1615",
+            "source-layer": "ne_10m_bathymetry_J_1000",
+            "interactive": true,
+            "layout": {
+                "visibility": "none"
+            },
+            "paint": {
+                "line-color": "rgba(158,144,120,1)",
+                "line-blur": 2,
+                "line-width": 2
+            }
+        },
+        {
+            "id": "water fill 4",
+            "type": "fill",
+            "metadata": {
+                "mapbox:group": "1447177683179.7437"
+            },
+            "source": "mapbox://mslee.f67c1615",
+            "source-layer": "ne_10m_bathymetry_I_2000",
+            "interactive": true,
+            "layout": {
+                "visibility": "none"
+            },
+            "paint": {
+                "fill-color": "rgba(168,146,128,1)",
+                "fill-outline-color": "rgba(161,138,122,1)",
+                "fill-opacity": 0.35
+            }
+        },
+        {
+            "id": "w-texture 4",
+            "metadata": {
+                "mapbox:group": "1447177683179.7437"
+            },
+            "ref": "water fill 4",
+            "interactive": true,
+            "paint": {
+                "fill-color": "#CFB29C",
+                "fill-pattern": "texture-64",
+                "fill-opacity": 0.35,
+                "fill-antialias": true
+            }
+        },
+        {
+            "id": "water line 4",
+            "type": "line",
+            "metadata": {
+                "mapbox:group": "1447177683179.7437"
+            },
+            "source": "mapbox://mslee.f67c1615",
+            "source-layer": "ne_10m_bathymetry_I_2000",
+            "interactive": true,
+            "layout": {
+                "visibility": "none"
+            },
+            "paint": {
+                "line-width": 1,
+                "line-color": "rgba(143,125,116,1)",
+                "line-opacity": 1,
+                "line-blur": 2
+            }
+        },
+        {
+            "id": "water fill 5",
+            "type": "fill",
+            "metadata": {
+                "mapbox:group": "1447177683179.7437"
+            },
+            "source": "mapbox://mslee.f67c1615",
+            "source-layer": "ne_10m_bathymetry_H_3000",
+            "interactive": true,
+            "layout": {
+                "visibility": "none"
+            },
+            "paint": {
+                "fill-color": "rgba(168,146,128,1)",
+                "fill-opacity": 0.45
+            }
+        },
+        {
+            "id": "water5 texture2",
+            "metadata": {
+                "mapbox:group": "1447177683179.7437"
+            },
+            "ref": "water fill 5",
+            "interactive": true,
+            "paint": {
+                "fill-color": "#CFB29C",
+                "fill-pattern": "texture-64",
+                "fill-opacity": 0.5,
+                "fill-antialias": true
+            }
+        },
+        {
+            "id": "hillshade (highlight)",
+            "type": "fill",
+            "metadata": {
+                "mapbox:group": "1443753087749.751"
+            },
+            "source": "mapbox://mapbox.mapbox-terrain-v2",
+            "source-layer": "hillshade",
+            "interactive": true,
+            "filter": [
+                "==",
+                "class",
+                "highlight"
+            ],
+            "layout": {
+                "visibility": "none"
+            },
+            "paint": {
+                "fill-color": "rgba(219,203,186,1)",
+                "fill-opacity": 0.8
+            }
+        },
+        {
+            "id": "hillshade (shadow)",
+            "type": "fill",
+            "metadata": {
+                "mapbox:group": "1443753087749.751"
+            },
+            "source": "mapbox://mapbox.mapbox-terrain-v2",
+            "source-layer": "hillshade",
+            "interactive": true,
+            "filter": [
+                "==",
+                "class",
+                "shadow"
+            ],
+            "layout": {
+                "visibility": "none"
+            },
+            "paint": {
+                "fill-color": "rgba(43,34,21,1)",
+                "fill-opacity": 0.25
+            }
+        },
+        {
+            "id": "hillshade (highlight) copy",
+            "type": "fill",
+            "metadata": {
+                "mapbox:group": "1443753087749.751"
+            },
+            "source": "mapbox://mapbox.mapbox-terrain-v2",
+            "source-layer": "hillshade",
+            "interactive": true,
+            "filter": [
+                "==",
+                "class",
+                "highlight"
+            ],
+            "layout": {
+                "visibility": "visible"
+            },
+            "paint": {
+                "fill-color": "rgba(219,203,186,1)",
+                "fill-opacity": 0.3,
+                "fill-pattern": "texture-lttan-64"
+            }
+        },
+        {
+            "id": "hillshade (shadow) copy",
+            "type": "fill",
+            "metadata": {
+                "mapbox:group": "1443753087749.751"
+            },
+            "source": "mapbox://mapbox.mapbox-terrain-v2",
+            "source-layer": "hillshade",
+            "interactive": true,
+            "filter": [
+                "==",
+                "class",
+                "shadow"
+            ],
+            "layout": {
+                "visibility": "visible"
+            },
+            "paint": {
+                "fill-color": "rgba(43,34,21,1)",
+                "fill-opacity": 0.5,
+                "fill-pattern": "texture-dktan-64",
+                "fill-antialias": true
+            }
+        },
+        {
+            "id": "graticules 1",
+            "type": "line",
+            "metadata": {
+                "mapbox:group": "1443648437800.5745"
+            },
+            "source": "mapbox://mslee.0fc2f90a",
+            "source-layer": "ne_10m_graticules_1",
+            "interactive": true,
+            "layout": {
+                "visibility": "none",
+                "line-cap": "butt"
+            },
+            "paint": {
+                "line-color": "rgba(56,48,35,1)",
+                "line-opacity": {
+                    "base": 1,
+                    "stops": [
+                        [
+                            0,
+                            0
+                        ],
+                        [
+                            4,
+                            0
+                        ],
+                        [
+                            6,
+                            0.65
+                        ],
+                        [
+                            8,
+                            0.75
+                        ]
+                    ]
+                },
+                "line-dasharray": [
+                    1,
+                    2
+                ],
+                "line-width": {
+                    "base": 1,
+                    "stops": [
+                        [
+                            0,
+                            2
+                        ],
+                        [
+                            8,
+                            2.5
+                        ]
+                    ]
+                }
+            }
+        },
+        {
+            "id": "graticules 5",
+            "type": "line",
+            "metadata": {
+                "mapbox:group": "1443648437800.5745"
+            },
+            "source": "mapbox://mslee.0fc2f90a",
+            "source-layer": "ne_10m_graticules_5",
+            "interactive": true,
+            "layout": {
+                "visibility": "none",
+                "line-cap": "butt"
+            },
+            "paint": {
+                "line-color": "rgba(56,48,35,1)",
+                "line-opacity": {
+                    "base": 1,
+                    "stops": [
+                        [
+                            5,
+                            0
+                        ],
+                        [
+                            7,
+                            0.5
+                        ],
+                        [
+                            8,
+                            1
+                        ]
+                    ]
+                },
+                "line-dasharray": [
+                    1,
+                    2
+                ],
+                "line-width": {
+                    "base": 1,
+                    "stops": [
+                        [
+                            0,
+                            1
+                        ],
+                        [
+                            7,
+                            3
+                        ]
+                    ]
+                }
+            }
+        },
+        {
+            "id": "graticules 10",
+            "type": "line",
+            "metadata": {
+                "mapbox:group": "1443648437800.5745"
+            },
+            "source": "mapbox://mslee.0fc2f90a",
+            "source-layer": "ne_10m_graticules_10",
+            "interactive": true,
+            "layout": {
+                "visibility": "none",
+                "line-cap": "butt"
+            },
+            "paint": {
+                "line-color": "rgba(56,48,35,1)",
+                "line-opacity": {
+                    "base": 1,
+                    "stops": [
+                        [
+                            3,
+                            0
+                        ],
+                        [
+                            5,
+                            1
+                        ]
+                    ]
+                },
+                "line-dasharray": [
+                    1,
+                    2
+                ],
+                "line-width": 2
+            }
+        },
+        {
+            "id": "graticules 15",
+            "type": "line",
+            "metadata": {
+                "mapbox:group": "1443648437800.5745"
+            },
+            "source": "mapbox://mslee.0fc2f90a",
+            "source-layer": "ne_10m_graticules_15",
+            "interactive": true,
+            "layout": {
+                "visibility": "none",
+                "line-cap": "butt"
+            },
+            "paint": {
+                "line-color": "rgba(56,48,35,1)",
+                "line-opacity": {
+                    "base": 1,
+                    "stops": [
+                        [
+                            0,
+                            1
+                        ],
+                        [
+                            3,
+                            0
+                        ]
+                    ]
+                },
+                "line-dasharray": [
+                    1,
+                    2
+                ],
+                "line-width": 2
+            }
+        },
+        {
+            "id": "graticules 20",
+            "type": "line",
+            "metadata": {
+                "mapbox:group": "1443648437800.5745"
+            },
+            "source": "mapbox://mslee.0fc2f90a",
+            "source-layer": "ne_10m_graticules_20",
+            "interactive": true,
+            "layout": {
+                "visibility": "none",
+                "line-cap": "butt"
+            },
+            "paint": {
+                "line-color": "rgba(56,48,35,1)",
+                "line-opacity": 1,
+                "line-dasharray": [
+                    1,
+                    2
+                ],
+                "line-width": 2
+            }
+        },
+        {
+            "id": "graticules 30",
+            "type": "line",
+            "metadata": {
+                "mapbox:group": "1443648437800.5745"
+            },
+            "source": "mapbox://mslee.0fc2f90a",
+            "source-layer": "ne_10m_graticules_30",
+            "interactive": true,
+            "layout": {
+                "visibility": "none",
+                "line-cap": "butt"
+            },
+            "paint": {
+                "line-color": "rgba(56,48,35,1)",
+                "line-opacity": 1,
+                "line-dasharray": [
+                    1,
+                    2
+                ],
+                "line-width": 2
+            }
+        },
+        {
+            "id": "contour",
+            "type": "line",
+            "source": "mapbox://mapbox.mapbox-terrain-v2",
+            "source-layer": "contour",
+            "interactive": true,
+            "layout": {
+                "visibility": "visible",
+                "line-cap": "round",
+                "line-join": "round"
+            },
+            "paint": {
+                "line-color": "rgba(143,124,94,1)",
+                "line-width": {
+                    "base": 1,
+                    "stops": [
+                        [
+                            7,
+                            2.5
+                        ],
+                        [
+                            12,
+                            1.25
+                        ]
+                    ]
+                },
+                "line-opacity": {
+                    "base": 1,
+                    "stops": [
+                        [
+                            7,
+                            0
+                        ],
+                        [
+                            15,
+                            1
+                        ]
+                    ]
+                },
+                "line-blur": {
+                    "base": 1,
+                    "stops": [
+                        [
+                            9,
+                            1
+                        ],
+                        [
+                            12,
+                            1.25
+                        ]
+                    ]
+                },
+                "line-translate": [
+                    1,
+                    1
+                ]
+            }
+        },
+        {
+            "id": "contour copy",
+            "ref": "contour",
+            "interactive": true,
+            "paint": {
+                "line-color": "rgba(74,62,43,1)",
+                "line-width": {
+                    "base": 1,
+                    "stops": [
+                        [
+                            7,
+                            2.5
+                        ],
+                        [
+                            12,
+                            1.25
+                        ]
+                    ]
+                },
+                "line-opacity": {
+                    "base": 1,
+                    "stops": [
+                        [
+                            7,
+                            0
+                        ],
+                        [
+                            15,
+                            1
+                        ]
+                    ]
+                },
+                "line-blur": {
+                    "base": 1,
+                    "stops": [
+                        [
+                            9,
+                            1
+                        ],
+                        [
+                            12,
+                            1.25
+                        ]
+                    ]
+                },
+                "line-translate": [
+                    1,
+                    1
+                ]
+            }
+        },
+        {
+            "id": "land",
+            "type": "fill",
+            "source": "mapbox://mapbox.mapbox-terrain-v2",
+            "source-layer": "landcover",
+            "interactive": true,
+            "filter": [
+                "==",
+                "class",
+                "wood"
+            ],
+            "layout": {
+                "visibility": "none"
+            },
+            "paint": {
+                "fill-pattern": "line-32",
+                "fill-opacity": 0.8
+            }
+        },
+        {
+            "id": "water lines",
+            "type": "line",
+            "source": "mapbox://mapbox.mapbox-streets-v6",
+            "source-layer": "admin",
+            "interactive": true,
+            "filter": [
+                "all",
+                [
+                    "==",
+                    "$type",
+                    "LineString"
+                ],
+                [
+                    "all",
+                    [
+                        "!=",
+                        "admin_level",
+                        4
+                    ],
+                    [
+                        "==",
+                        "maritime",
+                        1
+                    ]
+                ]
+            ],
+            "layout": {
+                "visibility": "visible"
+            },
+            "paint": {
+                "line-color": {
+                    "base": 1,
+                    "stops": [
+                        [
+                            0,
+                            "rgba(148,124,99,1)"
+                        ],
+                        [
+                            6,
+                            "rgba(26,19,12,1)"
+                        ],
+                        [
+                            12,
+                            "rgba(10,6,4,1)"
+                        ]
+                    ]
+                },
+                "line-opacity": 1,
+                "line-blur": 1,
+                "line-dasharray": [
+                    1,
+                    0
+                ],
+                "line-width": 1.25
+            }
+        },
+        {
+            "id": "state lines",
+            "type": "line",
+            "source": "mapbox://mapbox.mapbox-streets-v6",
+            "source-layer": "admin",
+            "interactive": true,
+            "filter": [
+                "all",
+                [
+                    "==",
+                    "$type",
+                    "LineString"
+                ],
+                [
+                    "all",
+                    [
+                        "==",
+                        "admin_level",
+                        4
+                    ],
+                    [
+                        "==",
+                        "maritime",
+                        0
+                    ]
+                ]
+            ],
+            "layout": {
+                "visibility": "visible"
+            },
+            "paint": {
+                "line-color": {
+                    "base": 1,
+                    "stops": [
+                        [
+                            0,
+                            "rgba(117,100,79,1)"
+                        ],
+                        [
+                            12,
+                            "rgba(56,37,22,1)"
+                        ]
+                    ]
+                },
+                "line-opacity": 1,
+                "line-blur": 1,
+                "line-width": {
+                    "base": 1,
+                    "stops": [
+                        [
+                            0,
+                            1.5
+                        ],
+                        [
+                            3,
+                            2
+                        ],
+                        [
+                            5,
+                            3
+                        ],
+                        [
+                            10,
+                            4
+                        ]
+                    ]
+                },
+                "line-dasharray": [
+                    1,
+                    0
+                ]
+            }
+        },
+        {
+            "id": "country lines",
+            "type": "line",
+            "source": "mapbox://mapbox.mapbox-streets-v6",
+            "source-layer": "admin",
+            "interactive": true,
+            "filter": [
+                "all",
+                [
+                    "==",
+                    "$type",
+                    "LineString"
+                ],
+                [
+                    "all",
+                    [
+                        "==",
+                        "admin_level",
+                        2
+                    ],
+                    [
+                        "==",
+                        "maritime",
+                        0
+                    ]
+                ]
+            ],
+            "layout": {
+                "visibility": "visible"
+            },
+            "paint": {
+                "line-color": "rgba(56,49,38,1)",
+                "line-opacity": 0.8,
+                "line-blur": 1,
+                "line-width": {
+                    "base": 1,
+                    "stops": [
+                        [
+                            0,
+                            1
+                        ],
+                        [
+                            2,
+                            2.5
+                        ],
+                        [
+                            6,
+                            3.5
+                        ]
+                    ]
+                },
+                "line-dasharray": [
+                    10,
+                    2
+                ]
+            }
+        },
+        {
+            "id": "country-label (sm)",
+            "type": "symbol",
+            "metadata": {
+                "mapbox:group": "1443753148043.5981"
+            },
+            "source": "mapbox://mapbox.mapbox-streets-v6",
+            "source-layer": "country_label",
+            "maxzoom": 14,
+            "interactive": true,
+            "filter": [
+                "in",
+                "scalerank",
+                5,
+                6
+            ],
+            "layout": {
+                "icon-image": "circle-12",
+                "text-field": "{name_en}",
+                "text-font": [
+                    "Meta Serif SC Offc Pro Extrabold",
+                    "Arial Unicode MS Regular"
+                ],
+                "text-size": {
+                    "base": 1,
+                    "stops": [
+                        [
+                            0,
+                            5
+                        ],
+                        [
+                            5,
+                            10
+                        ],
+                        [
+                            10,
+                            18
+                        ]
+                    ]
+                },
+                "text-transform": "uppercase",
+                "text-letter-spacing": 0.5,
+                "visibility": "visible",
+                "text-line-height": 1
+            },
+            "paint": {
+                "text-halo-color": "rgba(207,181,165,1)",
+                "text-color": "rgba(59,48,33,1)",
+                "text-halo-blur": 0.25,
+                "text-halo-width": 0.75
+            }
+        },
+        {
+            "id": "country-label (med)",
+            "type": "symbol",
+            "metadata": {
+                "mapbox:group": "1443753148043.5981"
+            },
+            "source": "mapbox://mapbox.mapbox-streets-v6",
+            "source-layer": "country_label",
+            "maxzoom": 14,
+            "interactive": true,
+            "filter": [
+                "in",
+                "scalerank",
+                2,
+                3,
+                4
+            ],
+            "layout": {
+                "icon-image": "circle-12",
+                "text-field": "{name_en}",
+                "text-font": [
+                    "Meta Serif SC Offc Pro Black",
+                    "Arial Unicode MS Regular"
+                ],
+                "text-size": {
+                    "base": 1,
+                    "stops": [
+                        [
+                            0,
+                            6
+                        ],
+                        [
+                            2,
+                            12
+                        ],
+                        [
+                            5,
+                            20
+                        ],
+                        [
+                            10,
+                            30
+                        ]
+                    ]
+                },
+                "text-transform": "uppercase",
+                "text-letter-spacing": 0.5,
+                "visibility": "visible"
+            },
+            "paint": {
+                "text-halo-color": "rgba(207,181,165,1)",
+                "text-color": "rgba(59,48,33,1)",
+                "text-halo-blur": 0.25,
+                "text-halo-width": 1
+            }
+        },
+        {
+            "id": "country-label (big) copy",
+            "type": "symbol",
+            "metadata": {
+                "mapbox:group": "1443753148043.5981"
+            },
+            "source": "mapbox://mapbox.mapbox-streets-v6",
+            "source-layer": "country_label",
+            "maxzoom": 14,
+            "interactive": true,
+            "filter": [
+                "==",
+                "scalerank",
+                1
+            ],
+            "layout": {
+                "icon-image": "circle-12",
+                "text-field": "{name_en}",
+                "text-font": [
+                    "Merriweather Heavy",
+                    "Arial Unicode MS Regular"
+                ],
+                "text-size": {
+                    "base": 1,
+                    "stops": [
+                        [
+                            0,
+                            8
+                        ],
+                        [
+                            2,
+                            15
+                        ],
+                        [
+                            5,
+                            25
+                        ],
+                        [
+                            10,
+                            35
+                        ]
+                    ]
+                },
+                "text-transform": "uppercase",
+                "visibility": "visible",
+                "text-letter-spacing": 0
+            },
+            "paint": {
+                "text-halo-color": "rgba(207,181,165,1)",
+                "text-color": "rgba(59,48,33,1)",
+                "text-halo-blur": 0.25,
+                "text-halo-width": 1.25
+            }
+        },
+        {
+            "id": "country-label abbr",
+            "type": "symbol",
+            "metadata": {
+                "mapbox:group": "1443753148043.5981"
+            },
+            "source": "mapbox://mapbox.mapbox-streets-v6",
+            "source-layer": "country_label",
+            "maxzoom": 14,
+            "interactive": true,
+            "layout": {
+                "icon-image": "circle-12",
+                "text-field": "{name_en}",
+                "text-font": [
+                    "Meta Serif SC Offc Pro Black",
+                    "Arial Unicode MS Regular"
+                ],
+                "text-size": {
+                    "base": 1,
+                    "stops": [
+                        [
+                            0,
+                            8
+                        ],
+                        [
+                            10,
+                            26
+                        ]
+                    ]
+                },
+                "text-transform": "uppercase",
+                "text-letter-spacing": 0.5,
+                "visibility": "visible"
+            },
+            "paint": {
+                "text-halo-color": "rgba(207,181,165,1)",
+                "text-halo-width": 1,
+                "text-halo-blur": 0.25,
+                "text-color": "rgba(59,48,33,1)"
+            }
+        },
+        {
+            "id": "water-label copy",
+            "type": "symbol",
+            "metadata": {
+                "mapbox:group": "1443753148043.5981"
+            },
+            "source": "mapbox://mapbox.mapbox-streets-v6",
+            "source-layer": "water_label",
+            "maxzoom": 14,
+            "interactive": true,
+            "layout": {
+                "icon-image": "circle-12",
+                "text-field": "{name_en}",
+                "text-font": [
+                    "Crimson Bold Italic",
+                    "Arial Unicode MS Regular"
+                ],
+                "text-size": {
+                    "base": 1,
+                    "stops": [
+                        [
+                            0,
+                            55
+                        ],
+                        [
+                            10,
+                            26
+                        ]
+                    ]
+                },
+                "text-transform": "none",
+                "visibility": "visible",
+                "text-letter-spacing": 0
+            },
+            "paint": {
+                "text-halo-color": "rgba(207,181,165,1)",
+                "text-halo-width": 1,
+                "text-halo-blur": 0.25,
+                "text-color": "rgba(59,48,33,1)"
+            }
+        },
+        {
+            "id": "marine-label (big)",
+            "type": "symbol",
+            "metadata": {
+                "mapbox:group": "1443753148043.5981"
+            },
+            "source": "mapbox://mapbox.mapbox-streets-v6",
+            "source-layer": "marine_label",
+            "maxzoom": 14,
+            "interactive": true,
+            "filter": [
+                "in",
+                "labelrank",
+                1,
+                2,
+                3
+            ],
+            "layout": {
+                "icon-image": "circle-12",
+                "text-field": "{name_en}",
+                "text-font": [
+                    "Crimson Bold Italic",
+                    "Arial Unicode MS Regular"
+                ],
+                "text-size": {
+                    "base": 1,
+                    "stops": [
+                        [
+                            3,
+                            15
+                        ],
+                        [
+                            5,
+                            30
+                        ],
+                        [
+                            10,
+                            45
+                        ]
+                    ]
+                },
+                "text-transform": "none",
+                "visibility": "visible",
+                "text-letter-spacing": 0,
+                "text-line-height": 0.8
+            },
+            "paint": {
+                "text-halo-blur": 0,
+                "text-halo-color": "rgba(207,181,165,1)",
+                "text-halo-width": 1,
+                "text-color": "rgba(84,72,61,1)"
+            }
+        },
+        {
+            "id": "marine-label (other)",
+            "type": "symbol",
+            "metadata": {
+                "mapbox:group": "1443753148043.5981"
+            },
+            "source": "mapbox://mapbox.mapbox-streets-v6",
+            "source-layer": "marine_label",
+            "interactive": true,
+            "filter": [
+                "in",
+                "labelrank",
+                4,
+                5,
+                6
+            ],
+            "layout": {
+                "text-line-height": 0.8,
+                "text-size": {
+                    "base": 1,
+                    "stops": [
+                        [
+                            0,
+                            10
+                        ],
+                        [
+                            5,
+                            25
+                        ],
+                        [
+                            10,
+                            35
+                        ]
+                    ]
+                },
+                "icon-image": "circle-12",
+                "text-transform": "none",
+                "text-font": [
+                    "Crimson Bold Italic",
+                    "Arial Unicode MS Regular"
+                ],
+                "visibility": "visible",
+                "text-field": "{name_en}",
+                "text-letter-spacing": 0,
+                "text-max-width": 2.5
+            },
+            "paint": {
+                "text-halo-color": "rgba(207,181,165,1)",
+                "text-halo-width": 1,
+                "text-halo-blur": 0,
+                "text-color": "rgba(84,72,61,1)"
+            }
+        },
+        {
+            "id": "state-label (abbr)",
+            "type": "symbol",
+            "metadata": {
+                "mapbox:group": "1443753148043.5981"
+            },
+            "source": "mapbox://mapbox.mapbox-streets-v6",
+            "source-layer": "state_label",
+            "maxzoom": 5,
+            "interactive": true,
+            "layout": {
+                "icon-image": "circle-12",
+                "text-field": "{abbr}",
+                "text-font": [
+                    "Meta Serif SC Offc Pro Black",
+                    "Arial Unicode MS Regular"
+                ],
+                "text-size": {
+                    "base": 1,
+                    "stops": [
+                        [
+                            0,
+                            8
+                        ],
+                        [
+                            10,
+                            20
+                        ]
+                    ]
+                },
+                "text-transform": "uppercase",
+                "visibility": "visible",
+                "text-letter-spacing": 0.2
+            },
+            "paint": {
+                "text-halo-color": "rgba(207,178,156,1)",
+                "text-halo-width": 1,
+                "text-halo-blur": 0.25,
+                "text-color": "rgba(41,33,22,1)",
+                "text-opacity": {
+                    "base": 1,
+                    "stops": [
+                        [
+                            0,
+                            0.75
+                        ],
+                        [
+                            14,
+                            1
+                        ]
+                    ]
+                }
+            }
+        },
+        {
+            "id": "state-label",
+            "type": "symbol",
+            "metadata": {
+                "mapbox:group": "1443753148043.5981"
+            },
+            "source": "mapbox://mapbox.mapbox-streets-v6",
+            "source-layer": "state_label",
+            "minzoom": 5,
+            "interactive": true,
+            "layout": {
+                "icon-image": "circle-12",
+                "text-field": "{name}",
+                "text-font": [
+                    "Meta Serif SC Offc Pro Black",
+                    "Arial Unicode MS Regular"
+                ],
+                "text-size": {
+                    "base": 1,
+                    "stops": [
+                        [
+                            0,
+                            8
+                        ],
+                        [
+                            10,
+                            26
+                        ]
+                    ]
+                },
+                "text-transform": "uppercase",
+                "text-letter-spacing": 0.5,
+                "text-max-width": 10,
+                "visibility": "visible"
+            },
+            "paint": {
+                "text-halo-color": "rgba(207,178,156,1)",
+                "text-halo-width": 1,
+                "text-halo-blur": 0.25,
+                "text-color": "rgba(59,48,33,1)"
+            }
+        },
+        {
+            "id": "natural-peak-all",
+            "type": "symbol",
+            "metadata": {
+                "mapbox:group": "1443753148043.5981"
+            },
+            "source": "mapbox://mslee.b40752ae",
+            "source-layer": "usgs_gnis_peaks",
+            "interactive": true,
+            "filter": [
+                "all",
+                [
+                    "==",
+                    "$type",
+                    "Point"
+                ],
+                [
+                    ">",
+                    "elevation_",
+                    3500
+                ]
+            ],
+            "layout": {
+                "text-field": "{Name}",
+                "text-font": [
+                    "Marselis Slab Offc Pro Bold",
+                    "Arial Unicode MS Regular"
+                ],
+                "text-size": {
+                    "base": 1,
+                    "stops": [
+                        [
+                            0,
+                            8
+                        ],
+                        [
+                            12,
+                            12
+                        ]
+                    ]
+                },
+                "text-max-width": 6,
+                "text-line-height": 1
+            },
+            "paint": {
+                "text-color": "rgba(64,57,39,1)",
+                "text-halo-color": "rgba(173,148,135,1)",
+                "text-halo-width": 1
+            }
+        },
+        {
+            "id": "place-label (sm towns)",
+            "type": "symbol",
+            "metadata": {
+                "mapbox:group": "1443753148043.5981"
+            },
+            "source": "mapbox://mapbox.mapbox-streets-v6",
+            "source-layer": "place_label",
+            "minzoom": 3,
+            "interactive": true,
+            "filter": [
+                "in",
+                "type",
+                "town",
+                "village"
+            ],
+            "layout": {
+                "icon-image": "circle-12",
+                "visibility": "visible",
+                "text-field": "{name_en}",
+                "text-font": [
+                    "Meta Serif Offc Pro Medium",
+                    "Arial Unicode MS Regular"
+                ],
+                "text-line-height": 0.9,
+                "text-transform": "uppercase",
+                "text-size": {
+                    "base": 1,
+                    "stops": [
+                        [
+                            0,
+                            10
+                        ],
+                        [
+                            3,
+                            12
+                        ],
+                        [
+                            5,
+                            12
+                        ],
+                        [
+                            8,
+                            14
+                        ]
+                    ]
+                },
+                "text-max-width": 7
+            },
+            "paint": {
+                "text-color": "rgba(48,43,32,1)",
+                "text-halo-color": "rgba(207,181,165,1)",
+                "text-halo-width": 2
+            }
+        },
+        {
+            "id": "place-label (sm)",
+            "type": "symbol",
+            "metadata": {
+                "mapbox:group": "1443753148043.5981"
+            },
+            "source": "mapbox://mapbox.mapbox-streets-v6",
+            "source-layer": "place_label",
+            "minzoom": 3,
+            "interactive": true,
+            "filter": [
+                "in",
+                "scalerank",
+                7,
+                8,
+                9
+            ],
+            "layout": {
+                "icon-image": "circle-12",
+                "visibility": "visible",
+                "text-field": "{name_en}",
+                "text-font": [
+                    "Meta Serif Offc Pro Medium",
+                    "Arial Unicode MS Regular"
+                ],
+                "text-max-width": 4,
+                "text-transform": "uppercase",
+                "text-size": {
+                    "base": 1,
+                    "stops": [
+                        [
+                            0,
+                            10
+                        ],
+                        [
+                            3,
+                            12
+                        ],
+                        [
+                            5,
+                            12
+                        ],
+                        [
+                            8,
+                            14
+                        ]
+                    ]
+                },
+                "text-line-height": 0.9
+            },
+            "paint": {
+                "text-color": "rgba(48,43,32,1)",
+                "text-halo-color": "rgba(207,181,165,1)",
+                "text-halo-width": 2
+            }
+        },
+        {
+            "id": "place-label (med)",
+            "type": "symbol",
+            "metadata": {
+                "mapbox:group": "1443753148043.5981"
+            },
+            "source": "mapbox://mapbox.mapbox-streets-v6",
+            "source-layer": "place_label",
+            "interactive": true,
+            "filter": [
+                "all",
+                [
+                    ">",
+                    "localrank",
+                    1
+                ],
+                [
+                    "in",
+                    "scalerank",
+                    4,
+                    5,
+                    6
+                ]
+            ],
+            "layout": {
+                "icon-image": "circle-12",
+                "visibility": "visible",
+                "text-field": "{name_en}",
+                "text-font": [
+                    "Meta Serif SC Offc Pro Medium",
+                    "Arial Unicode MS Regular"
+                ],
+                "text-size": {
+                    "base": 1,
+                    "stops": [
+                        [
+                            0,
+                            10
+                        ],
+                        [
+                            3,
+                            12
+                        ],
+                        [
+                            5,
+                            14
+                        ],
+                        [
+                            8,
+                            16
+                        ]
+                    ]
+                },
+                "text-max-width": 6,
+                "text-transform": "lowercase",
+                "text-line-height": 0.9
+            },
+            "paint": {
+                "text-color": "rgba(48,43,32,1)",
+                "text-halo-color": "rgba(207,181,165,1)",
+                "text-halo-width": 2
+            }
+        },
+        {
+            "id": "place-label (lrg)",
+            "type": "symbol",
+            "metadata": {
+                "mapbox:group": "1443753148043.5981"
+            },
+            "source": "mapbox://mapbox.mapbox-streets-v6",
+            "source-layer": "place_label",
+            "interactive": true,
+            "filter": [
+                "all",
+                [
+                    "==",
+                    "type",
+                    "city"
+                ],
+                [
+                    "in",
+                    "localrank",
+                    1,
+                    2,
+                    5
+                ],
+                [
+                    "in",
+                    "scalerank",
+                    0,
+                    1,
+                    2,
+                    3
+                ]
+            ],
+            "layout": {
+                "icon-image": "circle-12",
+                "visibility": "visible",
+                "text-field": "{name_en}",
+                "text-font": [
+                    "Meta Serif Offc Pro Medium",
+                    "Arial Unicode MS Regular"
+                ],
+                "text-max-width": 4,
+                "text-transform": "uppercase",
+                "text-size": {
+                    "base": 1,
+                    "stops": [
+                        [
+                            0,
+                            10
+                        ],
+                        [
+                            3,
+                            12
+                        ],
+                        [
+                            5,
+                            14
+                        ],
+                        [
+                            8,
+                            20
+                        ]
+                    ]
+                },
+                "text-line-height": 0.9
+            },
+            "paint": {
+                "text-color": "rgba(48,43,32,1)",
+                "text-halo-color": "rgba(207,181,165,1)",
+                "text-halo-width": 2
+            }
+        },
+        {
+            "id": "natural-peak-all copy",
+            "type": "circle",
+            "metadata": {
+                "mapbox:group": "1443753148043.5981"
+            },
+            "source": "mapbox://mslee.b40752ae",
+            "source-layer": "usgs_gnis_peaks",
+            "interactive": true,
+            "filter": [
+                "all",
+                [
+                    "==",
+                    "$type",
+                    "Point"
+                ],
+                [
+                    ">",
+                    "elevation_",
+                    3500
+                ]
+            ],
+            "layout": {},
+            "paint": {
+                "circle-translate": {
+                    "base": 1,
+                    "stops": [
+                        [
+                            0,
+                            [
+                                0,
+                                12
+                            ]
+                        ],
+                        [
+                            12,
+                            [
+                                0,
+                                18
+                            ]
+                        ]
+                    ]
+                },
+                "circle-color": "rgba(46,40,40,1)",
+                "circle-radius": {
+                    "base": 1,
+                    "stops": [
+                        [
+                            0,
+                            2
+                        ],
+                        [
+                            8,
+                            2
+                        ],
+                        [
+                            22,
+                            5
+                        ]
+                    ]
+                }
+            }
+        }
+    ],
+    "created": "2016-12-04T14:09:37.066Z",
+    "id": "ciwaq5i56005g2qnuurw0zr62",
+    "modified": "2016-12-04T14:09:37.066Z",
+    "owner": "alvarcarto",
+    "draft": false
+}
