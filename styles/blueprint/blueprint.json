@@ -88,7 +88,7 @@
     "pitch": 0,
     "sources": {
         "mapbox": {
-            "url": "http://localhost:8080/data/osm2vectortiles.json",
+            "url": "mapbox://mapbox.mapbox-streets-v6",
             "type": "vector"
         }
     },

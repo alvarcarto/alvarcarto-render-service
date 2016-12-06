@@ -6,6 +6,23 @@
 * Done. Run `node src/render.js`.
 
 
+## Install on Ubuntu
+
+Locally:
+
+```bash
+scp vector-render alvar-map:~/vector-render
+ssh alvar@alvar-map
+```
+
+In remote:
+
+```bash
+cd ~/vector-render
+./tools/install-ubuntu.sh
+```
+
+
 ## Rebuild ./src/mapbox-util.js
 
 ```bash

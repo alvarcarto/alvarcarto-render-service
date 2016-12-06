@@ -1,10 +1,11 @@
-
-const fs = require('fs');
-const mbgl = require('../../mapbox-gl-native-latest');
+const _ = require('lodash');
+const BPromise = require('bluebird');
+const fs = BPromise.promisifyAll(require('fs'));
+const mbgl = require('../../mapbox-gl-native');
 const sharp = require('sharp');
 const request = require('request');
+const requestAsync = BPromise.promisify(request);
 const mbutil = require('./mapbox-util');
-const BPromise = require('bluebird');
 
 const RATIO = 4.0;
 
@@ -14,13 +15,13 @@ function main() {
   render({
     accessToken: accessToken,
     ratio: RATIO,
-    width: 2000,
-    height: 2000,
+    width: 4100,
+    height: 4100,
     zoom: 12.5,
-    pitch: 60,
-    bearing: -54,
-    center: [24.941,60.166],
-    style: './styles/blueprint/blueprint.json',
+    pitch: 0,
+    bearing: 0,
+    center: [24.8968, 60.2976],
+    style: './styles/dark/dark.json',
   })
   .then((image) => {
     // Convert raw image buffer to PNG
@@ -38,26 +39,33 @@ function render(opts) {
     ratio: opts.ratio,
   }));
 
-  try {
-    map.load(readJsonFileSync(opts.style));
-  } catch (e) {
-    return BPromise.reject(e);
+  console.log(opts);
+  return getStyle(opts.style)
+    .then(style => map.load(style))
+    .then(() => map.renderAsync(opts))
+    .then((buffer) => {
+      map.release();
+
+      return sharp(buffer, {
+        raw: {
+          width: Math.floor(opts.width * opts.ratio),
+          height: Math.floor(opts.height * opts.ratio),
+          channels: 4,
+        },
+      });
+    });
+}
+
+function getStyle(url) {
+  if (_.startsWith(url, 'http')) {
+    return requestAsync({
+      url: url,
+      json: true,
+    })
+    .then(res => res.body);
   }
 
-  //map.setCenter(opts.center);
-  console.log(opts);
-  return map.renderAsync(opts)
-  .then((buffer) => {
-    map.release();
-
-    return sharp(buffer, {
-      raw: {
-        width: Math.floor(opts.width * opts.ratio),
-        height: Math.floor(opts.height * opts.ratio),
-        channels: 4,
-      },
-    });
-  });
+  return readJsonFile(url);
 }
 
 function resolveUrl(req, accessToken) {
@@ -138,11 +146,15 @@ function createMapRequestFunc(accessToken) {
   }
 }
 
-function readJsonFileSync(filePath) {
-  const content = fs.readFileSync(filePath, { encoding: 'utf8' });
-  return JSON.parse(content);
+function readJsonFile(filePath) {
+  return fs.readFileAsync(filePath, { encoding: 'utf8' })
+    .then(content => JSON.parse(content));
 }
 
 if (require.main === module) {
   main();
 }
+
+module.exports = {
+  render: render,
+};
