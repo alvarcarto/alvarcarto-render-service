@@ -4,17 +4,23 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "lint": "eslint ./src",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bluebird": "^3.4.6",
     "jsdom": "^9.8.3",
     "mapbox-gl": "^0.28.0",
     "mapbox-gl-native": "^3.4.2",
+    "request": "^2.79.0",
     "sharp": "^0.16.2"
   },
   "devDependencies": {
+    "eslint": "^3.11.1",
+    "eslint-config-airbnb-base": "^10.0.1",
+    "eslint-plugin-import": "^2.2.0",
     "flow-remove-types": "^1.0.5"
   }
 }

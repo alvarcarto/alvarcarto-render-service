@@ -1,3 +1,9 @@
+// Modified version of ./lib/mapbox-flow.js
+// Changes:
+//   * Fixed normalizeGlyphsURL (font and range)
+//   * Add normalizeVectorTileURL
+
+
 'use strict';
 
 const config = {
@@ -81,7 +87,7 @@ module.exports.normalizeVectorTileURL = function(url, accessToken) {
     var z = split[4];
     var x = split[5];
     var rest = split[6];
-
+    console.log(split);
     return 'https://a.tiles.mapbox.com/v4/' + tileId + '/' + z + '/' + x + '/' +
         rest + '?access_token=' + accessToken;
 }
