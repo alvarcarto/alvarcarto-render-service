@@ -1,12 +1,12 @@
 const _ = require('lodash');
 const BPromise = require('bluebird');
 const fs = BPromise.promisifyAll(require('fs'));
-const mbgl = require('../../mapbox-gl-native');
+const mbgl = require('../../../mapbox-gl-native');
 const sharp = require('sharp');
 const request = require('request');
-const requestAsync = BPromise.promisify(request);
-const mbutil = require('./mapbox-util');
+const mbutil = require('../util/mapbox');
 
+const requestAsync = BPromise.promisify(request);
 const RATIO = 4.0;
 
 function main() {
@@ -39,8 +39,7 @@ function render(opts) {
     ratio: opts.ratio,
   }));
 
-  console.log(opts);
-  return getStyle(opts.style)
+  return getStyle(opts.style, opts.accessToken)
     .then(style => map.load(style))
     .then(() => map.renderAsync(opts))
     .then((buffer) => {
@@ -56,7 +55,14 @@ function render(opts) {
     });
 }
 
-function getStyle(url) {
+function getStyle(url, accessToken) {
+  if (_.startsWith(url, 'mapbox:')) {
+    url = resolveUrl({
+      kind: mbgl.Resource.Style,
+      url: url,
+    }, accessToken);
+  }
+
   if (_.startsWith(url, 'http')) {
     return requestAsync({
       url: url,
@@ -73,7 +79,7 @@ function resolveUrl(req, accessToken) {
     case mbgl.Resource.Style:
       return mbutil.normalizeStyleURL(req.url, accessToken);
     case mbgl.Resource.Source:
-      return mbutil.normalizeSourceURL(req.url, accessToken);;
+      return mbutil.normalizeSourceURL(req.url, accessToken);
     case mbgl.Resource.Tile:
       // console.warn(`Unexpected Tile request: ${req}`);
       // https://a.tiles.mapbox.com/v4/mapbox.mapbox-streets-v6/2/1/1.vector.pbf?accessToken=

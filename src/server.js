@@ -38,18 +38,19 @@ const renderSchema = {
     lng: Joi.number().min(-180).max(180).required(),
     bearing: Joi.number().min(-360).max(360).optional(),
     pitch: Joi.number().min(0).max(60).optional(),
+    style: Joi.string().optional(),
   }
 };
 app.get('/api/render', validate(renderSchema), (req, res, next) => {
   const opts = {
-    width: req.query.width,
-    height: req.query.height,
-    zoom: req.query.zoom,
-    center: [req.query.lng, req.query.lat],
-    bearing: req.query.bearing,
-    pitch: req.query.pitch,
-    ratio: 2.0,
-    style: 'http://tiles.alvarcarto.com:8000/styles/bright-v9.json',
+    width: Number(req.query.width),
+    height: Number(req.query.height),
+    zoom: Number(req.query.zoom),
+    center: [Number(req.query.lng), Number(req.query.lat)],
+    bearing: Number(req.query.bearing),
+    pitch: Number(req.query.pitch),
+    ratio: 8.0,
+    style: req.query.style || 'http://tiles.alvarcarto.com:8000/styles/bright-v9.json',
     accessToken: 'pk.eyJ1IjoiYWx2YXJjYXJ0byIsImEiOiJjaXdhb2s5Y24wMDJ6Mm9vNjVvNXdqeDRvIn0.wC2GAwpt9ggrV-mGAD_E0w'
   };
 
@@ -69,18 +70,21 @@ const placeItSchema = {
     lng: Joi.number().min(-180).max(180).required(),
     bearing: Joi.number().min(-360).max(360).optional(),
     pitch: Joi.number().min(0).max(60).optional(),
+    style: Joi.string().optional(),
+    width: Joi.number().integer().min(128).max(4096).required(),
   }
 };
 app.get('/api/placeit', (req, res, next) => {
   const opts = {
     width: 375,
     height: 525,
-    zoom: req.query.zoom,
-    center: [req.query.lng, req.query.lat],
-    bearing: req.query.bearing,
-    pitch: req.query.pitch,
+    zoom: Number(req.query.zoom),
+    center: [Number(req.query.lng), Number(req.query.lat)],
+    bearing: Number(req.query.bearing),
+    pitch: Number(req.query.pitch),
     ratio: 1.0,
-    style: './styles/dark/dark.json',
+    style: req.query.style || 'http://tiles.alvarcarto.com:8000/styles/bright-v9.json',
+    resizeToWidth: Number(req.query.resizeToWidth),
     accessToken: 'pk.eyJ1IjoiYWx2YXJjYXJ0byIsImEiOiJjaXdhb2s5Y24wMDJ6Mm9vNjVvNXdqeDRvIn0.wC2GAwpt9ggrV-mGAD_E0w'
   };
 
@@ -90,12 +94,19 @@ app.get('/api/placeit', (req, res, next) => {
       poster: lwip.openAsync('./poster.png'),
       map: lwip.openAsync(mapBuffer, 'png')
         .then(map => map.blurAsync(0))
-        .then(map => map.borderAsync(1, {r: 0, g: 0, b: 0, a: 40}))
         .then(map => map.lightenAsync(0))
     }))
     .then(result => {
       const poster = result.poster;
       return poster.pasteAsync(1149, 278, result.map)
+    })
+    .then((poster) => {
+      if (_.isFinite(opts.resizeToWidth)) {
+        const newHeight = opts.resizeToWidth / poster.width() * poster.height();
+        return poster.resizeAsync(opts.resizeToWidth, newHeight);
+      }
+
+      return poster;
     })
     .then(poster => poster.toBufferAsync('png'))
     .then(image => {
