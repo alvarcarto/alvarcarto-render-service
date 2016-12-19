@@ -46,6 +46,7 @@ function render(opts) {
       map.release();
 
       return sharp(buffer, {
+        density: 300,
         raw: {
           width: Math.floor(opts.width * opts.ratio),
           height: Math.floor(opts.height * opts.ratio),

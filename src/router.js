@@ -15,6 +15,7 @@ function createRouter() {
       bearing: Joi.number().min(-360).max(360).optional(),
       pitch: Joi.number().min(0).max(60).optional(),
       style: Joi.string().optional(),
+      header: Joi.string().optional(),
     },
   };
   router.get('/api/render', validate(renderSchema), render.getRender);
