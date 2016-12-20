@@ -15,14 +15,14 @@ const getRender = ex.createRoute((req, res) => {
     center: [Number(req.query.lng), Number(req.query.lat)],
     bearing: Number(req.query.bearing),
     pitch: Number(req.query.pitch),
-    ratio: 8.0,
+    ratio: 12.0,
     style: req.query.style || 'http://tiles.alvarcarto.com:8000/styles/bright-v9.json',
     accessToken: 'pk.eyJ1IjoiYWx2YXJjYXJ0byIsImEiOiJjaXdhb2s5Y24wMDJ6Mm9vNjVvNXdqeDRvIn0.wC2GAwpt9ggrV-mGAD_E0w',
     header: req.query.header,
   };
 
   return vectorMapCore.render(_.omit(opts, _.isNil))
-    .then(sharpObj => sharpObj.png())
+    .then(sharpObj => sharpObj.quality(100).png())
     .then(image => posterCore.addLabels(image))
     .then((image) => {
       res.set('content-type', 'image/png');

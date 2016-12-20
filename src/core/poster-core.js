@@ -1,42 +1,71 @@
-const fs = require('fs');
 const BPromise = require('bluebird');
-const TextToSVG = require('text-to-svg');
 const sharp = require('sharp');
+const svgCore = require('./svg-core');
 const logger = require('../util/logger')(__filename);
 
-const textToSVG = TextToSVG.loadSync();
-
-function addLabels(poster) {
+function addLabels(mapSharp) {
   logger.info('Adding labels');
 
-  const svgOptions = {
-    x: 0,
-    y: 0,
-    fontSize: 160,
-    anchor: 'left top',
-    attributes: { fill: 'black', stroke: 'black' },
-  };
-  //const svg = textToSVG.getSVG('hello', svgOptions);
-  const svg = `
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    xmlns:xlink="http://www.w3.org/1999/xlink"
-    width="800"
-    height="400"
-  >
-    <text font-family="Raleway" font-size="140" x="400" y="200" text-anchor="middle">
-      Test
-      whats
-    </text>
-  </svg>
-  `;
-  fs.writeFileSync('text.svg', svg, {encoding: 'utf8'});
-  console.log(textToSVG.getMetrics('hello', svgOptions))
+  return mapSharp.metadata()
+    .then((metadata) => {
+      const gradientHeight = 0.2 * metadata.height;
+      const gradient = loadGradientSharp(metadata.width, gradientHeight);
+      const labels = loadLabelsSharp(metadata.width, gradientHeight);
+      return BPromise.props({
+        gradient: gradient.toBuffer(),
+        labels: labels.toBuffer(),
+        metadata,
+        gradientHeight,
+      });
+    })
+    .then((result) => {
+      const { labels, gradient, metadata, gradientHeight } = result;
+      return BPromise.props({
+        poster: mapSharp
+          .overlayWith(gradient, { left: 0, top: metadata.height - gradientHeight })
+          .raw()
+          .toBuffer(),
+        labels,
+        metadata,
+        gradientHeight,
+      });
+    })
+    .then((result) => {
+      const { poster, labels, metadata, gradientHeight } = result;
+      return sharp(poster, {
+        density: 300,
+        raw: {
+          width: metadata.width,
+          height: metadata.height,
+          channels: 4,
+        },
+      })
+        .overlayWith(labels, { left: 0, top: metadata.height - gradientHeight })
+        .quality(100)
+        .png()
+        .toBuffer();
+    });
+}
 
-  return poster
-    .overlayWith(new Buffer(svg, 'utf8'), { gravity: 'south', bottom: 100 })
-    .png()
-    .toBuffer();
+function loadGradientSharp(width, height) {
+  const buf = new Buffer(svgCore.whiteGradient(width, height));
+  return sharp(buf, { density: 300 })
+    .resize(width, height)
+    .quality(100)
+    .png();
+}
+
+function loadLabelsSharp(width, height) {
+  const buf = new Buffer(svgCore.labels({
+    width,
+    height,
+    fontSize: 240,
+    header: 'HELSINKI',
+  }));
+  return sharp(buf, { density: 300 })
+    .resize(width, height)
+    .quality(100)
+    .png();
 }
 
 module.exports = {
