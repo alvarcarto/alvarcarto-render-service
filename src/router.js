@@ -2,7 +2,7 @@ const Joi = require('joi');
 const _ = require('lodash');
 const validate = require('express-validation');
 const express = require('express');
-const vectorRender = require('./http/vector-render-http');
+/*const vectorRender = require('./http/vector-render-http');*/
 const rasterRender = require('./http/raster-render-http');
 const config = require('./config');
 const ROLES = require('./enum/roles');
@@ -28,6 +28,7 @@ function createRouter() {
     return next();
   });
 
+  /*
   const vectorRenderSchema = {
     query: {
       width: Joi.number().integer().min(128).max(4096).required(),
@@ -55,6 +56,7 @@ function createRouter() {
     },
   };
   router.get('/api/vector/placeit', validate(vectorPlaceItSchema), vectorRender.getPlaceIt);
+  */
 
   const rasterRenderSchema = {
     query: {
