@@ -2,6 +2,7 @@ const BPromise = require('bluebird');
 const path = require('path');
 const _ = require('lodash');
 const mapnik = require('mapnik');
+const config = require('../config');
 
 mapnik.register_default_fonts();
 mapnik.register_default_input_plugins();
@@ -16,7 +17,7 @@ function render(_opts) {
   const opts = _.merge({
     scale: 1,
     format: 'png',
-    stylesheetPath: path.join(__dirname, '../../styles/mapnik/bw.xml'),
+    stylesheetPath: path.join(config.STYLE_DIR, 'bw.xml'),
   }, _opts);
 
   const map = BPromise.promisifyAll(new mapnik.Map(opts.width, opts.height));
