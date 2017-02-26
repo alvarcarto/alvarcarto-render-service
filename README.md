@@ -1,4 +1,8 @@
-# Vector render
+# Render service
+
+Provides an API to render Alvar Carto map posters.
+
+## Get started
 
 * `nvm use 4` *Needs node 4*
 * Make sure you have deps installed: https://github.com/mapbox/mapbox-gl-native/blob/master/INSTALL.md#2-installing-dependencies
@@ -32,5 +36,9 @@ npm i
 ```
 
 Then implement needed changes to ./src/mapbox-util.js.
+
+
+## How map is created
+
 
 

@@ -34,7 +34,7 @@ module.exports.labels = (opts) => {
     anchor: 'left top',
     attributes: { fill: 'black', stroke: 'black' },
   };
-  //const svg = textToSVG.getSVG('hello', svgOptions);
+
   return `
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -46,9 +46,20 @@ module.exports.labels = (opts) => {
         letter-spacing="0.2em"
         font-weight="700"
         font-family="Proxima Nova"
-        font-size="${opts.fontSize}"
+        font-size="160"
         x="${opts.width / 2}"
         y="${opts.height / 2}"
+        text-anchor="middle"
+      >
+        ${opts.header}
+      </text>
+      <text
+        letter-spacing="0.2em"
+        font-weight="700"
+        font-family="Proxima Nova"
+        font-size="100"
+        x="${opts.width / 2}"
+        y="${opts.height / 2 + 160}"
         text-anchor="middle"
       >
         ${opts.header}

@@ -12,26 +12,19 @@ function createErrorResponder(opts) {
   }, opts);
 
   return function errorResponder(err, req, res, next) {
-    var message;
-    var status = err.status ? err.status : 500;
-
-    var httpMessage = http.STATUS_CODES[status];
+    let message;
+    const status = err.status ? err.status : 500;
+    const httpMessage = http.STATUS_CODES[status];
     if (opts.isErrorSafeToRespond(status)) {
-      message = httpMessage + ': ' + err.message;
-    }
-    else {
+      message = `${httpMessage}: ${err.message}`;
+    } else {
       message = httpMessage;
     }
 
-    let body = {error: message};
-    if (err.userMessage) {
-      body.showUser = true;
-      body.message = err.userMessage;
-    }
-
-    if (err.userHeader) {
-      body.header = err.userHeader;
-    }
+    const isPrettyValidationErr = _.has(err, 'errors');
+    const body = isPrettyValidationErr
+      ? JSON.stringify(err)
+      : { status, statusText: httpMessage, messages: [message] };
 
     res.status(status);
     res.send(body);
