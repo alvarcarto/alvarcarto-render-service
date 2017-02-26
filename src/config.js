@@ -1,7 +1,6 @@
 /* eslint-disable no-process-env */
 
 const path = require('path');
-const logger = require('./util/logger')(__filename);
 
 // Env vars should be casted to correct types
 const config = {
@@ -12,7 +11,7 @@ const config = {
   STYLE_DIR: process.env.STYLE_DIR || path.join('../alvarcarto-cartocss-bw'),
 };
 
-logger.info(`Using style directory: ${config.STYLE_DIR}`);
+console.log(`Using style directory: ${config.STYLE_DIR}`);
 
 if (!config.API_KEY) {
   throw new Error('Configuration error, API_KEY env var not set');
