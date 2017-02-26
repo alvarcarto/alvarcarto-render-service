@@ -1,4 +1,5 @@
 const BPromise = require('bluebird');
+const path = require('path');
 const _ = require('lodash');
 const mapnik = require('mapnik');
 
@@ -15,7 +16,7 @@ function render(_opts) {
   const opts = _.merge({
     scale: 1,
     format: 'png',
-    stylesheetPath: '/Users/kbru/code/alvarcarto/alvarcarto-cartocss-bw/osm.xml',
+    stylesheetPath: path.join(__dirname, '../../styles/mapnik/bw.xml'),
   }, _opts);
 
   const map = BPromise.promisifyAll(new mapnik.Map(opts.width, opts.height));
