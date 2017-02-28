@@ -2,6 +2,7 @@ const BPromise = require('bluebird');
 const _ = require('lodash');
 const sharp = require('sharp');
 const path = require('path');
+const uuid = require('node-uuid');
 const fs = BPromise.promisifyAll(require('fs'));
 const rasterMapCore = require('./raster-map-core');
 const logger = require('../util/logger')(__filename);
@@ -9,12 +10,30 @@ const xmldom = require('xmldom');
 
 const EMPTY_MAP_PADDING_FACTOR = 0.03;
 
-function render(opts) {
+function render(_opts) {
+  const opts = _.merge(_opts, {
+    uuid: uuid.v4(),
+  });
+
   if (opts.labelsEnabled) {
-    return _normalRender(opts);
+    return _normalRender(opts)
+      .finally(() => _deleteFiles(opts));
   }
 
-  return _renderWithoutLabels(opts);
+  return _renderWithoutLabels(opts)
+    .finally(() => _deleteFiles(opts));
+}
+
+function _deleteFiles(opts) {
+  return BPromise.all([
+    fs.unlinkAsync(`${opts.uuid}.svg`),
+    fs.unlinkAsync(`${opts.uuid}.png`),
+  ])
+    .catch((err) => {
+      if (err.code !== 'ENOENT') {
+        throw err;
+      }
+    });
 }
 
 function _renderWithoutLabels(opts) {
@@ -80,14 +99,14 @@ function _renderPoster(opts) {
 
       const newSvgString = transformPosterSvgDoc(opts, parsed.doc);
       return BPromise.props({
-        map: fs.writeFileAsync('map.png', opts.mapImage, { encoding: 'binary' }),
-        poster: fs.writeFileAsync('poster.svg', newSvgString, { encoding: 'utf-8' }),
+        map: fs.writeFileAsync(`${opts.uuid}.png`, opts.mapImage, { encoding: 'binary' }),
+        poster: fs.writeFileAsync(`${opts.uuid}.svg`, newSvgString, { encoding: 'utf-8' }),
         svg: parsed.svg,
       });
     })
     .then((result) => {
       const dimensions = getDimensions(result.svg);
-      return sharp('poster.svg', { density: 72 })
+      return sharp(`${opts.uuid}.svg`, { density: 72 })
         .limitInputPixels(false)
         .resize(dimensions.width, dimensions.height)
         .png()
@@ -121,7 +140,7 @@ function getPosterMapImageWithoutLabelsDimensions(opts) {
 function transformPosterSvgDoc(opts, svgDoc) {
   const list = svgDoc.getElementsByTagName('image');
   const image = list.item(0);
-  image.setAttribute('xlink:href', 'map.png');
+  image.setAttribute('xlink:href', `${opts.uuid}.png`);
 
   if (opts.labelsEnabled) {
     setText(svgDoc.getElementById('header'), opts.labelHeader);
