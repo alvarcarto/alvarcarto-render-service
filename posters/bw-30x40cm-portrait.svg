@@ -3,24 +3,19 @@
     <!-- Generator: Sketch 3.8.3 (29802) - http://www.bohemiancoding.com/sketch -->
     <title>bw-30x40cm-portrait</title>
     <desc>Created with Sketch.</desc>
-    <defs>
-        <rect id="path-1" x="0" y="0" width="3543" height="4725"/>
-        <mask id="mask-2" maskContentUnits="userSpaceOnUse" maskUnits="objectBoundingBox" x="0" y="0" width="3543" height="4725" fill="white">
-            <use xlink:href="#path-1"/>
-        </mask>
-    </defs>
+    <defs/>
     <g id="Page-2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
         <g id="30x40cm-portrait">
             
-            <path d="M0,0 L3543,0 L3543,4725 L0,4725 L0,0 Z M153,150 L3390,150 L3390,4157 L153,4157 L153,150 Z" id="Combined-Shape" fill="#FFFFFF"/>
+            <path d="M0,0 L3543,0 L3543,4725 L0,4725 L0,0 Z M153,151 L3390,151 L3390,4158 L153,4158 L153,151 Z" id="borders" fill="#FFFFFF"/>
             <path d="M153,4167 L3390.00073,4167" id="Line" stroke="#050606" stroke-width="20"/>
-            <g id="labels" transform="translate(151.000000, 4221.000000)" font-style="condensed">
-                <text id="small-header" font-family="RobotoCondensed-Light, Roboto Condensed" font-size="80" font-weight="300" letter-spacing="2.66666698" fill="#343434">
-                    <tspan x="4" y="258">FINLAND</tspan>
-                </text>
+            <g id="labels" transform="translate(150.000000, 4221.000000)" font-style="condensed">
                 <text id="text" font-family="RobotoCondensed-Light, Roboto Condensed" font-size="50" font-weight="300" letter-spacing="13.636363" fill="#979595">
-                    <tspan x="7" y="374">60.160°N / 24.942°</tspan>
+                    <tspan x="10" y="374">60.160°N / 24.942°</tspan>
                     
+                </text>
+                <text id="small-header" font-family="RobotoCondensed-Light, Roboto Condensed" font-size="75" font-weight="300" letter-spacing="2.50000024" fill="#343434">
+                    <tspan x="5" y="258">FINLAND</tspan>
                 </text>
                 <text id="header" font-family="RobotoCondensed-Bold, Roboto Condensed" font-size="140" font-weight="bold" fill="#343434">
                     <tspan x="0" y="130">HELSINKI</tspan>
