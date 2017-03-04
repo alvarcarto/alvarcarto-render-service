@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg width="3543px" height="4724px" viewBox="0 0 3543 4724" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<svg width="4724px" height="3543px" viewBox="0 0 4724 3543" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <!-- Generator: Sketch 3.8.3 (29802) - http://www.bohemiancoding.com/sketch -->
-    <title>bw-30x40cm-portrait</title>
+    <title>bw-30x40cm-landscape</title>
     <desc>Created with Sketch.</desc>
     <defs/>
     <g id="Page-2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="30x40cm-portrait">
+        <g id="30x40cm-landscape">
             
-            <path d="M0,0 L3543,0 L3543,4725 L0,4725 L0,0 Z M123,123 L3420,123 L3420,4158 L123,4158 L123,123 Z" id="borders" fill="#FFFFFF"/>
-            <path d="M123,4168 L3420,4168" id="Line" stroke="#000000" stroke-width="20"/>
-            <g id="labels" transform="translate(119.000000, 4221.000000)" font-style="condensed">
+            <path d="M0,0 L4725,0 L4725,3543 L0,3543 L0,0 Z M123,123 L4602,123 L4602,2976 L123,2976 L123,123 Z" id="borders" fill="#FFFFFF"/>
+            <path d="M123,2986 L4602,2986" id="Line" stroke="#000000" stroke-width="20"/>
+            <g id="labels" transform="translate(119.000000, 3039.000000)" font-style="condensed">
                 <text id="text" font-family="RobotoCondensed-Light, Roboto Condensed" font-size="50" font-weight="300" letter-spacing="13.636363" fill="#343434">
                     <tspan x="10" y="374">60.160°N / 24.942°</tspan>
                     
