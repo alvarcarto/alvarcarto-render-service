@@ -5,7 +5,6 @@ const path = require('path');
 const uuid = require('node-uuid');
 const fs = BPromise.promisifyAll(require('fs'));
 const rasterMapCore = require('./raster-map-core');
-const logger = require('../util/logger')(__filename);
 const xmldom = require('xmldom');
 
 // This needs to match the settings in frontend
@@ -28,7 +27,6 @@ function render(_opts) {
 function _deleteFiles(opts) {
   return BPromise.all([
     fs.unlinkAsync(`${opts.uuid}.svg`),
-    fs.unlinkAsync(`${opts.uuid}.png`),
   ])
     .catch((err) => {
       if (err.code !== 'ENOENT') {
@@ -38,7 +36,36 @@ function _deleteFiles(opts) {
 }
 
 function _renderWithoutLabels(opts) {
-  return getPosterMapImageWithoutLabelsDimensions(opts)
+  return _renderMap(opts)
+    // Add white borders on top of map image
+    .then(({ mapImage, dimensions }) =>
+      sharp(mapImage)
+        .extract({
+          left: dimensions.padding,
+          top: dimensions.padding,
+          width: dimensions.width - (2 * dimensions.padding),
+          height: dimensions.height - (2 * dimensions.padding),
+        })
+        .background({ r: 255, g: 255, b: 255 })
+        .extend(dimensions.padding)
+        .png()
+        .toBuffer(),
+    );
+}
+
+function _normalRender(opts) {
+  return _renderMap(opts)
+    .then(({ mapImage }) => {
+      const posterOpts = _.merge({}, opts, {
+        mapImage,
+      });
+
+      return _renderPoster(posterOpts);
+    });
+}
+
+function _renderMap(opts) {
+  return getPosterDimensions(opts)
     .then((dimensions) => {
       const mapOpts = _.merge({}, opts, {
         width: dimensions.width,
@@ -49,37 +76,6 @@ function _renderWithoutLabels(opts) {
         mapImage: rasterMapCore.render(_.omit(mapOpts, _.isNil)),
         dimensions,
       });
-    })
-    .then(({ mapImage, dimensions }) =>
-      sharp(mapImage)
-        .background({ r: 255, g: 255, b: 255 })
-        .extend({
-          top: dimensions.padding,
-          right: dimensions.padding,
-          bottom: dimensions.padding,
-          left: dimensions.padding,
-        })
-        .png()
-        .toBuffer(),
-    );
-}
-
-function _normalRender(opts) {
-  return getPosterMapImageDimensions(opts)
-    .then((dimensions) => {
-      const mapOpts = _.merge({}, opts, {
-        width: dimensions.width,
-        height: dimensions.height,
-      });
-
-      return rasterMapCore.render(_.omit(mapOpts, _.isNil));
-    })
-    .then((mapImage) => {
-      const posterOpts = _.merge({}, opts, {
-        mapImage,
-      });
-
-      return _renderPoster(posterOpts);
     });
 }
 
@@ -90,59 +86,63 @@ function _renderPoster(opts) {
   })
     .then((result) => {
       const parsed = parsePosterSvg(result.svgString);
-      const { image } = parsed;
-      const dimensions = getDimensions(image);
+      const { svg } = parsed;
+      const dimensions = getDimensions(svg);
       const expected = `${dimensions.width}x${dimensions.height}`;
       const actual = `${result.mapMeta.width}x${result.mapMeta.height}`;
       if (expected !== actual) {
-        throw new Error(`Image has incorrect dimensions: ${actual}, expected: ${expected}`);
+        throw new Error(`Map image has incorrect dimensions: ${actual}, expected: ${expected}`);
       }
 
       const newSvgString = transformPosterSvgDoc(parsed.doc, opts);
       return BPromise.props({
-        map: fs.writeFileAsync(`${opts.uuid}.png`, opts.mapImage, { encoding: 'binary' }),
+        mapImage: opts.mapImage,
         poster: fs.writeFileAsync(`${opts.uuid}.svg`, newSvgString, { encoding: 'utf-8' }),
         svg: parsed.svg,
       });
     })
     .then((result) => {
       const dimensions = getDimensions(result.svg);
-      return sharp(`${opts.uuid}.svg`, { density: 72 })
-        .limitInputPixels(false)
-        .resize(dimensions.width, dimensions.height)
+      return BPromise.props({
+        svgImage:
+          sharp(`${opts.uuid}.svg`, { density: 72 })
+            .limitInputPixels(false)
+            .resize(dimensions.width, dimensions.height)
+            .png()
+            .toBuffer(),
+        mapImage: result.mapImage,
+      });
+    })
+    .then(result =>
+      sharp(result.mapImage)
+        .overlayWith(result.svgImage, {
+          top: 0,
+          left: 0,
+        })
         .png()
-        .toBuffer();
-    });
+        .toBuffer(),
+    );
 }
 
-function getPosterMapImageDimensions(opts) {
-  return readPosterFile(opts)
-    .then((svgString) => {
-      const { image } = parsePosterSvg(svgString);
-      return getDimensions(image);
-    });
-}
-
-function getPosterMapImageWithoutLabelsDimensions(opts) {
+function getPosterDimensions(opts) {
   return readPosterFile(opts)
     .then((svgString) => {
       const { svg } = parsePosterSvg(svgString);
       const svgDimensions = getDimensions(svg);
       const side = Math.min(svgDimensions.width, svgDimensions.height);
       const padding = Math.floor(EMPTY_MAP_PADDING_FACTOR * side);
+
       return {
-        width: svgDimensions.width - (2 * padding),
-        height: svgDimensions.height - (2 * padding),
+        width: svgDimensions.width,
+        height: svgDimensions.height,
+
+        // Used when no labels are printed
         padding,
       };
     });
 }
 
 function transformPosterSvgDoc(svgDoc, opts) {
-  const list = svgDoc.getElementsByTagName('image');
-  const image = list.item(0);
-  image.setAttribute('xlink:href', `${opts.uuid}.png`);
-
   if (opts.labelsEnabled) {
     setText(svgDoc.getElementById('header'), opts.labelHeader);
     setText(svgDoc.getElementById('small-header'), opts.labelSmallHeader);
@@ -155,18 +155,12 @@ function transformPosterSvgDoc(svgDoc, opts) {
 
 function parsePosterSvg(svgString) {
   const doc = new xmldom.DOMParser().parseFromString(svgString, 'text/xml');
-  const imgList = doc.getElementsByTagName('image');
-  if (imgList.length !== 1) {
-    throw new Error(`Unexpected amount of image tags found: ${imgList.length}`);
-  }
-
   const svgList = doc.getElementsByTagName('svg');
   if (svgList.length !== 1) {
     throw new Error(`Unexpected amount of svg tags found: ${svgList.length}`);
   }
 
   return {
-    image: imgList.item(0),
     svg: svgList.item(0),
     doc,
   };
@@ -194,12 +188,6 @@ function setText(textNode, value) {
   tspanList.item(0).textContent = value;
 }
 
-function removeNode(node) {
-  node.parentNode.removeChild(node);
-}
-
 module.exports = {
   render,
-  getPosterMapImageDimensions,
-  getPosterMapImageWithoutLabelsDimensions,
 };
