@@ -8,6 +8,7 @@ const rasterMapCore = require('./raster-map-core');
 const logger = require('../util/logger')(__filename);
 const xmldom = require('xmldom');
 
+// This needs to match the settings in frontend
 const EMPTY_MAP_PADDING_FACTOR = 0.03;
 
 function render(_opts) {
@@ -97,7 +98,7 @@ function _renderPoster(opts) {
         throw new Error(`Image has incorrect dimensions: ${actual}, expected: ${expected}`);
       }
 
-      const newSvgString = transformPosterSvgDoc(opts, parsed.doc);
+      const newSvgString = transformPosterSvgDoc(parsed.doc, opts);
       return BPromise.props({
         map: fs.writeFileAsync(`${opts.uuid}.png`, opts.mapImage, { encoding: 'binary' }),
         poster: fs.writeFileAsync(`${opts.uuid}.svg`, newSvgString, { encoding: 'utf-8' }),
@@ -137,7 +138,7 @@ function getPosterMapImageWithoutLabelsDimensions(opts) {
     });
 }
 
-function transformPosterSvgDoc(opts, svgDoc) {
+function transformPosterSvgDoc(svgDoc, opts) {
   const list = svgDoc.getElementsByTagName('image');
   const image = list.item(0);
   image.setAttribute('xlink:href', `${opts.uuid}.png`);

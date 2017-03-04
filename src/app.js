@@ -2,6 +2,7 @@ const express = require('express');
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const compression = require('compression');
+const cors = require('cors');
 const errorResponder = require('./middleware/error-responder');
 const errorLogger = require('./middleware/error-logger');
 const createRouter = require('./router');
@@ -21,9 +22,17 @@ function createApp() {
     threshold: 10,
   }));
 
+  const corsOpts = {
+    origin: '*',
+    methods: ['GET'],
+  };
+  console.log('Using CORS options:', corsOpts);
+  app.use(cors(corsOpts));
+
   // Initialize routes
   const router = createRouter();
   app.use('/', router);
+  app.use('/posters', express.static('posters'));
 
   app.use(errorLogger());
   app.use(errorResponder());
