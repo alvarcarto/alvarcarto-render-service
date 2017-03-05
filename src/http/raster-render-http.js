@@ -1,7 +1,4 @@
-const BPromise = require('bluebird');
-const _ = require('lodash');
 const ex = require('../util/express');
-const rasterMapCore = require('../core/raster-map-core');
 const posterCore = require('../core/poster-core');
 const ROLES = require('../enum/roles');
 
@@ -12,21 +9,21 @@ const getRender = ex.createRoute((req, res) => {
     orientation: req.query.orientation,
     width: Number(req.query.width),
     height: Number(req.query.height),
-    view: {
-      topLeft: {
-        lat: Number(req.query.tlLat),
-        lng: Number(req.query.tlLng)
+    bounds: {
+      southWest: {
+        lat: Number(req.query.swLat),
+        lng: Number(req.query.swLng),
       },
-      bottomRight: {
-        lat: Number(req.query.brLat),
-        lng: Number(req.query.brLng)
+      northEast: {
+        lat: Number(req.query.neLat),
+        lng: Number(req.query.neLng),
       },
     },
     scale: Number(req.query.scale) || 1,
     labelsEnabled: Boolean(req.query.labelsEnabled),
     labelHeader: req.query.labelHeader || '',
-    labelSmallHeader: req.query.labelSmallHeader || '',
-    labelText: req.query.labelText || '',
+    labelSmallHeader: req.query.labelSmallHeader || '',
+    labelText: req.query.labelText || '',
   };
 
   return posterCore.render(opts)
