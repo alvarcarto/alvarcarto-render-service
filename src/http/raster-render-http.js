@@ -9,6 +9,7 @@ const getRender = ex.createRoute((req, res) => {
     size: req.query.size,
     orientation: req.query.orientation,
     resizeToWidth: Number(req.query.resizeToWidth),
+    resizeToHeight: Number(req.query.resizeToHeight),
     bounds: {
       southWest: {
         lat: Number(req.query.swLat),
@@ -29,7 +30,9 @@ const getRender = ex.createRoute((req, res) => {
   return posterCore.render(opts)
     .then((image) => {
       if (opts.resizeToWidth) {
-        return sharp(image).resize(opts.resizeToWidth).png().toBuffer();
+        return sharp(image).resize(opts.resizeToWidth, null).png().toBuffer();
+      } else if (opts.resizeToHeight) {
+        return sharp(image).resize(null, opts.resizeToHeight).png().toBuffer();
       }
 
       return image;
