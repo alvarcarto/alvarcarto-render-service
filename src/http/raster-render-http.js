@@ -1,5 +1,6 @@
 const ex = require('../util/express');
 const posterCore = require('../core/poster-core');
+const sharp = require('sharp');
 const ROLES = require('../enum/roles');
 
 const getRender = ex.createRoute((req, res) => {
@@ -7,8 +8,7 @@ const getRender = ex.createRoute((req, res) => {
     style: req.query.style,
     size: req.query.size,
     orientation: req.query.orientation,
-    width: Number(req.query.width),
-    height: Number(req.query.height),
+    resizeToWidth: Number(req.query.resizeToWidth),
     bounds: {
       southWest: {
         lat: Number(req.query.swLat),
@@ -27,6 +27,13 @@ const getRender = ex.createRoute((req, res) => {
   };
 
   return posterCore.render(opts)
+    .then((image) => {
+      if (opts.resizeToWidth) {
+        return sharp(image).resize(opts.resizeToWidth).png().toBuffer();
+      }
+
+      return image;
+    })
     .then((image) => {
       res.set('content-type', 'image/png');
       res.send(image);
