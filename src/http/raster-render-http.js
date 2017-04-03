@@ -53,7 +53,7 @@ function _getDefaultScale(size) {
     case '50x70cm':
       return 4;
     case '70x100cm':
-      return 4;
+      return 5;
   }
 
   throw new Error(`Unknown size: ${size}`);
