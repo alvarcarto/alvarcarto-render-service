@@ -61,8 +61,8 @@ function createRouter() {
   const rasterRenderSchema = {
     query: {
       size: Joi.string().valid(['30x40cm', '50x70cm', '70x100cm']).required(),
-      resizeToWidth: Joi.number().min(50).max(3000).optional(),
-      resizeToHeight: Joi.number().min(50).max(3000).optional(),
+      resizeToWidth: Joi.number().min(50).max(400).optional(),
+      resizeToHeight: Joi.number().min(50).max(400).optional(),
       style: Joi.string().valid(['bw']).required(),
       orientation: Joi.string().valid(['landscape', 'portrait']).required(),
       swLat: Joi.number().min(-90).max(90).required(),

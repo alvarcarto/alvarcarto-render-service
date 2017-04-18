@@ -1,10 +1,14 @@
+const _ = require('lodash');
 const ex = require('../util/express');
 const posterCore = require('../core/poster-core');
 const sharp = require('sharp');
 const ROLES = require('../enum/roles');
 
 const getRender = ex.createRoute((req, res) => {
-  // TODO: check if role is not admin, and throw unauthorized
+  const resizeDefined = _.has(req.query, 'resizeToWidth') || _.has(req.query, 'resizeToHeight');
+  if (!resizeDefined && _.get(req, 'user.role') !== ROLES.ADMIN) {
+    ex.throwStatus(403, 'Anonymous requests must define a resize parameter.');
+  }
 
   const size = req.query.size;
   const opts = {
