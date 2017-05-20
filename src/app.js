@@ -1,3 +1,4 @@
+const path = require('path');
 const express = require('express');
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
@@ -32,7 +33,7 @@ function createApp() {
   // Initialize routes
   const router = createRouter();
   app.use('/', router);
-  app.use('/posters', express.static('posters'));
+  app.use('/posters', express.static(path.join(__dirname, '../posters')));
 
   app.use(errorLogger());
   app.use(errorResponder());
