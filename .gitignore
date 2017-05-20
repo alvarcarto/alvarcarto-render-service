@@ -1,3 +1,4 @@
 .env
 *.mbtiles
 node_modules
+dist
