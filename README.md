@@ -2,49 +2,18 @@
 
 Provides an API to render Alvar Carto map posters.
 
-## Get started
-
-* `nvm use 4` *Needs node 4*
-* Make sure you have deps installed: https://github.com/mapbox/mapbox-gl-native/blob/master/INSTALL.md#2-installing-dependencies
-* Install https://github.com/aheckmann/gm#getting-started
-* Follow [node-canvas Install guide](https://github.com/Automattic/node-canvas)
-
-  On 26th Jan 2017, on Ubuntu it needs:
-
-  `sudo apt-get install libcairo2-dev libjpeg8-dev libpango1.0-dev libgif-dev build-essential g++`
-
-* `npm install`
-* Done. Run `node src/render.js`.
-
-
-## Install on Ubuntu
-
-Locally:
-
-```bash
-scp vector-render alvar-map:~/vector-render
-ssh alvar@alvar-map
-```
-
-In remote:
-
-```bash
-cd ~/vector-render
-./tools/install-ubuntu.sh
-```
-
-
-## Rebuild ./src/mapbox-util.js
-
-```bash
-npm i
-./tools/build.sh
-```
-
-Then implement needed changes to ./src/mapbox-util.js.
-
+This service depends on Mapnik server (https://github.com/gravitystorm/openstreetmap-carto/blob/master/INSTALL.md).
+It's non-trivial to install, so it
+has been automated in [this repository](https://github.com/kimmobrunfeldt/alvarcarto-map-server).
 
 ## How map is created
 
+1. Render a map with a resolution which will result to a 300DPI print
+2. Apply label overlay (SVG) on top of the rendered map
 
+  These SVG canvases should match the rendered map images pixel perfect.
 
+  The labels in SVGs are following a certain ID convention so they can be
+  dynamically replaced with a DOM parser/modifier.
+
+3. Save the combined huge image
