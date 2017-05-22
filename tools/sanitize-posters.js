@@ -82,15 +82,17 @@ function sanitizeSvgElements(svgDoc) {
 
   const smallHeader = svgDoc.getElementById('small-header');
   if (!smallHeader) {
-    throw new Error('#small-header not found!')
+    console.warn('Warning: #small-header not found!');
+  } else {
+    sanitizeText(smallHeader);
   }
-  sanitizeText(smallHeader);
 
   const text = svgDoc.getElementById('text');
   if (!text) {
-    throw new Error('#text not found!')
+    console.warn('Warning: #text not found!');
+  } else {
+    sanitizeText(text);
   }
-  sanitizeText(text);
 
   const hideThis = svgDoc.getElementById('hide-this');
   if (hideThis) {
