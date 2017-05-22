@@ -145,8 +145,30 @@ function getPosterDimensions(opts) {
 function transformPosterSvgDoc(svgDoc, opts) {
   if (opts.labelsEnabled) {
     setText(svgDoc.getElementById('header'), opts.labelHeader);
-    setText(svgDoc.getElementById('small-header'), opts.labelSmallHeader);
-    setText(svgDoc.getElementById('text'), opts.labelText);
+
+    const smallHeaderEl = svgDoc.getElementById('small-header');
+    if (smallHeaderEl) {
+      setText(smallHeaderEl, opts.labelSmallHeader);
+    }
+
+    const textEl = svgDoc.getElementById('text');
+    if (textEl) {
+      setText(textEl, opts.labelText);
+    }
+  }
+
+  if (opts.primaryColor) {
+    setColor(svgDoc.getElementById('header'), opts.primaryColor);
+
+    const smallHeaderEl = svgDoc.getElementById('small-header');
+    if (smallHeaderEl) {
+      setColor(smallHeaderEl, opts.primaryColor);
+    }
+
+    const textEl = svgDoc.getElementById('text');
+    if (textEl) {
+      setColor(textEl, opts.primaryColor);
+    }
   }
 
   const s = new xmldom.XMLSerializer();
@@ -167,7 +189,7 @@ function parsePosterSvg(svgString) {
 }
 
 function readPosterFile(opts) {
-  const fileName = `${opts.style}-${opts.size}-${opts.orientation}.svg`;
+  const fileName = `${opts.posterStyle}-${opts.size}-${opts.orientation}.svg`;
   const absPath = path.join(__dirname, '../../posters', fileName);
   return fs.readFileAsync(absPath, { encoding: 'utf8' });
 }
@@ -186,6 +208,15 @@ function setText(textNode, value) {
   }
 
   tspanList.item(0).textContent = value;
+}
+
+function setColor(textNode, value) {
+  const tspanList = textNode.getElementsByTagName('tspan');
+  if (tspanList.length < 1) {
+    throw new Error(`Unexpected amount of tspan elements found: ${tspanList.length}`);
+  }
+
+  tspanList.item(0).setAttribute('style', `fill: ${value}`);
 }
 
 module.exports = {

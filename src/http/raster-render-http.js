@@ -13,6 +13,8 @@ const getRender = ex.createRoute((req, res) => {
   const size = req.query.size;
   const opts = {
     style: req.query.style,
+    posterStyle: req.query.posterStyle || req.query.style,
+    primaryColor: req.query.primaryColor,
     size: size,
     orientation: req.query.orientation,
     resizeToWidth: Number(req.query.resizeToWidth),

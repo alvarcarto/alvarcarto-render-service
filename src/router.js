@@ -64,6 +64,8 @@ function createRouter() {
       resizeToWidth: Joi.number().min(50).max(400).optional(),
       resizeToHeight: Joi.number().min(50).max(400).optional(),
       style: Joi.string().valid(['bw', 'transparent']).required(),
+      posterStyle: Joi.string().valid(['polaroid']).optional(),
+      primaryColor: Joi.string().optional(),
       orientation: Joi.string().valid(['landscape', 'portrait']).required(),
       swLat: Joi.number().min(-90).max(90).required(),
       swLng: Joi.number().min(-180).max(180).required(),
