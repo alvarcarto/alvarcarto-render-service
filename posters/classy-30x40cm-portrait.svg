@@ -6,10 +6,11 @@
     <defs/>
     <g id="Page-2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
         <g id="30x40cm-portrait">
+
             <path d="M0,0 L3543,0 L3543,4725 L0,4725 L0,0 Z M160,162 L3383,162 L3383,4134 L160,4134 L160,162 Z" id="borders" fill="#FFFFFF"/>
-            <g id="labels" transform="translate(1764.000000, 4241.000000)" font-size="280" font-family="AmaticSC-Bold, Amatic SC" fill="#4b7b8f" font-weight="bold">
+            <g id="labels" transform="translate(1764.000000, 4293.000000)" font-size="200" font-family="Futura-Medium, Futura" fill="#262626" font-weight="400">
                 <text text-anchor="middle" id="header">
-                    <tspan x="0" y="285">Helsinki</tspan>
+                    <tspan x="0" y="208">HELSINKI</tspan>
                 </text>
             </g>
         </g>
