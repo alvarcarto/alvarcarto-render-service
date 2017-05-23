@@ -5,6 +5,7 @@ const path = require('path');
 const fs = BPromise.promisifyAll(require('fs'));
 const xmldom = require('xmldom');
 
+const NODE_TYPE_ELEMENT = 1;
 const ONE_CM_IN_INCH = 0.393700787;
 const PRINT_DPI = 300;
 
@@ -33,6 +34,7 @@ function _sanitizePoster(filePath) {
     .then(svgString => {
       const parsed = parsePosterSvg(svgString);
       sanitizeSvgElements(parsed.doc);
+      centerElements(parsed.doc, parsed.svg);
 
       const svgDimensions = getDimensions(parsed.svg);
       const expected = `${expectedDimensions.width}x${expectedDimensions.height}`;
@@ -99,6 +101,37 @@ function sanitizeSvgElements(svgDoc) {
     console.log('Removing node #hide-this');
     removeNode(hideThis);
   }
+}
+
+function centerElements(doc, node) {
+  const nodeId = getNodeId(node);
+  if (nodeId === 'center') {
+    const el = doc.getElementById(nodeId);
+    console.log(`Setting text-anchor="middle" for element #${el.getAttribute('id')}`);
+    el.setAttribute('text-anchor', 'middle');
+  }
+
+  if (node.hasChildNodes()) {
+    for (let i = 0; i < node.childNodes.length; ++i) {
+      const childNode = node.childNodes.item(i);
+      centerElements(doc, childNode);
+    }
+  }
+}
+
+function getNodeId(node) {
+  if (node.nodeType !== NODE_TYPE_ELEMENT || !node.hasAttributes()) {
+    return null;
+  }
+
+  for (let i = 0; i < node.attributes.length; ++i) {
+    const attr = node.attributes[i];
+    if (attr.name === 'id') {
+      return attr.value;
+    }
+  }
+
+  return null;
 }
 
 function parsePosterSvg(svgString) {
