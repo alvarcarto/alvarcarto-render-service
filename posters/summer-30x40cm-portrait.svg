@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="3543px" height="4724px" viewBox="0 0 3543 4724" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 3.8.3 (29802) - http://www.bohemiancoding.com/sketch -->
+    <title>summer-30x40cm-portrait</title>
+    <desc>Created with Sketch.</desc>
+    <defs/>
+    <g id="Page-2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="30x40cm-portrait">
+            
+            <path d="M0,0 L3543,0 L3543,4725 L0,4725 L0,0 Z M160,162 L3383,162 L3383,4134 L160,4134 L160,162 Z" id="borders" fill="#FFFFFF"/>
+            <g id="labels" transform="translate(1772.000000, 4249.000000)" font-size="270" font-family="AmaticSC-Bold, Amatic SC" fill="#262626" font-weight="bold">
+                <g id="center" text-anchor="middle">
+                    <text id="header">
+                        <tspan x="0" y="274">HELSINKI</tspan>
+                    </text>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
