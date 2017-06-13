@@ -63,9 +63,15 @@ function createRouter() {
       size: Joi.string().valid(['30x40cm', '50x70cm', '70x100cm']).required(),
       resizeToWidth: Joi.number().min(50).max(400).optional(),
       resizeToHeight: Joi.number().min(50).max(400).optional(),
-      style: Joi.string().valid(['bw', 'transparent']).required(),
-      posterStyle: Joi.string().valid(['polaroid']).optional(),
-      primaryColor: Joi.string().optional(),
+      posterStyle: Joi.string().valid([
+        'sharp', 'classic', 'sans', 'bw',
+        'pacific', 'summer', 'round',
+      ]).required(),
+      mapStyle: Joi.string().valid([
+        'bw', 'gray', 'black', 'petrol',
+        'iceberg', 'marshmellow', 'copper',
+        'madang',
+      ]).required(),
       orientation: Joi.string().valid(['landscape', 'portrait']).required(),
       swLat: Joi.number().min(-90).max(90).required(),
       swLng: Joi.number().min(-180).max(180).required(),

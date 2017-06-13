@@ -17,7 +17,7 @@ function render(_opts) {
   const opts = _.merge({
     scale: 1,
     format: 'png',
-    stylesheetPath: path.join(config.STYLE_DIR, `${_opts.style}.xml`),
+    stylesheetPath: path.join(config.STYLE_DIR, `${_opts.mapStyle}.xml`),
   }, _opts);
 
   const map = BPromise.promisifyAll(new mapnik.Map(opts.width, opts.height));
