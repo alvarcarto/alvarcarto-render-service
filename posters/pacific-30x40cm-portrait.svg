@@ -5,13 +5,13 @@
     <desc>Created with Sketch.</desc>
     <defs/>
     <g id="Page-2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="30x40cm-portrait" transform="translate(0.000000, -1.000000)">
+        <g id="30x40cm-portrait">
             
             <path d="M0,0 L3543,0 L3543,4725 L0,4725 L0,0 Z M160,162 L3383,162 L3383,4134 L160,4134 L160,162 Z" id="borders" fill="#FFFFFF"/>
-            <g id="labels" transform="translate(1777.000000, 4241.000000)" font-style="italic" font-size="200" font-family="Pacifico-Regular, Pacifico" fill="#4B7B8F" font-weight="normal">
+            <g id="labels" transform="translate(1772.000000, 4221.000000)" font-style="italic" font-size="230" font-family="Pacifico-Regular, Pacifico" fill="#262626" font-weight="normal">
                 <g id="center" text-anchor="middle">
                     <text id="header">
-                        <tspan x="0" y="261">Helsinki</tspan>
+                        <tspan x="0" y="300">Helsinki</tspan>
                     </text>
                 </g>
             </g>

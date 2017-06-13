@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="4724px" height="3543px" viewBox="0 0 4724 3543" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 3.8.3 (29802) - http://www.bohemiancoding.com/sketch -->
+    <title>round-30x40cm-landscape</title>
+    <desc>Created with Sketch.</desc>
+    <defs/>
+    <g id="Page-2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="30x40cm-landscape">
+            
+            <path d="M0,0 L4724,0 L4724,3543 L0,3543 L0,0 Z M2361.70343,2816.24365 C3073.09105,2816.24365 3649.78465,2239.55005 3649.78465,1528.16243 C3649.78465,816.774821 3073.09105,240.081217 2361.70343,240.081217 C1650.31582,240.081217 1073.62222,816.774821 1073.62222,1528.16243 C1073.62222,2239.55005 1650.31582,2816.24365 2361.70343,2816.24365 Z" id="borders" fill="#FFFFFF"/>
+            <g id="labels" transform="translate(2362.000000, 3011.203132)" font-style="condensed" font-size="240" font-family="Futura-CondensedMedium, Futura" fill="#000000" font-weight="normal">
+                <g id="center" text-anchor="middle">
+                    <text id="header">
+                        <tspan x="0" y="236">HELSINKI</tspan>
+                    </text>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

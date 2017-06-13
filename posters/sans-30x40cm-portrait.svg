@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="3543px" height="4724px" viewBox="0 0 3543 4724" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 3.8.3 (29802) - http://www.bohemiancoding.com/sketch -->
+    <title>classicsans-30x40cm-portrait</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="54.4134239%" id="linearGradient-1">
+            <stop stop-color="#FFFFFF" stop-opacity="0" offset="0%"/>
+            <stop stop-color="#FFFFFF" offset="100%"/>
+        </linearGradient>
+    </defs>
+    <g id="Page-2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="30x40cm-portrait">
+            
+            <path d="M0,0 L3543,0 L3543,4725 L0,4725 L0,0 Z M126,126 L3417,126 L3417,4599 L126,4599 L126,126 Z" id="borders" fill="#FFFFFF"/>
+            <rect id="gradient" fill="url(#linearGradient-1)" x="126" y="3308" width="3291" height="1291"/>
+            <g id="labels" transform="translate(1773.000000, 3877.000000)">
+                <g id="center" text-anchor="middle">
+                    <text id="text" font-family="JosefinSans-Light, Josefin Sans" font-size="60" font-weight="300" letter-spacing="16.363636" fill="#343434">
+                        <tspan x="0" y="565">60.160°N / 24.942°E</tspan>
+                    </text>
+                    <text id="small-header" font-family="JosefinSans, Josefin Sans" font-size="90" font-weight="normal" letter-spacing="3.00000048" fill="#000000">
+                        <tspan x="0" y="417">FINLAND</tspan>
+                    </text>
+                    <text id="header" font-family="JosefinSans-Bold, Josefin Sans" font-size="240" font-weight="bold" letter-spacing="51.4285698" fill="#000000">
+                        <tspan x="0" y="228">HELSINKI</tspan>
+                    </text>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
