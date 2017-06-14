@@ -4,6 +4,7 @@ const sharp = require('sharp');
 const path = require('path');
 const uuid = require('node-uuid');
 const fs = BPromise.promisifyAll(require('fs'));
+const { getMapStyle } = require('alvarcarto-common');
 const rasterMapCore = require('./raster-map-core');
 const xmldom = require('xmldom');
 
@@ -144,35 +145,31 @@ function getPosterDimensions(opts) {
 
 function transformPosterSvgDoc(svgDoc, opts) {
   if (opts.labelsEnabled) {
-    setText(svgDoc.getElementById('header'), opts.labelHeader);
-
-    const smallHeaderEl = svgDoc.getElementById('small-header');
-    if (smallHeaderEl) {
-      setText(smallHeaderEl, opts.labelSmallHeader);
-    }
-
-    const textEl = svgDoc.getElementById('text');
-    if (textEl) {
-      setText(textEl, opts.labelText);
-    }
-  }
-
-  if (opts.primaryColor) {
-    setColor(svgDoc.getElementById('header'), opts.primaryColor);
-
-    const smallHeaderEl = svgDoc.getElementById('small-header');
-    if (smallHeaderEl) {
-      setColor(smallHeaderEl, opts.primaryColor);
-    }
-
-    const textEl = svgDoc.getElementById('text');
-    if (textEl) {
-      setColor(textEl, opts.primaryColor);
-    }
+    setTexts(svgDoc, opts);
   }
 
   const s = new xmldom.XMLSerializer();
   return s.serializeToString(svgDoc);
+}
+
+function setTexts(svgDoc, opts) {
+  const { labelColor } = getMapStyle(opts.mapStyle);
+
+  const headerEl = svgDoc.getElementById('header');
+  setText(headerEl, opts.labelHeader);
+  setColor(headerEl, labelColor);
+
+  const smallHeaderEl = svgDoc.getElementById('small-header');
+  if (smallHeaderEl) {
+    setText(smallHeaderEl, opts.labelSmallHeader);
+    setColor(smallHeaderEl, labelColor);
+  }
+
+  const textEl = svgDoc.getElementById('text');
+  if (textEl) {
+    setText(textEl, opts.labelText);
+    setColor(textEl, labelColor);
+  }
 }
 
 function parsePosterSvg(svgString) {
@@ -211,12 +208,7 @@ function setText(textNode, value) {
 }
 
 function setColor(textNode, value) {
-  const tspanList = textNode.getElementsByTagName('tspan');
-  if (tspanList.length < 1) {
-    throw new Error(`Unexpected amount of tspan elements found: ${tspanList.length}`);
-  }
-
-  tspanList.item(0).setAttribute('style', `fill: ${value}`);
+  textNode.setAttribute('fill', value);
 }
 
 module.exports = {
