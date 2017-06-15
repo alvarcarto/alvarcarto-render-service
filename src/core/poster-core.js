@@ -4,7 +4,14 @@ const sharp = require('sharp');
 const path = require('path');
 const uuid = require('node-uuid');
 const fs = BPromise.promisifyAll(require('fs'));
-const { getMapStyle } = require('alvarcarto-common');
+const {
+  addOrUpdateLines,
+  getPosterLook,
+  getMapStyle,
+  changeDynamicAttributes,
+} = require('alvarcarto-common');
+const window = require('svgdom');
+const svgJs = require('svg.js');
 const rasterMapCore = require('./raster-map-core');
 const xmldom = require('xmldom');
 
@@ -148,6 +155,8 @@ function transformPosterSvgDoc(svgDoc, opts) {
     setTexts(svgDoc, opts);
   }
 
+  changeDynamicAttributes(svgDoc, opts);
+
   const s = new xmldom.XMLSerializer();
   return s.serializeToString(svgDoc);
 }
@@ -163,6 +172,18 @@ function setTexts(svgDoc, opts) {
   if (smallHeaderEl) {
     setText(smallHeaderEl, opts.labelSmallHeader);
     setColor(smallHeaderEl, labelColor);
+
+    const { addLines } = getPosterLook(opts.posterStyle);
+    if (addLines) {
+      addOrUpdateLines(svgDoc, svgDoc.querySelector('svg'), smallHeaderEl, {
+        getBBoxForSvgElement,
+        svgAttributes: {
+          stroke: '#2d2d2d',
+          'stroke-width': '6px',
+          'stroke-linecap': 'square',
+        },
+      });
+    }
   }
 
   const textEl = svgDoc.getElementById('text');
@@ -209,6 +230,16 @@ function setText(textNode, value) {
 
 function setColor(textNode, value) {
   textNode.setAttribute('fill', value);
+}
+
+function getBBoxForSvgElement(svgText, elId) {
+  const SVG = svgJs(window);
+  const document = window.document;
+  const draw = SVG(document.documentElement);
+  draw.svg(svgText);
+
+  const element = draw.get(elId);
+  return element.bbox();
 }
 
 module.exports = {
