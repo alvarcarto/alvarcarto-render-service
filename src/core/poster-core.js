@@ -234,11 +234,10 @@ function setColor(textNode, value) {
 
 function getBBoxForSvgElement(svgText, elId) {
   const SVG = svgJs(window);
-  const document = window.document;
-  const draw = SVG(document.documentElement);
+  const draw = SVG(window.document);
   draw.svg(svgText);
 
-  const element = draw.get(elId);
+  const element = SVG.get(elId);
   return element.bbox();
 }
 
