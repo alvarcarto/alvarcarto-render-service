@@ -175,7 +175,7 @@ function setTexts(svgDoc, opts) {
 
     const { addLines } = getPosterStyle(opts.posterStyle);
     if (addLines) {
-      addOrUpdateLines(svgDoc, svgDoc.querySelector('svg'), smallHeaderEl, {
+      addOrUpdateLines(svgDoc, svgDoc, smallHeaderEl, {
         getBBoxForSvgElement,
         svgAttributes: {
           stroke: '#2d2d2d',
