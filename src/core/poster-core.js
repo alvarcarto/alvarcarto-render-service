@@ -6,7 +6,7 @@ const uuid = require('node-uuid');
 const fs = BPromise.promisifyAll(require('fs'));
 const {
   addOrUpdateLines,
-  getPosterLook,
+  getPosterStyle,
   getMapStyle,
   changeDynamicAttributes,
 } = require('alvarcarto-common');
@@ -173,7 +173,7 @@ function setTexts(svgDoc, opts) {
     setText(smallHeaderEl, opts.labelSmallHeader);
     setColor(smallHeaderEl, labelColor);
 
-    const { addLines } = getPosterLook(opts.posterStyle);
+    const { addLines } = getPosterStyle(opts.posterStyle);
     if (addLines) {
       addOrUpdateLines(svgDoc, svgDoc.querySelector('svg'), smallHeaderEl, {
         getBBoxForSvgElement,
