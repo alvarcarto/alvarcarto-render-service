@@ -3,7 +3,7 @@
     <g id="50x70cm-landscape">
       
       <path d="M0,0 L8268,0 L8268,5906 L0,5906 L0,0 Z M210,210 L8058,210 L8058,5060 L210,5060 L210,210 Z" id="borders" fill="#FFF"/>
-      <g id="labels" transform="translate(4134.000000, 5265.000000)" font-size="260" font-family="Futura-Medium, Futura" letter-spacing="45" fill="#262626" font-weight="400">
+      <g id="labels" transform="translate(4134.000000, 5274.000000)" font-size="260" font-family="Futura-Medium, Futura" letter-spacing="45" fill="#262626" font-weight="400">
         <g id="center" text-anchor="middle">
           <text id="header">
             <tspan x="0" y="270">HELSINK</tspan> 

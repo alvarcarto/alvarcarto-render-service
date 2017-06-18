@@ -3,7 +3,7 @@
     <g id="30x40cm-landscape">
       
       <path d="M0,0 L4725,0 L4725,3543 L0,3543 L0,0 Z M131,131 L4594,131 L4594,2994 L131,2994 L131,131 Z" id="borders" fill="#FFF"/>
-      <g id="labels" transform="translate(2362.000000, 3078.000000)" font-style="italic" font-size="180" font-family="Pacifico-Regular, Pacifico" fill="#262626" font-weight="normal">
+      <g id="labels" transform="translate(2362.000000, 3091.000000)" font-style="italic" font-size="180" font-family="Pacifico-Regular, Pacifico" fill="#262626" font-weight="normal">
         <g id="center" text-anchor="middle">
           <text id="header">
             <tspan x="0" y="235">Helsinki</tspan>

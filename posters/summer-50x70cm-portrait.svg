@@ -3,7 +3,7 @@
     <g id="50x70cm-portrait">
       
       <path d="M0,0 L5907,0 L5907,8268 L0,8268 L0,0 Z M210,210 L5697,210 L5697,7436 L210,7436 L210,210 Z" id="borders" fill="#FFF"/>
-      <g id="labels" transform="translate(2954.000000, 7584.000000)" font-size="340" font-family="AmaticSC-Bold, Amatic SC" fill="#262626" font-weight="bold">
+      <g id="labels" transform="translate(2954.000000, 7607.000000)" font-size="340" font-family="AmaticSC-Bold, Amatic SC" fill="#262626" font-weight="bold">
         <g id="center" text-anchor="middle">
           <text id="header">
             <tspan x="0" y="345">HELSINKI</tspan>

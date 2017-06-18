@@ -3,7 +3,7 @@
     <g id="30x40cm-portrait">
       
       <path d="M0,0 L3543,0 L3543,4725 L0,4725 L0,0 Z M133,133 L3410,133 L3410,4179 L133,4179 L133,133 Z" id="borders" fill="#FFF"/>
-      <g id="labels" transform="translate(1772.000000, 4333.000000)" font-size="160" font-family="JosefinSans-Bold, Josefin Sans" letter-spacing="30" fill="#262626" font-weight="bold">
+      <g id="labels" transform="translate(1772.000000, 4338.000000)" font-size="160" font-family="JosefinSans-Bold, Josefin Sans" letter-spacing="30" fill="#262626" font-weight="bold">
         <g id="center" text-anchor="middle">
           <text id="header">
             <tspan x="0" y="152">HELSINK</tspan> 
