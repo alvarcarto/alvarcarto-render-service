@@ -1,20 +1,15 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg width="8268px" height="11811px" viewBox="0 0 8268 11811" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 3.8.3 (29802) - http://www.bohemiancoding.com/sketch -->
-    <title>round-70x100cm-portrait</title>
-    <desc>Created with Sketch.</desc>
-    <defs/>
-    <g id="Page-2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="70x100cm-portrait">
-            
-            <path d="M0,0 L8268,0 L8268,11811 L0,11811 L0,0 Z M4134,8621 C6122.2251,8621 7734,7009.2251 7734,5021 C7734,3032.7749 6122.2251,1421 4134,1421 C2145.7749,1421 534,3032.7749 534,5021 C534,7009.2251 2145.7749,8621 4134,8621 Z" id="borders" fill="#FFFFFF"/>
-            <g id="labels" transform="translate(4134.000000, 10094.000000)" font-style="condensed" font-size="520" font-family="Futura-CondensedMedium, Futura" fill="#000000" font-weight="normal">
-                <g id="center" text-anchor="middle">
-                    <text id="header">
-                        <tspan x="0" y="511">HELSINKI</tspan>
-                    </text>
-                </g>
-            </g>
+<svg width="8268px" height="11811px" viewBox="0 0 8268 11811" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <g id="Page-2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+    <g id="70x100cm-portrait">
+      
+      <path d="M0,0 L8268,0 L8268,11811 L0,11811 L0,0 Z M4134,8621 C6122.2251,8621 7734,7009.2251 7734,5021 C7734,3032.7749 6122.2251,1421 4134,1421 C2145.7749,1421 534,3032.7749 534,5021 C534,7009.2251 2145.7749,8621 4134,8621 Z" id="borders" fill="#FFF"/>
+      <g id="labels" transform="translate(4134.000000, 10168.000000)" font-size="460" font-family="JosefinSans-Bold, Josefin Sans" fill="#000" font-weight="bold">
+        <g id="center" text-anchor="middle">
+          <text id="header">
+            <tspan x="0" y="437">HELSINKI</tspan>
+          </text>
         </g>
+      </g>
     </g>
+  </g>
 </svg>

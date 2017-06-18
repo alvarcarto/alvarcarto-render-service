@@ -18,7 +18,7 @@ const rasterMapCore = require('./raster-map-core');
 const config = require('../config');
 
 // This needs to match the settings in frontend
-const EMPTY_MAP_PADDING_FACTOR = 0.03;
+const EMPTY_MAP_PADDING_FACTOR = 0.035;
 
 const files = glob.sync(`${config.FONT_DIR}/*.ttf`);
 const fontMapping = _.reduce(files, (memo, filePath) => {
