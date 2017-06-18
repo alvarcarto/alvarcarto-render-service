@@ -1,15 +1,39 @@
 const BPromise = require('bluebird');
 const _ = require('lodash');
 const sharp = require('sharp');
+const glob = require('glob');
 const path = require('path');
 const uuid = require('node-uuid');
 const fs = BPromise.promisifyAll(require('fs'));
-const { getMapStyle } = require('alvarcarto-common');
-const rasterMapCore = require('./raster-map-core');
+const {
+  addOrUpdateLines,
+  getPosterStyle,
+  getMapStyle,
+  changeDynamicAttributes,
+} = require('alvarcarto-common');
 const xmldom = require('xmldom');
+const window = require('svgdom');
+const svgJs = require('svg.js');
+const rasterMapCore = require('./raster-map-core');
+const config = require('../config');
 
 // This needs to match the settings in frontend
 const EMPTY_MAP_PADDING_FACTOR = 0.03;
+
+const files = glob.sync(`${config.FONT_DIR}/*.ttf`);
+const fontMapping = _.reduce(files, (memo, filePath) => {
+  const fontName = path.basename(filePath, '.ttf');
+  const fileName = path.basename(filePath);
+  const newFonts = { [fontName]: fileName };
+  if (_.endsWith(fontName, '-Regular')) {
+    const baseName = fontName.split('-Regular')[0];
+    newFonts[baseName] = fileName;
+  }
+  return _.extend({}, memo, newFonts);
+}, {});
+
+window.setFontDir(config.FONT_DIR)
+  .setFontFamilyMappings(fontMapping);
 
 function render(_opts) {
   const opts = _.merge(_opts, {
@@ -26,8 +50,9 @@ function render(_opts) {
 }
 
 function _deleteFiles(opts) {
+  const tmpSvgPath = getAbsPath(`${opts.uuid}.svg`);
   return BPromise.all([
-    fs.unlinkAsync(`${opts.uuid}.svg`),
+    fs.unlinkAsync(tmpSvgPath),
   ])
     .catch((err) => {
       if (err.code !== 'ENOENT') {
@@ -96,17 +121,19 @@ function _renderPoster(opts) {
       }
 
       const newSvgString = transformPosterSvgDoc(parsed.doc, opts);
+      const tmpSvgPath = getAbsPath(`${opts.uuid}.svg`);
       return BPromise.props({
         mapImage: opts.mapImage,
-        poster: fs.writeFileAsync(`${opts.uuid}.svg`, newSvgString, { encoding: 'utf-8' }),
+        poster: fs.writeFileAsync(tmpSvgPath, newSvgString, { encoding: 'utf-8' }),
         svg: parsed.svg,
       });
     })
     .then((result) => {
       const dimensions = getDimensions(result.svg);
+      const tmpSvgPath = getAbsPath(`${opts.uuid}.svg`);
       return BPromise.props({
         svgImage:
-          sharp(`${opts.uuid}.svg`, { density: 72 })
+          sharp(tmpSvgPath, { density: 72 })
             .limitInputPixels(false)
             .resize(dimensions.width, dimensions.height)
             .png()
@@ -148,26 +175,54 @@ function transformPosterSvgDoc(svgDoc, opts) {
     setTexts(svgDoc, opts);
   }
 
+  changeDynamicAttributes(svgDoc, opts);
+  return svgDocToStr(svgDoc);
+}
+
+function svgDocToStr(svgDoc) {
   const s = new xmldom.XMLSerializer();
   return s.serializeToString(svgDoc);
 }
 
 function setTexts(svgDoc, opts) {
   const { labelColor } = getMapStyle(opts.mapStyle);
+  const { addLines, upperCaseLabels } = getPosterStyle(opts.posterStyle);
 
+
+  const labelHeader = upperCaseLabels
+    ? opts.labelHeader.toUpperCase()
+    : opts.labelHeader;
   const headerEl = svgDoc.getElementById('header');
-  setText(headerEl, opts.labelHeader);
+  setText(headerEl, labelHeader);
   setColor(headerEl, labelColor);
 
   const smallHeaderEl = svgDoc.getElementById('small-header');
   if (smallHeaderEl) {
-    setText(smallHeaderEl, opts.labelSmallHeader);
+    const labelSmallHeader = upperCaseLabels
+      ? opts.labelSmallHeader.toUpperCase()
+      : opts.labelSmallHeader;
+    setText(smallHeaderEl, labelSmallHeader);
     setColor(smallHeaderEl, labelColor);
+
+    if (addLines) {
+      addOrUpdateLines(svgDoc, getSvgFromDocument(svgDoc), smallHeaderEl, {
+        getBBoxForSvgElement: textEl => getBBoxForSvgElement(svgDocToStr(svgDoc), textEl.getAttribute('id')),
+        svgAttributes: {
+          stroke: '#2d2d2d',
+          'stroke-width': '6px',
+          'stroke-linecap': 'square',
+        },
+        debugLines: config.DEBUG_POSTER_LINES,
+      });
+    }
   }
 
   const textEl = svgDoc.getElementById('text');
   if (textEl) {
-    setText(textEl, opts.labelText);
+    const labelText = upperCaseLabels
+      ? opts.labelText.toUpperCase()
+      : opts.labelText;
+    setText(textEl, labelText);
     setColor(textEl, labelColor);
   }
 }
@@ -191,6 +246,11 @@ function readPosterFile(opts) {
   return fs.readFileAsync(absPath, { encoding: 'utf8' });
 }
 
+function getAbsPath(relativePath) {
+  const absPath = path.join(__dirname, '../..', relativePath);
+  return absPath;
+}
+
 function getDimensions(node) {
   return {
     width: parseInt(node.getAttribute('width'), 10),
@@ -209,6 +269,47 @@ function setText(textNode, value) {
 
 function setColor(textNode, value) {
   textNode.setAttribute('fill', value);
+}
+
+function getSvgFromDocument(doc) {
+  const svgList = doc.getElementsByTagName('svg');
+  if (svgList.length < 1) {
+    throw new Error(`Unexpected amount of svg elements found: ${svgList.length}`);
+  }
+
+  return svgList.item(0);
+}
+
+function _getFirstTspan(textNode) {
+  const tspanList = textNode.getElementsByTagName('tspan');
+  if (tspanList.length < 1) {
+    throw new Error(`Unexpected amount of tspan elements found: ${tspanList.length}`);
+  }
+
+  return tspanList[0];
+}
+
+function getBBoxForSvgElement(svgText, elId) {
+  const SVG = svgJs(window);
+  const draw = SVG(window.document);
+  draw.svg(svgText);
+
+  const element = SVG.get(elId);
+  const realEl = element.native();
+  const tspanEl = _getFirstTspan(realEl);
+  const rbox = SVG.adopt(tspanEl).rbox();
+
+  const letterSpacing = parseFloat(realEl.getAttribute('letter-spacing'));
+  const text = tspanEl.textContent;
+  return {
+    x: rbox.x,
+    y: rbox.y,
+    // Add letter spacing values manually to the width of the bounding box.
+    // x value doesn't need to be modified because of text-anchor=center
+    // I tried to fix implementation of svgdom without success
+    width: rbox.width + (letterSpacing * (text.length - 1)),
+    height: rbox.height,
+  };
 }
 
 module.exports = {

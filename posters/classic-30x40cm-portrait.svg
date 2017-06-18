@@ -1,47 +1,31 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg width="3543px" height="4724px" viewBox="0 0 3543 4724" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 3.8.3 (29802) - http://www.bohemiancoding.com/sketch -->
-    <title>classic-30x40cm-portrait</title>
-    <desc>Created with Sketch.</desc>
-    <defs>
-        <linearGradient x1="50%" y1="0%" x2="50%" y2="54.4134239%" id="linearGradient-1">
-            <stop stop-color="#FFFFFF" stop-opacity="0" offset="0%"/>
-            <stop stop-color="#FFFFFF" offset="100%"/>
-        </linearGradient>
-        <rect id="path-2" x="162" y="176" width="3220" height="4374"/>
-        <mask id="mask-3" maskContentUnits="userSpaceOnUse" maskUnits="objectBoundingBox" x="0" y="0" width="3220" height="4374" fill="white">
-            <use xlink:href="#path-2"/>
-        </mask>
-        <rect id="path-4" x="190" y="204" width="3164" height="4318"/>
-        <mask id="mask-5" maskContentUnits="userSpaceOnUse" maskUnits="objectBoundingBox" x="0" y="0" width="3164" height="4318" fill="white">
-            <use xlink:href="#path-4"/>
-        </mask>
-        <rect id="path-6" x="219" y="233" width="3106" height="4260"/>
-        <mask id="mask-7" maskContentUnits="userSpaceOnUse" maskUnits="objectBoundingBox" x="0" y="0" width="3106" height="4260" fill="white">
-            <use xlink:href="#path-6"/>
-        </mask>
-    </defs>
-    <g id="Page-2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="30x40cm-portrait">
-            
-            <path d="M0,0 L3543,0 L3543,4725 L0,4725 L0,0 Z M162,176 L3382,176 L3382,4550 L162,4550 L162,176 Z" id="borders" fill="#FFFFFF"/>
-            <rect id="gradient" fill="url(#linearGradient-1)" x="162" y="3210" width="3220" height="1340"/>
-            <use id="black-outer-border" stroke="#000000" mask="url(#mask-3)" stroke-width="48" xlink:href="#path-2"/>
-            <use id="white-middle-border" stroke="#FFFFFF" mask="url(#mask-5)" stroke-width="58" xlink:href="#path-4"/>
-            <use id="black-inner-border" stroke="#000000" mask="url(#mask-7)" stroke-width="30" xlink:href="#path-6"/>
-            <g id="labels" transform="translate(1773.000000, 3727.000000)">
-                <g id="center" text-anchor="middle">
-                    <text id="text" font-family="JosefinSans-Light, Josefin Sans" font-size="60" font-weight="300" letter-spacing="16.363636" fill="#343434">
-                        <tspan x="0" y="565">60.160°N / 24.942°E</tspan>
-                    </text>
-                    <text id="small-header" font-family="JosefinSans, Josefin Sans" font-size="90" font-weight="normal" letter-spacing="3.00000048" fill="#000000">
-                        <tspan x="0" y="417">FINLAND</tspan>
-                    </text>
-                    <text id="header" font-family="JosefinSans-Bold, Josefin Sans" font-size="240" font-weight="bold" letter-spacing="51.4285698" fill="#000000">
-                        <tspan x="0" y="228">HELSINKI</tspan>
-                    </text>
-                </g>
-            </g>
+<svg width="3543px" height="4724px" viewBox="0 0 3543 4724" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient x1="50%" y1="0%" x2="50%" y2="54.4134239%" id="linearGradient-1">
+      <stop stop-color="#FFF" stop-opacity="0" offset="0%"/>
+      <stop stop-color="#FFF" offset="100%"/>
+    </linearGradient>
+  </defs>
+  <g id="Page-2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+    <g id="30x40cm-portrait">
+      
+      <path d="M0,0 L3543,0 L3543,4725 L0,4725 L0,0 Z M175,175 L3368,175 L3368,4550 L175,4550 L175,175 Z" id="white-padding" fill="#FFF"/>
+      <rect id="gradient" fill="url(#linearGradient-1)" x="187" y="3210" width="3169" height="1328"/>
+      <polygon id="black-outer-border" stroke="#000" stroke-width="24" points="187 4538 187 187 3356 187 3356 4538"/>
+      <polygon id="white-middle-border" stroke="#FFF" stroke-width="30" points="214 4511 214 214 3329 214 3329 4511"/>
+      <polygon id="black-inner-border" stroke="#000" stroke-width="16" points="237 4488 237 237 3306 237 3306 4488"/>
+      <g id="labels" transform="translate(1773.000000, 3727.000000)">
+        <g id="center" text-anchor="middle">
+          <text id="text" font-family="JosefinSans-Light, Josefin Sans" font-size="60" font-weight="300" letter-spacing="16" fill="#343434">
+            <tspan x="0" y="565">60.160°N / 24.942°</tspan> 
+          </text>
+          <text id="small-header" font-family="JosefinSans, Josefin Sans" font-size="90" font-weight="normal" letter-spacing="5" fill="#000">
+            <tspan x="0" y="417">FINLAN</tspan> 
+          </text>
+          <text id="header" font-family="JosefinSans-Bold, Josefin Sans" font-size="240" font-weight="bold" letter-spacing="50" fill="#000">
+            <tspan x="0" y="228">HELSINK</tspan> 
+          </text>
         </g>
+      </g>
     </g>
+  </g>
 </svg>
