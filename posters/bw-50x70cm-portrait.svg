@@ -1,26 +1,20 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg width="5906px" height="8268px" viewBox="0 0 5906 8268" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 3.8.3 (29802) - http://www.bohemiancoding.com/sketch -->
-    <title>bw-50x70cm-portrait</title>
-    <desc>Created with Sketch.</desc>
-    <defs/>
-    <g id="Page-2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="50x70cm-portrait">
-            
-            <path d="M0,0 L5907,0 L5907,8268 L0,8268 L0,0 Z M210,210 L5697,210 L5697,7321 L210,7321 L210,210 Z" id="borders" fill="#FFFFFF"/>
-            <path d="M210,7336 L5697,7336" id="Line" stroke="#000000" stroke-width="30"/>
-            <g id="labels" transform="translate(197.000000, 7425.000000)" font-style="condensed">
-                <text id="text" font-family="RobotoCondensed-Light, Roboto Condensed" font-size="90" font-weight="300" letter-spacing="24.545454" fill="#343434">
-                    <tspan x="11" y="618">60.160°N / 24.942°</tspan>
-                    
-                </text>
-                <text id="small-header" font-family="RobotoCondensed-Light, Roboto Condensed" font-size="130" font-weight="300" letter-spacing="4.33333302" fill="#000000">
-                    <tspan x="5" y="423">FINLAND</tspan>
-                </text>
-                <text id="header" font-family="RobotoCondensed-Bold, Roboto Condensed" font-size="230" font-weight="bold" fill="#000000">
-                    <tspan x="0" y="213">HELSINKI</tspan>
-                </text>
-            </g>
-        </g>
+<svg width="5906px" height="8268px" viewBox="0 0 5906 8268" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <g id="Page-2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+    <g id="50x70cm-portrait">
+      
+      <path d="M0,0 L5907,0 L5907,8268 L0,8268 L0,0 Z M210,210 L5697,210 L5697,7321 L210,7321 L210,210 Z" id="borders" fill="#FFF"/>
+      <path d="M210,7336 L5697,7336" id="Line" stroke="#000" stroke-width="30"/>
+      <g id="labels" transform="translate(197.000000, 7425.000000)" font-style="condensed">
+        <text id="text" font-family="RobotoCondensed-Light, Roboto Condensed" font-size="90" font-weight="300" letter-spacing="24.545454" fill="#343434">
+          <tspan x="11" y="618">60.160°N / 24.942°</tspan> 
+        </text>
+        <text id="small-header" font-family="RobotoCondensed-Light, Roboto Condensed" font-size="130" font-weight="300" letter-spacing="4.33333302" fill="#000">
+          <tspan x="5" y="423">FINLAND</tspan>
+        </text>
+        <text id="header" font-family="RobotoCondensed-Bold, Roboto Condensed" font-size="230" font-weight="bold" fill="#000">
+          <tspan x="0" y="213">HELSINKI</tspan>
+        </text>
+      </g>
     </g>
+  </g>
 </svg>
