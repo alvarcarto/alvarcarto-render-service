@@ -186,17 +186,24 @@ function svgDocToStr(svgDoc) {
 
 function setTexts(svgDoc, opts) {
   const { labelColor } = getMapStyle(opts.mapStyle);
+  const { addLines, upperCaseLabels } = getPosterStyle(opts.posterStyle);
 
+
+  const labelHeader = upperCaseLabels
+    ? opts.labelHeader.toUpperCase()
+    : opts.labelHeader;
   const headerEl = svgDoc.getElementById('header');
-  setText(headerEl, opts.labelHeader);
+  setText(headerEl, labelHeader);
   setColor(headerEl, labelColor);
 
   const smallHeaderEl = svgDoc.getElementById('small-header');
   if (smallHeaderEl) {
-    setText(smallHeaderEl, opts.labelSmallHeader);
+    const labelSmallHeader = upperCaseLabels
+      ? opts.labelSmallHeader.toUpperCase()
+      : opts.labelSmallHeader;
+    setText(smallHeaderEl, labelSmallHeader);
     setColor(smallHeaderEl, labelColor);
 
-    const { addLines } = getPosterStyle(opts.posterStyle);
     if (addLines) {
       addOrUpdateLines(svgDoc, getSvgFromDocument(svgDoc), smallHeaderEl, {
         getBBoxForSvgElement: textEl => getBBoxForSvgElement(svgDocToStr(svgDoc), textEl.getAttribute('id')),
@@ -212,7 +219,10 @@ function setTexts(svgDoc, opts) {
 
   const textEl = svgDoc.getElementById('text');
   if (textEl) {
-    setText(textEl, opts.labelText);
+    const labelText = upperCaseLabels
+      ? opts.labelText.toUpperCase()
+      : opts.labelText;
+    setText(textEl, labelText);
     setColor(textEl, labelColor);
   }
 }
