@@ -10,6 +10,7 @@ const {
   getPosterStyle,
   getMapStyle,
   changeDynamicAttributes,
+  posterSizeToMiddleLineStrokeWidth,
 } = require('alvarcarto-common');
 const xmldom = require('xmldom');
 const window = require('svgdom');
@@ -208,9 +209,7 @@ function setTexts(svgDoc, opts) {
       addOrUpdateLines(svgDoc, getSvgFromDocument(svgDoc), smallHeaderEl, {
         getBBoxForSvgElement: textEl => getBBoxForSvgElement(svgDocToStr(svgDoc), textEl.getAttribute('id')),
         svgAttributes: {
-          stroke: '#2d2d2d',
-          'stroke-width': '6px',
-          'stroke-linecap': 'square',
+          'stroke-width': posterSizeToMiddleLineStrokeWidth(opts.size),
         },
         debugLines: config.DEBUG_POSTER_LINES,
       });
