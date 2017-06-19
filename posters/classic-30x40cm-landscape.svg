@@ -1,4 +1,4 @@
-<svg width="3543px" height="4724px" viewBox="0 0 3543 4724" version="1.1" xmlns="http://www.w3.org/2000/svg">
+<svg width="4724px" height="3543px" viewBox="0 0 4724 3543" version="1.1" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <linearGradient x1="50%" y1="0%" x2="50%" y2="54.4134239%" id="linearGradient-1">
       <stop stop-color="#FFF" stop-opacity="0" offset="0%"/>
@@ -6,14 +6,14 @@
     </linearGradient>
   </defs>
   <g id="Page-2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-    <g id="30x40cm-portrait">
+    <g id="30x40cm-landscape">
       
-      <path d="M0,0 L3543,0 L3543,4725 L0,4725 L0,0 Z M175,175 L3368,175 L3368,4550 L175,4550 L175,175 Z" id="white-padding" fill="#FFF"/>
-      <rect id="gradient" fill="url(#linearGradient-1)" x="187" y="3210" width="3169" height="1328"/>
-      <polygon id="black-outer-border" stroke="#000" stroke-width="24" points="187 4538 187 187 3356 187 3356 4538"/>
-      <polygon id="white-middle-border" stroke="#FFF" stroke-width="30" points="214 4511 214 214 3329 214 3329 4511"/>
-      <polygon id="black-inner-border" stroke="#000" stroke-width="16" points="237 4488 237 237 3306 237 3306 4488"/>
-      <g id="labels" transform="translate(1773.000000, 3727.000000)">
+      <path d="M0,0 L4724,0 L4724,3543 L0,3543 L0,0 Z M175,175 L4549,175 L4549,3368 L175,3368 L175,175 Z" id="white-padding" fill="#FFF"/>
+      <rect id="gradient" fill="url(#linearGradient-1)" x="105" y="2056" width="4520" height="1372"/>
+      <polygon id="black-outer-border" stroke="#000" stroke-width="24" points="187 3356 187 187 4537 187 4537 3356"/>
+      <polygon id="white-middle-border" stroke="#FFF" stroke-width="30" points="214 3329 214 214 4510 214 4510 3329"/>
+      <polygon id="black-inner-border" stroke="#000" stroke-width="16" points="237 3306 237 237 4487 237 4487 3306"/>
+      <g id="labels" transform="translate(2362.000000, 2575.000000)">
         <g id="center" text-anchor="middle">
           <text id="text" font-family="JosefinSans-Light, Josefin Sans" font-size="60" font-weight="300" letter-spacing="16" fill="#343434">
             <tspan x="0" y="565">60.160°N / 24.942°</tspan> 
