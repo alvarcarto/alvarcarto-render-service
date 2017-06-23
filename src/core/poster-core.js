@@ -160,10 +160,12 @@ function getPosterDimensions(opts) {
       const { svg } = parsePosterSvg(svgString);
       const svgDimensions = getDimensions(svg);
       if (opts.resizeToWidth) {
-        svgDimensions.height *= Math.floor(svgDimensions.width / opts.resizeToWidth);
+        const ratio = svgDimensions.width / opts.resizeToWidth;
+        svgDimensions.height = Math.floor(svgDimensions.height * ratio);
         svgDimensions.width = opts.resizeToWidth;
       } else if (opts.resizeToHeight) {
-        svgDimensions.width *= Math.floor(svgDimensions.height / opts.resizeToHeight);
+        const ratio = svgDimensions.height / opts.resizeToHeight;
+        svgDimensions.width = Math.floor(svgDimensions.width * ratio);
         svgDimensions.height = opts.resizeToHeight;
       }
 
