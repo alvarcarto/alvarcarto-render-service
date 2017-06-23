@@ -159,6 +159,9 @@ function getPosterDimensions(opts) {
     .then((svgString) => {
       const { svg } = parsePosterSvg(svgString);
       const svgDimensions = getDimensions(svg);
+      console.log('start dimensions', svgDimensions);
+      console.log('opts.resizeToWidth', opts.resizeToWidth);
+      console.log('opts.resizeToHeight', opts.resizeToHeight);
       if (opts.resizeToWidth) {
         const ratio = svgDimensions.width / opts.resizeToWidth;
         svgDimensions.height = Math.floor(svgDimensions.height * ratio);
@@ -169,7 +172,7 @@ function getPosterDimensions(opts) {
         svgDimensions.height = opts.resizeToHeight;
       }
 
-      console.log('svgDimensions', svgDimensions);
+      console.log('final dimensions', svgDimensions);
 
       const side = Math.min(svgDimensions.width, svgDimensions.height);
       const padding = Math.floor(EMPTY_MAP_PADDING_FACTOR * side);
