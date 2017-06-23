@@ -27,7 +27,7 @@ function render(_opts) {
   let map;
   let mapPromise;
   if (_.has(mapnikCache, key)) {
-    map = BPromise.resolve(mapnikCache[key]);
+    map = mapnikCache[key];
     mapPromise = BPromise.resolve(true);
   } else {
     map = BPromise.promisifyAll(new mapnik.Map(opts.width, opts.height));
