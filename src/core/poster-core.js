@@ -167,6 +167,8 @@ function getPosterDimensions(opts) {
         svgDimensions.height = opts.resizeToHeight;
       }
 
+      console.log('svgDimensions', svgDimensions);
+
       const side = Math.min(svgDimensions.width, svgDimensions.height);
       const padding = Math.floor(EMPTY_MAP_PADDING_FACTOR * side);
 
