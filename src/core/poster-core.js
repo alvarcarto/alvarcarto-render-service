@@ -109,12 +109,12 @@ function _renderMap(opts) {
 function _renderPoster(opts) {
   return BPromise.props({
     svgString: readPosterFile(opts),
+    dimensions: getPosterDimensions(opts),
     mapMeta: sharp(opts.mapImage).metadata(),
   })
     .then((result) => {
       const parsed = parsePosterSvg(result.svgString);
-      const { svg } = parsed;
-      const dimensions = getDimensions(svg);
+      const { dimensions } = result;
       const expected = `${dimensions.width}x${dimensions.height}`;
       const actual = `${result.mapMeta.width}x${result.mapMeta.height}`;
       if (expected !== actual) {
@@ -127,10 +127,11 @@ function _renderPoster(opts) {
         mapImage: opts.mapImage,
         poster: fs.writeFileAsync(tmpSvgPath, newSvgString, { encoding: 'utf-8' }),
         svg: parsed.svg,
+        dimensions,
       });
     })
     .then((result) => {
-      const dimensions = getDimensions(result.svg);
+      const { dimensions } = result;
       const tmpSvgPath = getAbsPath(`${opts.uuid}.svg`);
       return BPromise.props({
         svgImage:
@@ -158,6 +159,14 @@ function getPosterDimensions(opts) {
     .then((svgString) => {
       const { svg } = parsePosterSvg(svgString);
       const svgDimensions = getDimensions(svg);
+      if (opts.resizeToWidth) {
+        svgDimensions.height *= Math.floor(svgDimensions.width / opts.resizeToWidth);
+        svgDimensions.width = opts.resizeToWidth;
+      } else if (opts.resizeToHeight) {
+        svgDimensions.width *= Math.floor(svgDimensions.height / opts.resizeToHeight);
+        svgDimensions.height = opts.resizeToHeight;
+      }
+
       const side = Math.min(svgDimensions.width, svgDimensions.height);
       const padding = Math.floor(EMPTY_MAP_PADDING_FACTOR * side);
 
