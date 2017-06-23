@@ -94,9 +94,19 @@ function _normalRender(opts) {
 function _renderMap(opts) {
   return getPosterDimensions(opts)
     .then((dimensions) => {
+      let scale = opts.scale;
+      if (opts.resizeToWidth) {
+        const ratio = opts.resizeToWidth / dimensions.originalWidth;
+        scale *= ratio;
+      } else if (opts.resizeToHeight) {
+        const ratio = opts.resizeToHeight / dimensions.originalHeight;
+        scale *= ratio;
+      }
+
       const mapOpts = _.merge({}, opts, {
         width: dimensions.width,
         height: dimensions.height,
+        scale,
       });
 
       return BPromise.props({
@@ -158,6 +168,8 @@ function getPosterDimensions(opts) {
   return readPosterFile(opts)
     .then((svgString) => {
       const { svg } = parsePosterSvg(svgString);
+      const originalSvgDimensions = getDimensions(svg);
+
       const svgDimensions = getDimensions(svg);
       if (opts.resizeToWidth) {
         const ratio = opts.resizeToWidth / svgDimensions.width;
@@ -175,6 +187,8 @@ function getPosterDimensions(opts) {
       return {
         width: svgDimensions.width,
         height: svgDimensions.height,
+        originalWidth: originalSvgDimensions.width,
+        originalHeight: originalSvgDimensions.height,
 
         // Used when no labels are printed
         padding,
