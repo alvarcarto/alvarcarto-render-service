@@ -13,6 +13,9 @@ mapnik.register_default_input_plugins();
     northEast: { lat: .., lng: .. },
   }
 */
+
+const mapnikCache = {};
+
 function render(_opts) {
   const opts = _.merge({
     scale: 1,
@@ -20,9 +23,19 @@ function render(_opts) {
     stylesheetPath: path.join(config.STYLE_DIR, `${_opts.mapStyle}.xml`),
   }, _opts);
 
-  const map = BPromise.promisifyAll(new mapnik.Map(opts.width, opts.height));
-  return map.loadAsync(opts.stylesheetPath, { strict: true })
+  const key = `${opts.width}-${opts.height}-${opts.stylesheetPath}`;
+  let map;
+  let mapPromise;
+  if (_.has(mapnikCache, key)) {
+    mapPromise = BPromise.resolve(mapnikCache[key]);
+  } else {
+    map = BPromise.promisifyAll(new mapnik.Map(opts.width, opts.height));
+    mapPromise = map.loadAsync(opts.stylesheetPath, { strict: true });
+  }
+
+  return mapPromise
     .then(() => {
+      mapnikCache[key] = map;
       const merc = new mapnik.Projection('+init=epsg:3857');
       const coord1 = merc.forward([opts.bounds.southWest.lng, opts.bounds.southWest.lat]);
       const coord2 = merc.forward([opts.bounds.northEast.lng, opts.bounds.northEast.lat]);
