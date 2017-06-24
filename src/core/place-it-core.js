@@ -10,7 +10,7 @@ function render(_opts) {
   }, _opts);
 
   const mapRenderOpts = _.omit(_.merge({}, opts, {
-    resizeToWidth: 400,
+    resizeToWidth: 800,
     resizeToHeight: null,
   }), _.isNil);
   return posterCore.render(mapRenderOpts)
