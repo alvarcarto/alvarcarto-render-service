@@ -15,10 +15,13 @@ function render(_opts) {
   }), _.isNil);
   return posterCore.render(mapRenderOpts)
     .then(posterImage => BPromise.props({
-      photo: sharp(getFilePath(`./images/${opts.photo}`))
-        .overlayWith(posterImage),
+      photoImage: sharp(getFilePath(`./images/${opts.photo}`))
+        .overlayWith(posterImage)
+        .png()
+        .toBuffer(),
     }))
-    .then(({ photo }) => {
+    .then(({ photoImage }) => {
+      const photo = sharp(photoImage);
       if (_.isFinite(opts.resizeToWidth)) {
         return photo.resize(opts.resizeToWidth, null);
       } else if (_.isFinite(opts.resizeToHeight)) {
