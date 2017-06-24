@@ -95,18 +95,25 @@ function _renderMap(opts) {
   return getPosterDimensions(opts)
     .then((dimensions) => {
       let scale = opts.scale;
+      let omitCache = false;
       if (opts.resizeToWidth) {
         const ratio = opts.resizeToWidth / dimensions.originalWidth;
         scale *= ratio;
       } else if (opts.resizeToHeight) {
         const ratio = opts.resizeToHeight / dimensions.originalHeight;
         scale *= ratio;
+      } else {
+        // If no resize parameters are defined, omit cache just in case
+        // This makes sure that we aren't having some cache issues when
+        // rendering final posters
+        omitCache = true;
       }
 
       const mapOpts = _.merge({}, opts, {
         width: dimensions.width,
         height: dimensions.height,
         scale,
+        omitCache,
       });
 
       return BPromise.props({
