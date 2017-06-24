@@ -1,7 +1,6 @@
 const _ = require('lodash');
 const ex = require('../util/express');
 const posterCore = require('../core/poster-core');
-const sharp = require('sharp');
 const ROLES = require('../enum/roles');
 
 const getRender = ex.createRoute((req, res) => {
@@ -15,7 +14,7 @@ const getRender = ex.createRoute((req, res) => {
     mapStyle: req.query.mapStyle,
     posterStyle: req.query.posterStyle,
     primaryColor: req.query.primaryColor,
-    size: size,
+    size,
     orientation: req.query.orientation,
     resizeToWidth: req.query.resizeToWidth ? Number(req.query.resizeToWidth) : null,
     resizeToHeight: req.query.resizeToHeight ? Number(req.query.resizeToHeight) : null,
