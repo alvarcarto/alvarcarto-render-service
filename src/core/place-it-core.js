@@ -1,7 +1,7 @@
 const _ = require('lodash');
 const BPromise = require('bluebird');
 const path = require('path');
-const rasterMapCore = require('./raster-map-core');
+const posterCore = require('./poster-core');
 const sharp = require('sharp');
 
 function render(_opts) {
@@ -13,10 +13,10 @@ function render(_opts) {
     resizeToWidth: 500,
     resizeToHeight: null,
   }), _.isNil);
-  return rasterMapCore.render(mapRenderOpts)
-    .then(mapImage => BPromise.props({
+  return posterCore.render(mapRenderOpts)
+    .then(posterImage => BPromise.props({
       photo: sharp(getFilePath(`./images/${opts.photo}`))
-        .overlayWith(mapImage),
+        .overlayWith(posterImage),
     }))
     .then(({ photo }) => {
       if (_.isFinite(opts.resizeToWidth)) {
