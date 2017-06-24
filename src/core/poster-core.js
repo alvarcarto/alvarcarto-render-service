@@ -94,9 +94,26 @@ function _normalRender(opts) {
 function _renderMap(opts) {
   return getPosterDimensions(opts)
     .then((dimensions) => {
+      let scale = opts.scale;
+      let omitCache = false;
+      if (opts.resizeToWidth) {
+        const ratio = opts.resizeToWidth / dimensions.originalWidth;
+        scale *= ratio;
+      } else if (opts.resizeToHeight) {
+        const ratio = opts.resizeToHeight / dimensions.originalHeight;
+        scale *= ratio;
+      } else {
+        // If no resize parameters are defined, omit cache just in case
+        // This makes sure that we aren't having some cache issues when
+        // rendering final posters
+        omitCache = true;
+      }
+
       const mapOpts = _.merge({}, opts, {
         width: dimensions.width,
         height: dimensions.height,
+        scale,
+        omitCache,
       });
 
       return BPromise.props({
@@ -109,12 +126,12 @@ function _renderMap(opts) {
 function _renderPoster(opts) {
   return BPromise.props({
     svgString: readPosterFile(opts),
+    dimensions: getPosterDimensions(opts),
     mapMeta: sharp(opts.mapImage).metadata(),
   })
     .then((result) => {
       const parsed = parsePosterSvg(result.svgString);
-      const { svg } = parsed;
-      const dimensions = getDimensions(svg);
+      const { dimensions } = result;
       const expected = `${dimensions.width}x${dimensions.height}`;
       const actual = `${result.mapMeta.width}x${result.mapMeta.height}`;
       if (expected !== actual) {
@@ -127,10 +144,11 @@ function _renderPoster(opts) {
         mapImage: opts.mapImage,
         poster: fs.writeFileAsync(tmpSvgPath, newSvgString, { encoding: 'utf-8' }),
         svg: parsed.svg,
+        dimensions,
       });
     })
     .then((result) => {
-      const dimensions = getDimensions(result.svg);
+      const { dimensions } = result;
       const tmpSvgPath = getAbsPath(`${opts.uuid}.svg`);
       return BPromise.props({
         svgImage:
@@ -157,13 +175,27 @@ function getPosterDimensions(opts) {
   return readPosterFile(opts)
     .then((svgString) => {
       const { svg } = parsePosterSvg(svgString);
+      const originalSvgDimensions = getDimensions(svg);
+
       const svgDimensions = getDimensions(svg);
+      if (opts.resizeToWidth) {
+        const ratio = opts.resizeToWidth / svgDimensions.width;
+        svgDimensions.height = Math.floor(svgDimensions.height * ratio);
+        svgDimensions.width = opts.resizeToWidth;
+      } else if (opts.resizeToHeight) {
+        const ratio = opts.resizeToHeight / svgDimensions.height;
+        svgDimensions.width = Math.floor(svgDimensions.width * ratio);
+        svgDimensions.height = opts.resizeToHeight;
+      }
+
       const side = Math.min(svgDimensions.width, svgDimensions.height);
       const padding = Math.floor(EMPTY_MAP_PADDING_FACTOR * side);
 
       return {
         width: svgDimensions.width,
         height: svgDimensions.height,
+        originalWidth: originalSvgDimensions.width,
+        originalHeight: originalSvgDimensions.height,
 
         // Used when no labels are printed
         padding,
