@@ -11,18 +11,23 @@ mapnik.register_default_input_plugins();
 
 // Pre-load and initialize map for each mapnik style
 // This operation takes
-const files = glob.sync(`${config.STYLE_DIR}/*.xml`);
-logger.info(`Preloading ${files.length} mapnik styles ..`);
-const mapnikCache = _.reduce(files, (memo, filePath) => {
-  const styleName = path.basename(filePath, '.xml');
+let mapnikCache = {};
+if (config.SKIP_INITIAL_MAPNIK_CACHE) {
+  logger.info('SKIP_INITIAL_MAPNIK_CACHE=true, skipping initial mapnik caching');
+} else {
+  const files = glob.sync(`${config.STYLE_DIR}/*.xml`);
+  logger.info(`Preloading ${files.length} mapnik styles ..`);
+  mapnikCache = _.reduce(files, (memo, filePath) => {
+    const styleName = path.basename(filePath, '.xml');
 
-  const map = BPromise.promisifyAll(new mapnik.Map(100, 100));
-  map.loadSync(filePath, { strict: true });
-  return _.extend({}, memo, {
-    [styleName]: map,
-  });
-}, {});
-logger.info('Mapnik styles loaded.');
+    const map = BPromise.promisifyAll(new mapnik.Map(100, 100));
+    map.loadSync(filePath, { strict: true });
+    return _.extend({}, memo, {
+      [styleName]: map,
+    });
+  }, {});
+  logger.info('Mapnik styles loaded.');
+}
 
 function render(_opts) {
   const opts = _.merge({
