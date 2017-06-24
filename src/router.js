@@ -54,7 +54,12 @@ function createRouter() {
     },
   };
   router.get('/api/raster/render', validate(rasterRenderSchema), rasterRender.getRender);
-  router.get('/api/raster/placeit', validate(rasterRenderSchema), rasterRender.getPlaceIt);
+
+  const placeItSchema = _.merge({}, rasterRenderSchema, {
+    resizeToWidth: Joi.number().min(50).max(1500).optional(),
+    resizeToHeight: Joi.number().min(50).max(1500).optional(),
+  });
+  router.get('/api/raster/placeit', validate(placeItSchema), rasterRender.getPlaceIt);
 
   return router;
 }
