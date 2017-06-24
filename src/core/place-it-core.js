@@ -4,7 +4,7 @@ const path = require('path');
 const rasterMapCore = require('./raster-map-core');
 const sharp = require('sharp');
 
-function getPlaceIt(_opts) {
+function render(_opts) {
   const opts = _.merge({
     photo: 'brick-wall.jpg',
   }, _opts);
@@ -35,5 +35,5 @@ function getFilePath(relativePath) {
 }
 
 module.exports = {
-  getPlaceIt,
+  render,
 };
