@@ -1,6 +1,7 @@
 const _ = require('lodash');
 const ex = require('../util/express');
 const posterCore = require('../core/poster-core');
+const placeItCore = require('../core/place-it-core');
 const ROLES = require('../enum/roles');
 
 const getRender = ex.createRoute((req, res) => {
@@ -9,6 +10,24 @@ const getRender = ex.createRoute((req, res) => {
     ex.throwStatus(403, 'Anonymous requests must define a resize parameter.');
   }
 
+  const opts = _reqToOpts(req);
+  return posterCore.render(opts)
+    .then((image) => {
+      res.set('content-type', 'image/png');
+      res.send(image);
+    });
+});
+
+const getPlaceIt = ex.createRoute((req, res) => {
+  const opts = _reqToOpts(req);
+  return placeItCore.render(opts)
+    .then((image) => {
+      res.set('content-type', 'image/png');
+      res.send(image);
+    });
+});
+
+function _reqToOpts(req) {
   const size = req.query.size;
   const opts = {
     mapStyle: req.query.mapStyle,
@@ -34,13 +53,8 @@ const getRender = ex.createRoute((req, res) => {
     labelSmallHeader: req.query.labelSmallHeader || '',
     labelText: req.query.labelText || '',
   };
-
-  return posterCore.render(opts)
-    .then((image) => {
-      res.set('content-type', 'image/png');
-      res.send(image);
-    });
-});
+  return opts;
+}
 
 function _getDefaultScale(size) {
   switch (size) {
@@ -57,4 +71,5 @@ function _getDefaultScale(size) {
 
 module.exports = {
   getRender,
+  getPlaceIt,
 };

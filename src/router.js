@@ -85,6 +85,7 @@ function createRouter() {
     },
   };
   router.get('/api/raster/render', validate(rasterRenderSchema), rasterRender.getRender);
+  router.get('/api/raster/placeit', validate(rasterRenderSchema), rasterRender.getPlaceIt);
 
   return router;
 }
