@@ -1,8 +1,11 @@
 const _ = require('lodash');
 const BPromise = require('bluebird');
 const path = require('path');
-const posterCore = require('./poster-core');
+const lwip = BPromise.promisifyAll(require('lwip'));
+BPromise.promisifyAll(require('lwip/lib/Image').prototype);
+BPromise.promisifyAll(require('lwip/lib/Batch').prototype);
 const sharp = require('sharp');
+const posterCore = require('./poster-core');
 
 const photoMetas = {
   'brick-wall': {
@@ -54,7 +57,7 @@ function render(_opts) {
   }
 
   return renderPromise
-    .then(({ photoImage }) => {
+    .then((photoImage) => {
       const photo = sharp(photoImage);
       if (_.isFinite(opts.resizeToWidth)) {
         return photo.resize(opts.resizeToWidth, null);
@@ -77,8 +80,14 @@ function _renderExact(photoMeta, opts) {
   }), _.isNil);
 
   return posterCore.render(mapRenderOpts)
-    .then(posterImage => BPromise.props({
-      photoImage: sharp(getFilePath(`./images/${photoMeta.fileName}`))
+    .then(poster =>
+      lwip.openAsync(poster, 'png')
+        .then(p => p.blurAsync(0))
+        .then(p => p.darkenAsync(10))
+        .then(p => p.toBufferAsync('png')),
+    )
+    .then(posterImage =>
+      sharp(getFilePath(`./images/${photoMeta.fileName}`))
         .overlayWith(posterImage, {
           top: photoMeta.topLeft.y,
           left: photoMeta.topLeft.x,
@@ -86,7 +95,7 @@ function _renderExact(photoMeta, opts) {
         })
         .png()
         .toBuffer(),
-    }));
+    );
 }
 
 function _renderCenter(photoMeta, opts) {
@@ -96,12 +105,12 @@ function _renderCenter(photoMeta, opts) {
   }), _.isNil);
 
   return posterCore.render(mapRenderOpts)
-    .then(posterImage => BPromise.props({
-      photoImage: sharp(getFilePath(`./images/${photoMeta.fileName}`))
+    .then(posterImage =>
+      sharp(getFilePath(`./images/${photoMeta.fileName}`))
         .overlayWith(posterImage)
         .png()
         .toBuffer(),
-    }));
+    );
 }
 
 function getFilePath(relativePath) {
