@@ -5,11 +5,13 @@ const posterCore = require('./poster-core');
 const sharp = require('sharp');
 
 const photoMetas = {
-  'brick-wall.jpg': {
+  'brick-wall': {
+    fileName: 'brick-wall.jpg',
     type: 'center',
     resizeToWidth: 800,
   },
-  'white-frame-gold-hipster.jpg': {
+  'white-frame-gold': {
+    fileName: 'white-frame-gold.jpg',
     type: 'exact',
     size: '70x100cm',
     topLeft: { x: 454, y: 180 },
@@ -17,7 +19,8 @@ const photoMetas = {
     bottomRight: { x: 998, y: 956 },
     bottomLeft: { x: 998, y: 956 },
   },
-  'black-frame-pink-chair.jpg': {
+  'black-frame-pink': {
+    fileName: 'black-frame-pink.jpg',
     type: 'exact',
     size: '50x70cm',
     topLeft: { x: 410, y: 85 },
@@ -29,7 +32,7 @@ const photoMetas = {
 
 function render(_opts) {
   const opts = _.merge({
-    photo: 'brick-wall.jpg',
+    photo: 'brick-wall',
   }, _opts);
 
   const photoMeta = photoMetas[opts.photo];
@@ -72,7 +75,7 @@ function _renderExact(photoMeta, opts) {
 
   return posterCore.render(mapRenderOpts)
     .then(posterImage => BPromise.props({
-      photoImage: sharp(getFilePath(`./images/${opts.photo}`))
+      photoImage: sharp(getFilePath(`./images/${photoMeta.fileName}`))
         .overlayWith(posterImage, {
           top: photoMeta.topLeft.y,
           left: photoMeta.topLeft.x,
@@ -91,7 +94,7 @@ function _renderCenter(photoMeta, opts) {
 
   return posterCore.render(mapRenderOpts)
     .then(posterImage => BPromise.props({
-      photoImage: sharp(getFilePath(`./images/${opts.photo}`))
+      photoImage: sharp(getFilePath(`./images/${photoMeta.fileName}`))
         .overlayWith(posterImage)
         .png()
         .toBuffer(),

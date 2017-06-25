@@ -57,8 +57,9 @@ function createRouter() {
 
   const placeItSchema = _.merge({}, rasterRenderSchema, {
     query: {
-      resizeToWidth: Joi.number().min(50).max(1500).optional(),
-      resizeToHeight: Joi.number().min(50).max(1500).optional(),
+      background: Joi.string().min(1).max(100).optional(),
+      resizeToWidth: Joi.number().min(50).max(1000).optional(),
+      resizeToHeight: Joi.number().min(50).max(1000).optional(),
     },
   });
   router.get('/api/raster/placeit', validate(placeItSchema), rasterRender.getPlaceIt);
