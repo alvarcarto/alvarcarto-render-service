@@ -14,6 +14,7 @@ const photoMetas = {
     fileName: 'white-frame-gold.jpg',
     type: 'exact',
     size: '70x100cm',
+    orientation: 'portrait',
     topLeft: { x: 454, y: 180 },
     topRight: { x: 996, y: 180 },
     bottomRight: { x: 998, y: 956 },
@@ -23,6 +24,7 @@ const photoMetas = {
     fileName: 'black-frame-pink.jpg',
     type: 'exact',
     size: '50x70cm',
+    orientation: 'portrait',
     topLeft: { x: 410, y: 85 },
     topRight: { x: 907, y: 85 },
     bottomRight: { x: 907, y: 776 },
@@ -69,6 +71,7 @@ function _renderExact(photoMeta, opts) {
   const width = photoMeta.bottomRight.x - photoMeta.topLeft.x;
   const mapRenderOpts = _.omit(_.merge({}, opts, {
     size: photoMeta.size,
+    orientation: photoMeta.orientation,
     resizeToWidth: width,
     resizeToHeight: null,
   }), _.isNil);
