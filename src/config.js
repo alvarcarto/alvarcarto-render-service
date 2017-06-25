@@ -12,6 +12,7 @@ const config = {
   STYLE_DIR: process.env.STYLE_DIR || path.join('../alvarcarto-cartocss-bw'),
   FONT_DIR: process.env.FONT_DIR || '/usr/share/fonts/truetype/google-fonts',
   DEBUG_POSTER_LINES: process.env.DEBUG_POSTER_LINES === 'true',
+  SKIP_INITIAL_MAPNIK_CACHE: process.env.SKIP_INITIAL_MAPNIK_CACHE === 'true',
 };
 
 console.log(`Using style directory: ${config.STYLE_DIR}`);
