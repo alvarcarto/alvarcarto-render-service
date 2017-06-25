@@ -82,8 +82,8 @@ function _renderExact(photoMeta, opts) {
   return posterCore.render(mapRenderOpts)
     .then(poster =>
       lwip.openAsync(poster, 'png')
-        .then(p => p.blurAsync(0))
-        .then(p => p.darkenAsync(10))
+        .then(p => p.fadeAsync(0.03))
+        .then(p => p.darkenAsync(0.05))
         .then(p => p.toBufferAsync('png')),
     )
     .then(posterImage =>
