@@ -48,7 +48,7 @@ function render(_opts) {
     throw new Error(`Unexpected photo type: ${photoMeta.type}`);
   }
 
-  renderPromise
+  return renderPromise
     .then(({ photoImage }) => {
       const photo = sharp(photoImage);
       if (_.isFinite(opts.resizeToWidth)) {
