@@ -1,12 +1,11 @@
 <svg width="3543px" height="4724px" viewBox="0 0 3543 4724" version="1.1" xmlns="http://www.w3.org/2000/svg">
   <g id="Page-2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
     <g id="30x40cm-portrait">
-      
       <path d="M0,0 L3543,0 L3543,4725 L0,4725 L0,0 Z M123,123 L3420,123 L3420,4141 L123,4141 L123,123 Z" id="borders" fill="#FFF"/>
       <path d="M123,4143 L3420,4143" id="Line" stroke="#000" stroke-width="20"/>
       <g id="labels" transform="translate(119.000000, 4221.000000)" font-style="condensed">
         <text id="text" font-family="RobotoCondensed-Light, Roboto Condensed" font-size="50" font-weight="300" letter-spacing="13.636363" fill="#343434">
-          <tspan x="10" y="374">60.160°N / 24.942°</tspan> 
+          <tspan x="10" y="374">60.160°N / 24.942°</tspan>
         </text>
         <text id="small-header" font-family="RobotoCondensed-Light, Roboto Condensed" font-size="75" font-weight="300" letter-spacing="2.50000024" fill="#000">
           <tspan x="5" y="258">FINLAND</tspan>

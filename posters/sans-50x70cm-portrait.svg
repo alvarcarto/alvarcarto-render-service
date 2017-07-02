@@ -7,19 +7,18 @@
   </defs>
   <g id="Page-2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
     <g id="50x70cm-portrait">
-      
       <path d="M0,0 L5906,0 L5906,8268 L0,8268 L0,0 Z M210,210 L5697,210 L5697,8038 L210,8038 L210,210 Z" id="borders" fill="#FFF"/>
       <rect id="gradient" fill="url(#linearGradient-1)" x="168" y="5812" width="5602" height="2328"/>
       <g id="labels" transform="translate(2948.000000, 6851.000000)">
         <g id="center" text-anchor="middle">
           <text id="text" font-family="JosefinSans-Light, Josefin Sans" font-size="100" font-weight="300" letter-spacing="24" fill="#343434">
-            <tspan x="12" y="908">60.160°N / 24.942°</tspan> 
+            <tspan x="12" y="908">60.160°N / 24.942°</tspan>
           </text>
           <text id="small-header" font-family="JosefinSans, Josefin Sans" font-size="140" font-weight="normal" letter-spacing="20" fill="#000">
-            <tspan x="8" y="658">FINLAN</tspan> 
+            <tspan x="8" y="658">FINLAN</tspan>
           </text>
           <text id="header" font-family="JosefinSans-Bold, Josefin Sans" font-size="380" font-weight="bold" letter-spacing="45" fill="#000">
-            <tspan x="0" y="361">HELSINK</tspan> 
+            <tspan x="0" y="361">HELSINK</tspan>
           </text>
         </g>
       </g>

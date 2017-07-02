@@ -6,6 +6,7 @@
   "scripts": {
     "start": "nodemon --watch ./src -e js --exec \"babel-node --presets es2015 src/index.js\"",
     "build": "babel ./src -d ./dist --presets es2015",
+    "build-posters": "./tools/build-posters.sh",
     "start-prod": "node ./dist/index.js",
     "lint": "eslint ./src",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -45,6 +46,7 @@
     "eslint-config-airbnb-base": "^10.0.1",
     "eslint-plugin-import": "^2.2.0",
     "flow-remove-types": "^1.0.5",
-    "nodemon": "^1.11.0"
+    "nodemon": "^1.11.0",
+    "svgo": "^0.7.2"
   }
 }
