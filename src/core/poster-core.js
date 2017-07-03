@@ -51,6 +51,10 @@ function render(_opts) {
 }
 
 function _deleteFiles(opts) {
+  if (config.SAVE_TEMP_FILES) {
+    return BPromise.resolve();
+  }
+
   const tmpSvgPath = getAbsPath(`${opts.uuid}.svg`);
   return BPromise.all([
     fs.unlinkAsync(tmpSvgPath),
@@ -120,6 +124,14 @@ function _renderMap(opts) {
         mapImage: rasterMapCore.render(_.omit(mapOpts, _.isNil)),
         dimensions,
       });
+    })
+    .tap((result) => {
+      if (config.SAVE_TEMP_FILES) {
+        const tmpPngPath = getAbsPath(`${opts.uuid}.png`);
+        return fs.writeFileAsync(tmpPngPath, result.mapImage, { encoding: 'binary' });
+      }
+
+      return BPromise.resolve();
     });
 }
 

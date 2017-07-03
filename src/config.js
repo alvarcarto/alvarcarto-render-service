@@ -13,6 +13,7 @@ const config = {
   FONT_DIR: process.env.FONT_DIR || '/usr/share/fonts/truetype/google-fonts',
   DEBUG_POSTER_LINES: process.env.DEBUG_POSTER_LINES === 'true',
   SKIP_INITIAL_MAPNIK_CACHE: process.env.SKIP_INITIAL_MAPNIK_CACHE === 'true',
+  SAVE_TEMP_FILES: process.env.SAVE_TEMP_FILES === 'true',
 };
 
 console.log(`Using style directory: ${config.STYLE_DIR}`);
