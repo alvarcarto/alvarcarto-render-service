@@ -1,11 +1,12 @@
 <svg width="4724px" height="3543px" viewBox="0 0 4724 3543" version="1.1" xmlns="http://www.w3.org/2000/svg">
   <g id="Page-2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
     <g id="30x40cm-landscape">
+      
       <path d="M0,0 L4725,0 L4725,3543 L0,3543 L0,0 Z M133,133 L4592,133 L4592,3020 L133,3020 L133,133 Z" id="borders" fill="#FFF"/>
       <g id="labels" transform="translate(2363.000000, 3168.000000)" font-size="160" font-family="JosefinSans-Bold, Josefin Sans" letter-spacing="30" fill="#262626" font-weight="bold">
         <g id="center" text-anchor="middle">
           <text id="header">
-            <tspan x="0" y="152">HELSINK</tspan>
+            <tspan x="0" y="152">HELSINK</tspan> 
           </text>
         </g>
       </g>
