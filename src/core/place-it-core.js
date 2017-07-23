@@ -13,6 +13,11 @@ const photoMetas = {
     type: 'center',
     resizeToWidth: 800,
   },
+  'facebook-carousel': {
+    fileName: 'facebook-carousel.png',
+    type: 'center',
+    resizeToHeight: 800,
+  },
   'white-frame-gold': {
     fileName: 'white-frame-gold.jpg',
     type: 'exact',
@@ -181,9 +186,10 @@ function _renderExact(photoMeta, opts) {
 function _renderCenter(photoMeta, opts) {
   const mapRenderOpts = _.omit(_.merge({}, opts, {
     resizeToWidth: photoMeta.resizeToWidth,
-    resizeToHeight: null,
+    resizeToHeight: photoMeta.resizeToHeight,
   }), _.isNil);
 
+  console.log('frames', opts.frames)
   return _renderPoster(mapRenderOpts)
     .then(posterImage =>
       sharp(getFilePath(`./images/${photoMeta.fileName}`))
@@ -197,11 +203,17 @@ function _renderPoster(opts) {
   return posterCore.render(opts)
     .then((posterImage) => {
       if (opts.frames === 'black') {
-        return sharp(posterImage)
-          .background({ r: 20, g: 20, b: 20, alpha: 0 })
-          .extend({ top: 20, bottom: 20, left: 20, right: 20 })
-          .png()
-          .toBuffer();
+        const sharpIm = sharp(posterImage);
+        sharpIm.metadata()
+          .then((meta) => {
+            const borderSize = 20;
+            return sharpIm
+              .resize(meta.width + (borderSize * 2), meta.height + (borderSize * 2))
+              .background({ r: 20, g: 20, b: 20, alpha: 1 })
+              .extend({ top: borderSize, bottom: borderSize, left: borderSize, right: borderSize })
+              .png()
+              .toBuffer();
+          });
       }
 
       return posterImage;
