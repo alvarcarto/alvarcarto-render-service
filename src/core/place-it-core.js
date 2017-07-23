@@ -16,7 +16,7 @@ const photoMetas = {
   'facebook-carousel': {
     fileName: 'facebook-carousel.png',
     type: 'center',
-    resizeToHeight: 800,
+    resizeToHeight: 500,
   },
   'white-frame-gold': {
     fileName: 'white-frame-gold.jpg',
@@ -203,17 +203,12 @@ function _renderPoster(opts) {
   return posterCore.render(opts)
     .then((posterImage) => {
       if (opts.frames === 'black') {
-        const sharpIm = sharp(posterImage);
-        return sharpIm.metadata()
-          .then((meta) => {
-            const borderSize = 200;
-            return sharpIm
-              .background({ r: 20, g: 20, b: 20 })
-              .resize(meta.width, meta.height)
-              .extend({ top: borderSize, bottom: borderSize, left: borderSize, right: borderSize })
-              .png()
-              .toBuffer();
-          });
+        const borderSize = 20;
+        return sharp(posterImage)
+          .background({ r: 20, g: 20, b: 20 })
+          .extend({ top: borderSize, bottom: borderSize, left: borderSize, right: borderSize })
+          .png()
+          .toBuffer();
       }
 
       return posterImage;
