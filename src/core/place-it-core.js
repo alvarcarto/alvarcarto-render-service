@@ -204,9 +204,9 @@ function _renderPoster(opts) {
     .then((posterImage) => {
       if (opts.frames === 'black') {
         const sharpIm = sharp(posterImage);
-        sharpIm.metadata()
+        return sharpIm.metadata()
           .then((meta) => {
-            const borderSize = 20;
+            const borderSize = 200;
             return sharpIm
               .background({ r: 20, g: 20, b: 20 })
               .resize(meta.width, meta.height)
