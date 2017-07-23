@@ -189,7 +189,6 @@ function _renderCenter(photoMeta, opts) {
     resizeToHeight: photoMeta.resizeToHeight,
   }), _.isNil);
 
-  console.log('frames', opts.frames)
   return _renderPoster(mapRenderOpts)
     .then(posterImage =>
       sharp(getFilePath(`./images/${photoMeta.fileName}`))
