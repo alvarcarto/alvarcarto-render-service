@@ -208,8 +208,8 @@ function _renderPoster(opts) {
           .then((meta) => {
             const borderSize = 20;
             return sharpIm
-              .resize(meta.width + (borderSize * 2), meta.height + (borderSize * 2))
-              .background({ r: 20, g: 20, b: 20, alpha: 1 })
+              .background({ r: 20, g: 20, b: 20 })
+              .resize(meta.width, meta.height)
               .extend({ top: borderSize, bottom: borderSize, left: borderSize, right: borderSize })
               .png()
               .toBuffer();
