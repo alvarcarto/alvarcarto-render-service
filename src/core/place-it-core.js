@@ -159,7 +159,7 @@ function _renderExact(photoMeta, opts) {
     resizeToHeight: null,
   }), _.isNil);
 
-  return posterCore.render(mapRenderOpts)
+  return _renderPoster(mapRenderOpts)
     .then(poster =>
       lwip.openAsync(poster, 'png')
         .then(p => p.fadeAsync(0.03))
@@ -184,13 +184,28 @@ function _renderCenter(photoMeta, opts) {
     resizeToHeight: null,
   }), _.isNil);
 
-  return posterCore.render(mapRenderOpts)
+  return _renderPoster(mapRenderOpts)
     .then(posterImage =>
       sharp(getFilePath(`./images/${photoMeta.fileName}`))
         .overlayWith(posterImage)
         .png()
         .toBuffer(),
     );
+}
+
+function _renderPoster(opts) {
+  return posterCore.render(opts)
+    .then((posterImage) => {
+      if (opts.frames === 'black') {
+        return sharp(posterImage)
+          .background({ r: 20, g: 20, b: 20, alpha: 0 })
+          .extend({ top: 20, bottom: 20, left: 20, right: 20 })
+          .png()
+          .toBuffer();
+      }
+
+      return posterImage;
+    });
 }
 
 function getFilePath(relativePath) {

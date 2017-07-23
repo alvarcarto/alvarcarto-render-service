@@ -21,6 +21,7 @@ const getRender = ex.createRoute((req, res) => {
 const getPlaceIt = ex.createRoute((req, res) => {
   const opts = _.merge({}, _reqToOpts(req), {
     photo: req.query.background,
+    frames: req.query.frames,
   });
   return placeItCore.render(opts)
     .then((image) => {

@@ -58,6 +58,7 @@ function createRouter() {
   const placeItSchema = _.merge({}, rasterRenderSchema, {
     query: {
       background: Joi.string().min(1).max(100).optional(),
+      frames: Joi.string().min(1).max(100).optional(),
       resizeToWidth: Joi.number().min(50).max(1000).optional(),
       resizeToHeight: Joi.number().min(50).max(1000).optional(),
     },
