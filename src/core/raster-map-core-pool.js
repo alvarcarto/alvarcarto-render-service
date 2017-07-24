@@ -16,7 +16,9 @@ logger.info(`Preloading ${files.length} mapnik styles ..`);
 const mapnikCache = _.reduce(files, (memo, filePath) => {
   const styleName = path.basename(filePath, '.xml');
 
-  const pool = mapnikPool.fromString(fs.readFileSync(filePath, 'utf8'));
+  const pool = mapnikPool.fromString(fs.readFileSync(filePath, 'utf8'), { size: 256 }, {
+    base: config.STYLE_DIR,
+  });
   return _.extend({}, memo, {
     [styleName]: BPromise.promisifyAll(pool),
   });
