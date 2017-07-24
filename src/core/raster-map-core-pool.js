@@ -15,7 +15,7 @@ logger.info(`Preloading ${files.length} mapnik styles ..`);
 const mapnikCache = _.reduce(files, (memo, filePath) => {
   const styleName = path.basename(filePath, '.xml');
 
-  const map = BPromise.promisifyAll(new mapnik.Map(100, 100));
+  const map = BPromise.promisifyAll(new mapnik.Map(500, 500));
   map.loadSync(filePath, { strict: true });
 
   return _.extend({}, memo, {
@@ -38,6 +38,7 @@ function render(_opts) {
   return lock.acquire(key, () => {
     logger.info(`Got lock for key: ${key}`);
 
+    map.resize(opts.width, opts.height);
     return rasterMapCore.render(_.merge({}, opts, {
       map,
     }));
