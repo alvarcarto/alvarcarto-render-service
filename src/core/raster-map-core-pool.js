@@ -35,11 +35,14 @@ function render(_opts) {
   logger.info(`Aquiring a lock with key: ${key}`);
 
   const { map, lock } = mapnikCache[key];
-  return lock.acquire()
-    .tap(() => logger.info(`Got lock for key: ${key}`))
-    .then(() => rasterMapCore.render(_.merge({}, opts, {
+  return lock.acquire(key, () => {
+    logger.info(`Got lock for key: ${key}`);
+
+    return rasterMapCore.render(_.merge({}, opts, {
       map,
-    })));
+    }));
+  })
+  .tap(() => logger.info(`Released lock: ${key}`));
 }
 
 module.exports = {
