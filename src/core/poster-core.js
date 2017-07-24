@@ -16,6 +16,7 @@ const xmldom = require('xmldom');
 const window = require('svgdom');
 const svgJs = require('svg.js');
 const rasterMapCore = require('./raster-map-core');
+const rasterMapCorePool = require('./raster-map-core-pool');
 const config = require('../config');
 
 // This needs to match the settings in frontend
@@ -99,29 +100,27 @@ function _renderMap(opts) {
   return getPosterDimensions(opts)
     .then((dimensions) => {
       let scale = opts.scale;
-      let omitCache = false;
+      let mapCore = rasterMapCore;
+
+      // If resize parameters are defined, use map pooling
       if (opts.resizeToWidth) {
         const ratio = opts.resizeToWidth / dimensions.originalWidth;
         scale *= ratio;
+        mapCore = rasterMapCorePool;
       } else if (opts.resizeToHeight) {
         const ratio = opts.resizeToHeight / dimensions.originalHeight;
         scale *= ratio;
-      } else {
-        // If no resize parameters are defined, omit cache just in case
-        // This makes sure that we aren't having some cache issues when
-        // rendering final posters
-        omitCache = true;
+        mapCore = rasterMapCorePool;
       }
 
       const mapOpts = _.merge({}, opts, {
         width: dimensions.width,
         height: dimensions.height,
         scale,
-        omitCache,
       });
 
       return BPromise.props({
-        mapImage: rasterMapCore.render(_.omit(mapOpts, _.isNil)),
+        mapImage: mapCore.render(_.omit(mapOpts, _.isNil)),
         dimensions,
       });
     })
