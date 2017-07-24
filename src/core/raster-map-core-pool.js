@@ -1,3 +1,4 @@
+const BPromise = require('bluebird');
 const path = require('path');
 const fs = require('fs');
 const glob = require('glob');
@@ -17,7 +18,7 @@ const mapnikCache = _.reduce(files, (memo, filePath) => {
 
   const pool = mapnikPool.fromString(fs.readFileSync(filePath, 'utf8'));
   return _.extend({}, memo, {
-    [styleName]: pool,
+    [styleName]: BPromise.promisifyAll(pool),
   });
 }, {});
 
@@ -30,7 +31,7 @@ function render(_opts) {
   logger.info(`Aquiring a mapnik map from pool with key: ${key}`);
 
   const pool = mapnikCache[key];
-  return pool.aquire()
+  return pool.acquireAsync()
     .then(map => rasterMapCore.render(_.merge({}, opts, {
       map,
     })));
