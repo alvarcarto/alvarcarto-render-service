@@ -126,7 +126,7 @@ function _renderMap(opts) {
     })
     .tap((result) => {
       if (config.SAVE_TEMP_FILES) {
-        const tmpPngPath = getAbsPath(`${opts.uuid}.png`);
+        const tmpPngPath = getAbsPath(`${opts.uuid}-map.png`);
         return fs.writeFileAsync(tmpPngPath, result.mapImage, { encoding: 'binary' });
       }
 
@@ -173,10 +173,13 @@ function _renderPoster(opts) {
         mapImage: result.mapImage,
       });
     })
-    .tap(({ svgImage }) => {
-      return sharp(svgImage).metadata()
-        .then(meta => console.log('svgImage Metadata', meta))
-        .then(() => fs.writeFileAsync('temp-svg.png', svgImage, { encoding: 'binary' }));
+    .tap((result) => {
+      if (config.SAVE_TEMP_FILES) {
+        const tmpPngPath = getAbsPath(`${opts.uuid}-svg.png`);
+        return fs.writeFileAsync(tmpPngPath, result.svgImage, { encoding: 'binary' });
+      }
+
+      return BPromise.resolve();
     })
     .then(result =>
       sharp(result.mapImage)
@@ -188,9 +191,12 @@ function _renderPoster(opts) {
         .toBuffer(),
     )
     .tap((image) => {
-      return sharp(image).metadata()
-        .then(meta => console.log('combined Metadata', meta))
-        .then(() => fs.writeFileAsync('temp-combined.png', image, { encoding: 'binary' }));
+      if (config.SAVE_TEMP_FILES) {
+        const tmpPngPath = getAbsPath(`${opts.uuid}-combined.png`);
+        return fs.writeFileAsync(tmpPngPath, image, { encoding: 'binary' });
+      }
+
+      return BPromise.resolve();
     });
 }
 
