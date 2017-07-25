@@ -131,7 +131,8 @@ function _renderMap(opts) {
       }
 
       return BPromise.resolve();
-    });
+    })
+    .tap(({ mapImage }) => fs.writeFileAsync('temp-map.png', mapImage, { encoding: 'binary' }));
 }
 
 function _renderPoster(opts) {
@@ -174,7 +175,8 @@ function _renderPoster(opts) {
     })
     .tap(({ svgImage }) => {
       return sharp(svgImage).metadata()
-        .then(meta => console.log('svgImage Metadata', meta));
+        .then(meta => console.log('svgImage Metadata', meta))
+        .then(() => fs.writeFileAsync('temp-svg.png', svgImage, { encoding: 'binary' }));
     })
     .then(result =>
       sharp(result.mapImage)
@@ -187,7 +189,8 @@ function _renderPoster(opts) {
     )
     .tap((image) => {
       return sharp(image).metadata()
-        .then(meta => console.log('combined Metadata', meta));
+        .then(meta => console.log('combined Metadata', meta))
+        .then(() => fs.writeFileAsync('temp-combined.png', image, { encoding: 'binary' }));
     });
 }
 
