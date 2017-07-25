@@ -173,7 +173,7 @@ function _renderPoster(opts) {
       });
     })
     .tap(({ svgImage }) => {
-      return svgImage.metadata()
+      return sharp(svgImage).metadata()
         .then(meta => console.log('svgImage Metadata', meta));
     })
     .then(result =>
@@ -186,7 +186,7 @@ function _renderPoster(opts) {
         .toBuffer(),
     )
     .tap((image) => {
-      return image.metadata()
+      return sharp(image).metadata()
         .then(meta => console.log('combined Metadata', meta));
     });
 }
