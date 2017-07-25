@@ -141,6 +141,7 @@ function _renderPoster(opts) {
     mapMeta: sharp(opts.mapImage).metadata(),
   })
     .then((result) => {
+      console.log('mapMetaData', mapMeta)
       const parsed = parsePosterSvg(result.svgString);
       const { dimensions } = result;
       const expected = `${dimensions.width}x${dimensions.height}`;
@@ -171,6 +172,10 @@ function _renderPoster(opts) {
         mapImage: result.mapImage,
       });
     })
+    .tap(({ svgImage }) => {
+      return svgImage.metadata()
+        .then(meta => console.log('svgImage Metadata', meta));
+    })
     .then(result =>
       sharp(result.mapImage)
         .overlayWith(result.svgImage, {
@@ -179,7 +184,11 @@ function _renderPoster(opts) {
         })
         .png()
         .toBuffer(),
-    );
+    )
+    .tap((image) => {
+      return image.metadata()
+        .then(meta => console.log('combined Metadata', meta));
+    });
 }
 
 function getPosterDimensions(opts) {
