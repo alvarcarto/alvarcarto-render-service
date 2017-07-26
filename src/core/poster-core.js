@@ -126,7 +126,7 @@ function _renderMap(opts) {
     })
     .tap((result) => {
       if (config.SAVE_TEMP_FILES) {
-        const tmpPngPath = getAbsPath(`${opts.uuid}.png`);
+        const tmpPngPath = getAbsPath(`${opts.uuid}-map.png`);
         return fs.writeFileAsync(tmpPngPath, result.mapImage, { encoding: 'binary' });
       }
 
@@ -171,6 +171,14 @@ function _renderPoster(opts) {
         mapImage: result.mapImage,
       });
     })
+    .tap((result) => {
+      if (config.SAVE_TEMP_FILES) {
+        const tmpPngPath = getAbsPath(`${opts.uuid}-svg.png`);
+        return fs.writeFileAsync(tmpPngPath, result.svgImage, { encoding: 'binary' });
+      }
+
+      return BPromise.resolve();
+    })
     .then(result =>
       sharp(result.mapImage)
         .overlayWith(result.svgImage, {
@@ -179,7 +187,15 @@ function _renderPoster(opts) {
         })
         .png()
         .toBuffer(),
-    );
+    )
+    .tap((image) => {
+      if (config.SAVE_TEMP_FILES) {
+        const tmpPngPath = getAbsPath(`${opts.uuid}-combined.png`);
+        return fs.writeFileAsync(tmpPngPath, image, { encoding: 'binary' });
+      }
+
+      return BPromise.resolve();
+    });
 }
 
 function getPosterDimensions(opts) {

@@ -12,7 +12,7 @@ function render(_opts) {
   const opts = _.merge({
     map: null,
     scale: 1,
-    format: 'png',
+    format: 'png32',
     stylesheetPath: path.join(config.STYLE_DIR, `${_opts.mapStyle}.xml`),
   }, _opts);
 
