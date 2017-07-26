@@ -131,8 +131,7 @@ function _renderMap(opts) {
       }
 
       return BPromise.resolve();
-    })
-    .tap(({ mapImage }) => fs.writeFileAsync('temp-map.png', mapImage, { encoding: 'binary' }));
+    });
 }
 
 function _renderPoster(opts) {
@@ -142,7 +141,6 @@ function _renderPoster(opts) {
     mapMeta: sharp(opts.mapImage).metadata(),
   })
     .then((result) => {
-      console.log('mapMetaData', result.mapMeta)
       const parsed = parsePosterSvg(result.svgString);
       const { dimensions } = result;
       const expected = `${dimensions.width}x${dimensions.height}`;
