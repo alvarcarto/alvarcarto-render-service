@@ -299,9 +299,19 @@ function parsePosterSvg(svgString) {
 }
 
 function readPosterFile(opts) {
-  const fileName = `${opts.posterStyle}-${opts.size}-${opts.orientation}.svg`;
-  const absPath = path.join(__dirname, '../../posters', fileName);
-  return fs.readFileAsync(absPath, { encoding: 'utf8' });
+  const serverFileName = `${opts.posterStyle}-${opts.size}-${opts.orientation}-server.svg`;
+  const serverAbsPath = path.join(__dirname, '../../posters/dist', serverFileName);
+  const clientFileName = `${opts.posterStyle}-${opts.size}-${opts.orientation}.svg`;
+  const clientAbsPath = path.join(__dirname, '../../posters/dist', clientFileName);
+
+  return fs.statAsync(serverAbsPath)
+    .then((stats) => {
+      if (stats.isFile()) {
+        return fs.readFileAsync(serverAbsPath, { encoding: 'utf8' });
+      }
+
+      return fs.readFileAsync(clientAbsPath, { encoding: 'utf8' });
+    });
 }
 
 function getAbsPath(relativePath) {

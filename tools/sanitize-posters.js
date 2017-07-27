@@ -3,17 +3,27 @@ const _ = require('lodash');
 const glob = require('glob');
 const path = require('path');
 const fs = BPromise.promisifyAll(require('fs'));
-const xmldom = require('xmldom');
+const download = require('download');
+const sharp = require('sharp');
+const xmldom = require('xmldom-alpha');
 
+const IMAGES_BASE_URL = process.env.IMAGES_BASE_URL || 'https://alvarcarto-poster-assets.s3-eu-west-1.amazonaws.com';
+const FORCE_DOWNLOAD = process.env.FORCE_DOWNLOAD === 'true';
 const NODE_TYPE_ELEMENT = 1;
 const ONE_CM_IN_INCH = 0.393700787;
 const PRINT_DPI = 300;
+
+const DIST_DIR = path.join(__dirname, '../posters/dist');
 
 function main() {
   const filePaths = glob.sync(path.join(__dirname, '../posters') + '/*');
   console.log(`Found ${filePaths.length} posters, validating and sanitizing .. `);
 
-  BPromise.each(filePaths, filePath => {
+  BPromise.each(filePaths, (filePath) => {
+    if (path.basename(filePath) === 'dist') {
+      return BPromise.resolve();
+    }
+
     if (!_.endsWith(filePath, '.svg')) {
       throw new Error(`Poster file with incorrect file format found: ${filePath}`);
     }
@@ -21,33 +31,34 @@ function main() {
     console.log(`\nProcessing ${filePath} ..`);
     return _sanitizePoster(filePath);
   })
-    .catch(err => {
-      throw err
+    .catch((err) => {
+      throw err;
     });
 }
 
 function _sanitizePoster(filePath) {
-  const { style, size, orientation } = parseFilePath(filePath);
-  const expectedDimensions = parseSizeToPixelDimensions(size, orientation);
+  const fileMeta = parseFilePath(filePath);
 
   return readFile(filePath)
-    .then(svgString => {
+    .then((svgString) => {
       const parsed = parsePosterSvg(svgString);
-      sanitizeSvgElements(parsed.doc);
-      centerElements(parsed.doc, parsed.svg);
-
-      const svgDimensions = getDimensions(parsed.svg);
-      const expected = `${expectedDimensions.width}x${expectedDimensions.height}`;
-      const actual = `${svgDimensions.width}x${svgDimensions.height}`;
-      if (expected !== actual) {
-        throw new Error(`SVG has incorrect dimensions: ${actual}, expected: ${expected}`);
+      if (!hasOnlyServerOrClientElements(parsed.doc, parsed.svg)) {
+        return transformAndSave(parsed, fileMeta, filePath);
       }
 
-      const s = new xmldom.XMLSerializer();
-      return writeFile(filePath, s.serializeToString(parsed.doc));
-    })
-    .then(() => {
-      console.log(`Wrote sanitized SVG to ${filePath}`);
+      console.log('Found only-server or only-client attributes, splitting ..');
+      const baseFilePath = path.join(path.dirname(filePath), path.basename(filePath, '.svg'));
+
+      // Parse again to get new dom trees, which are modified in-place
+      const clientParsed = parsePosterSvg(svgString);
+      removeNodesWhereIdContains(clientParsed.doc, clientParsed.svg, 'only-server');
+
+      const serverParsed = parsePosterSvg(svgString);
+      removeNodesWhereIdContains(serverParsed.doc, serverParsed.svg, 'only-client');
+
+
+      return transformAndSave(clientParsed, fileMeta, filePath)
+        .then(() => transformAndSave(serverParsed, fileMeta, `${baseFilePath}-server.svg`));
     });
 }
 
@@ -70,6 +81,35 @@ function parseFilePath(filePath) {
   return parsed;
 }
 
+function transformAndSave(parsed, fileMeta, filePath) {
+  const newFilePath = path.join(DIST_DIR, path.basename(filePath));
+
+  return transformSvg(parsed)
+    .then(() => {
+      const { size, orientation } = fileMeta;
+      const expectedDimensions = parseSizeToPixelDimensions(size, orientation);
+      const svgDimensions = getDimensions(parsed.svg);
+      const expected = `${expectedDimensions.width}x${expectedDimensions.height}`;
+      const actual = `${svgDimensions.width}x${svgDimensions.height}`;
+      if (expected !== actual) {
+        throw new Error(`SVG has incorrect dimensions: ${actual}, expected: ${expected}`);
+      }
+
+      return writeFile(newFilePath, svgDocToString(parsed.doc));
+    })
+    .then(() => {
+      console.log(`Wrote sanitized SVG to ${newFilePath}`);
+    });
+}
+
+function transformSvg(parsed) {
+  sanitizeSvgElements(parsed.doc);
+  centerElements(parsed.doc, parsed.svg);
+
+  return BPromise.resolve()
+    .tap(() => replaceAndDownloadImages(parsed.doc, parsed.svg));
+}
+
 function svgDocToString(svgDoc) {
   const s = new xmldom.XMLSerializer();
   return s.serializeToString(svgDoc);
@@ -78,7 +118,7 @@ function svgDocToString(svgDoc) {
 function sanitizeSvgElements(svgDoc) {
   const header = svgDoc.getElementById('header');
   if (!header) {
-    throw new Error('#header not found!')
+    throw new Error('#header not found!');
   }
   sanitizeText(header);
 
@@ -103,18 +143,123 @@ function sanitizeSvgElements(svgDoc) {
   }
 }
 
-function centerElements(doc, node) {
-  const nodeId = getNodeId(node);
-  if (nodeId === 'center') {
-    const el = doc.getElementById(nodeId);
-    console.log(`Setting text-anchor="middle" for element #${el.getAttribute('id')}`);
-    el.setAttribute('text-anchor', 'middle');
+function removeNodesWhereIdContains(doc, startNode, str) {
+  const foundNodes = [];
+
+  traverse(doc, startNode, (node) => {
+    const nodeId = getNodeId(node);
+
+    if (_.includes(nodeId, str)) {
+      foundNodes.push(node);
+    }
+  });
+
+  _.forEach(foundNodes, (node) => {
+    try {
+      console.log(`Removing node ${getNodeId(node)} ..`);
+      removeNode(node);
+    } catch (e) {
+      throw e;
+    }
+  });
+}
+
+function hasOnlyServerOrClientElements(doc, startNode) {
+  let hasAny = false;
+
+  traverse(doc, startNode, (node) => {
+    const nodeId = getNodeId(node);
+
+    if (_.includes(nodeId, 'only-server') || _.includes(nodeId, 'only-client')) {
+      hasAny = true;
+    }
+  });
+
+  return hasAny;
+}
+
+function centerElements(doc, startNode) {
+  traverse(doc, startNode, (node) => {
+    const nodeId = getNodeId(node);
+
+    if (nodeId === 'center') {
+      const el = doc.getElementById(nodeId);
+      console.log(`Setting text-anchor="middle" for element #${el.getAttribute('id')}`);
+      el.setAttribute('text-anchor', 'middle');
+    }
+  });
+}
+
+function replaceAndDownloadImages(doc, startNode) {
+  const imageNodes = [];
+
+  traverse(doc, startNode, (node) => {
+    const nodeId = getNodeId(node);
+
+    if (_.includes(nodeId, 'replace-with-image')) {
+      imageNodes.push(node);
+    }
+  });
+
+  return BPromise.map(imageNodes, (node) => {
+    const nodeId = getNodeId(node);
+    const imageName = nodeId.split('replace-with-image-')[1];
+    if (!imageName) {
+      throw new Error(`Couldn't find image name from: ${nodeId}`);
+    }
+
+    return downloadImage(imageName)
+      .then(() => replaceRectWithImage(doc, node, `images/${imageName}`));
+  }, { concurrency: 1 });
+}
+
+function downloadImage(imageName) {
+  const imagesDir = path.join(DIST_DIR, 'images');
+  const exists = fs.existsSync(path.join(imagesDir, imageName));
+  if (exists && !FORCE_DOWNLOAD) {
+    console.log(`Image ${imageName} exists, skipping download .. `);
+    return BPromise.resolve();
   }
+
+  const imageUrl = `${IMAGES_BASE_URL}/${imageName}`;
+  console.log(`Downloading image ${imageUrl} ..`);
+  return BPromise.resolve(download(imageUrl, imagesDir))
+    .catch((err) => {
+      console.log(`Couldn't download image ${imageUrl}`);
+      throw err;
+    });
+}
+
+function replaceRectWithImage(doc, node, imagePath) {
+  return sharp(path.join(DIST_DIR, imagePath)).metadata()
+    .then((meta) => {
+      const expected = `${node.getAttribute('width')}x${node.getAttribute('height')}`;
+      const actual = `${meta.width}x${meta.height}`;
+      if (expected !== actual) {
+        throw new Error(`Image ${imagePath} has incorrect dimensions: ${actual}, expected: ${expected}`);
+      }
+
+      const image = doc.createElementNS('http://www.w3.org/2000/svg', 'image');
+      image.setAttribute('x', node.getAttribute('x'));
+      image.setAttribute('y', node.getAttribute('y'));
+      image.setAttribute('width', node.getAttribute('width'));
+      image.setAttribute('height', node.getAttribute('height'));
+      image.setAttribute('xlink:href', imagePath);
+
+      const parent = node.parentNode;
+      parent.replaceChild(image, node);
+    });
+}
+
+// Traverses whole node tree "down" depth-first starting from node.
+// Callback is called for each found node
+function traverse(doc, node, cb) {
+  cb(node);
 
   if (node.hasChildNodes()) {
     for (let i = 0; i < node.childNodes.length; ++i) {
       const childNode = node.childNodes.item(i);
-      centerElements(doc, childNode);
+      traverse(doc, childNode, cb);
     }
   }
 }

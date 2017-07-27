@@ -4,10 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon --watch ./src -e js --exec \"babel-node --presets es2015 src/index.js\"",
+    "start": "npm run build-posters && nodemon --watch ./src -e js --exec \"babel-node --presets es2015 src/index.js\"",
     "build": "babel ./src -d ./dist --presets es2015",
     "build-posters": "./tools/build-posters.sh",
-    "start-prod": "node ./dist/index.js",
+    "start-prod": "npm run build-posters && node ./dist/index.js",
     "lint": "eslint ./src",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -22,6 +22,7 @@
     "body-parser": "^1.15.2",
     "compression": "^1.6.2",
     "cors": "^2.8.1",
+    "download": "^6.2.5",
     "errorhandler": "^1.5.0",
     "express": "^4.14.0",
     "express-validation": "^1.0.1",
