@@ -304,13 +304,25 @@ function readPosterFile(opts) {
   const clientFileName = `${opts.posterStyle}-${opts.size}-${opts.orientation}.svg`;
   const clientAbsPath = path.join(__dirname, '../../posters/dist', clientFileName);
 
-  return fs.statAsync(serverAbsPath)
-    .then((stats) => {
-      if (stats.isFile()) {
+  return fileExists(serverAbsPath)
+    .then((serverFileExists) => {
+      if (serverFileExists) {
         return fs.readFileAsync(serverAbsPath, { encoding: 'utf8' });
       }
 
       return fs.readFileAsync(clientAbsPath, { encoding: 'utf8' });
+    });
+}
+
+function fileExists(filePath) {
+  return fs.statAsync(filePath)
+    .then(stats => stats.isFile())
+    .catch((err) => {
+      if (err.code === 'ENOENT') {
+        return false;
+      }
+
+      throw err;
     });
 }
 
