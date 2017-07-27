@@ -109,7 +109,15 @@ function transformSvg(parsed) {
   centerElements(parsed.doc, parsed.svg);
 
   return BPromise.resolve()
-    .tap(() => replaceAndDownloadImages(parsed.doc, parsed.svg));
+    .tap(() => {
+      if (SKIP_DOWNLOAD) {
+        console.log('SKIP_DOWNLOAD=true, skipping download ..');
+        console.log('\n\n--- WARNING!! This will leave server versions incomplete! ---\n\n');
+        return BPromise.resolve();
+      }
+
+      return replaceAndDownloadImages(parsed.doc, parsed.svg);
+    });
 }
 
 function svgDocToString(svgDoc) {
@@ -216,11 +224,6 @@ function replaceAndDownloadImages(doc, startNode) {
 }
 
 function downloadImage(imageName) {
-  if (SKIP_DOWNLOAD) {
-    console.log('SKIP_DOWNLOAD=true, skipping download ..');
-    return BPromise.resolve();
-  }
-
   const imagesDir = path.join(DIST_DIR, 'images');
   const exists = fs.existsSync(path.join(imagesDir, imageName));
   if (exists && !FORCE_DOWNLOAD) {
