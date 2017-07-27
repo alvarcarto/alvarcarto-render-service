@@ -9,7 +9,8 @@
     <g id="50x70cm-landscape">
       <rect id="hide-this" fill="#D8D8D8" x="0" y="0" width="8268" height="5906"/>
       <path d="M0,0 L8268,0 L8268,5906 L0,5906 L0,0 Z M235,235 L8033,235 L8033,5671 L235,5671 L235,235 Z" id="white-padding" fill="#FFF"/>
-      <rect id="gradient" fill="url(#linearGradient-1)" x="131" y="3661" width="8007" height="2057"/>
+      <rect id="gradient-only-client" fill="url(#linearGradient-1)" x="131" y="3661" width="8007" height="2057"/>
+      <rect id="only-server-replace-with-image-classic-gradient-50x70cm-landscape.png" x="131" y="3661" width="8007" height="2057"/>
       <polygon id="black-outer-border" stroke="#000" stroke-width="32" points="251 5655 251 251 8017 251 8017 5655"/>
       <polygon id="white-middle-border" stroke="#FFF" stroke-width="40" points="287 5619 287 287 7981 287 7981 5619"/>
       <polygon id="black-inner-border" stroke="#000" stroke-width="20" points="317 5589 317 317 7951 317 7951 5589"/>
