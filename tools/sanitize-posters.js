@@ -218,7 +218,7 @@ function replaceAndDownloadImages(doc, startNode) {
 function downloadImage(imageName) {
   if (SKIP_DOWNLOAD) {
     console.log('SKIP_DOWNLOAD=true, skipping download ..');
-    return;
+    return BPromise.resolve();
   }
 
   const imagesDir = path.join(DIST_DIR, 'images');
