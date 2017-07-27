@@ -1,3 +1,4 @@
+const path = require('path');
 const createApp = require('./app');
 const enableDestroy = require('server-destroy');
 const BPromise = require('bluebird');
@@ -8,6 +9,11 @@ BPromise.config({
   warnings: config.NODE_ENV !== 'production',
   longStackTraces: true,
 });
+
+
+const imagesDir = path.join(__dirname, '../posters/dist/images');
+logger.info('Changing working directory to:', imagesDir);
+process.chdir(imagesDir);
 
 const app = createApp();
 const server = app.listen(config.PORT, () => {

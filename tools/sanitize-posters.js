@@ -209,7 +209,7 @@ function replaceAndDownloadImages(doc, startNode) {
     }
 
     return downloadImage(imageName)
-      .then(() => replaceRectWithImage(doc, node, `images/${imageName}`));
+      .then(() => replaceRectWithImage(doc, node, imageName));
   }, { concurrency: 1 });
 }
 
