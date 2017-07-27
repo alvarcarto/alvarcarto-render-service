@@ -1,27 +1,28 @@
 <svg width="8268px" height="5906px" viewBox="0 0 8268 5906" version="1.1" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <linearGradient x1="50%" y1="0%" x2="50%" y2="54.4134239%" id="linearGradient-1">
+    <linearGradient x1="50%" y1="0%" x2="50%" y2="45.8575513%" id="linearGradient-1">
       <stop stop-color="#FFF" stop-opacity="0" offset="0%"/>
       <stop stop-color="#FFF" offset="100%"/>
     </linearGradient>
   </defs>
   <g id="Page-2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
     <g id="50x70cm-landscape">
+      
       <path d="M0,0 L8268,0 L8268,5906 L0,5906 L0,0 Z M235,235 L8033,235 L8033,5671 L235,5671 L235,235 Z" id="white-padding" fill="#FFF"/>
-      <rect id="gradient" fill="url(#linearGradient-1)" x="131" y="3429" width="8007" height="2289"/>
+      <rect id="gradient" fill="url(#linearGradient-1)" x="131" y="3661" width="8007" height="2057"/>
       <polygon id="black-outer-border" stroke="#000" stroke-width="32" points="251 5655 251 251 8017 251 8017 5655"/>
       <polygon id="white-middle-border" stroke="#FFF" stroke-width="40" points="287 5619 287 287 7981 287 7981 5619"/>
       <polygon id="black-inner-border" stroke="#000" stroke-width="20" points="317 5589 317 317 7951 317 7951 5589"/>
       <g id="labels" transform="translate(4134.000000, 4338.000000)">
         <g id="center" text-anchor="middle">
           <text id="text" font-family="JosefinSans-Light, Josefin Sans" font-size="100" font-weight="300" letter-spacing="24" fill="#343434">
-            <tspan x="0" y="944">60.160°N / 24.942°</tspan>
+            <tspan x="0" y="944">60.160°N / 24.942°</tspan> 
           </text>
           <text id="small-header" font-family="JosefinSans, Josefin Sans" font-size="140" font-weight="normal" letter-spacing="20" fill="#000">
-            <tspan x="0" y="683">FINLAN</tspan>
+            <tspan x="0" y="683">FINLAN</tspan> 
           </text>
           <text id="header" font-family="JosefinSans-Bold, Josefin Sans" font-size="380" font-weight="bold" letter-spacing="45" fill="#000">
-            <tspan x="0" y="361">HELSINK</tspan>
+            <tspan x="0" y="361">HELSINK</tspan> 
           </text>
         </g>
       </g>
