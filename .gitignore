@@ -1,4 +1,13 @@
 .env
 *.mbtiles
 node_modules
-dist
+
+dist/*
+
+
+posters/dist/*
+!posters/dist/.gitkeep
+
+!posters/dist/images
+posters/dist/images/*
+!posters/dist/images/.gitkeep
