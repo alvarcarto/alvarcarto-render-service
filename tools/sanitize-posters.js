@@ -5,7 +5,7 @@ const path = require('path');
 const fs = BPromise.promisifyAll(require('fs'));
 const download = require('download');
 const sharp = require('sharp');
-const xmldom = require('xmldom-alpha');
+const xmldom = require('xmldom');
 
 const IMAGES_BASE_URL = process.env.IMAGES_BASE_URL || 'https://alvarcarto-poster-assets.s3-eu-west-1.amazonaws.com';
 const FORCE_DOWNLOAD = process.env.FORCE_DOWNLOAD === 'true';
