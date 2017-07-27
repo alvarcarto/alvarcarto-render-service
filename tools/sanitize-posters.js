@@ -230,13 +230,13 @@ function downloadImage(imageName) {
     });
 }
 
-function replaceRectWithImage(doc, node, imagePath) {
-  return sharp(path.join(DIST_DIR, imagePath)).metadata()
+function replaceRectWithImage(doc, node, imageName) {
+  return sharp(path.join(DIST_DIR, 'images/', imageName)).metadata()
     .then((meta) => {
       const expected = `${node.getAttribute('width')}x${node.getAttribute('height')}`;
       const actual = `${meta.width}x${meta.height}`;
       if (expected !== actual) {
-        throw new Error(`Image ${imagePath} has incorrect dimensions: ${actual}, expected: ${expected}`);
+        throw new Error(`Image ${imageName} has incorrect dimensions: ${actual}, expected: ${expected}`);
       }
 
       const image = doc.createElementNS('http://www.w3.org/2000/svg', 'image');
@@ -244,7 +244,7 @@ function replaceRectWithImage(doc, node, imagePath) {
       image.setAttribute('y', node.getAttribute('y'));
       image.setAttribute('width', node.getAttribute('width'));
       image.setAttribute('height', node.getAttribute('height'));
-      image.setAttribute('xlink:href', imagePath);
+      image.setAttribute('xlink:href', imageName);
 
       const parent = node.parentNode;
       parent.replaceChild(image, node);
