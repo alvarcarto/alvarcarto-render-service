@@ -7,18 +7,19 @@
   </defs>
   <g id="Page-2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
     <g id="70x100cm-portrait">
+      <rect id="hide-this" fill="#D8D8D8" x="0" y="0" width="8268" height="11811"/>
       <path d="M0,0 L8268,0 L8268,11811 L0,11811 L0,0 Z M299,299 L7969,299 L7969,11481 L299,11481 L299,299 Z" id="borders" fill="#FFF"/>
       <rect id="gradient" fill="url(#linearGradient-1)" x="235" y="8150" width="7842" height="3439"/>
       <g id="labels" transform="translate(4128.000000, 9854.000000)">
-        <g id="center" text-anchor="middle">
+        <g id="center">
           <text id="text" font-family="JosefinSans-Light, Josefin Sans" font-size="140" font-weight="300" letter-spacing="30" fill="#343434">
-            <tspan x="11" y="1239">60.160°N / 24.942°</tspan>
+            <tspan x="11" y="1239">60.160°N / 24.942°</tspan> <tspan x="1657.98" y="1239">E</tspan>
           </text>
           <text id="small-header" font-family="JosefinSans, Josefin Sans" font-size="190" font-weight="normal" letter-spacing="25" fill="#000">
-            <tspan x="10" y="884">FINLAN</tspan>
+            <tspan x="10" y="884">FINLAN</tspan> <tspan x="855.02" y="884">D</tspan>
           </text>
           <text id="header" font-family="JosefinSans-Bold, Josefin Sans" font-size="510" font-weight="bold" letter-spacing="70" fill="#000">
-            <tspan x="0" y="485">HELSINK</tspan>
+            <tspan x="0" y="485">HELSINK</tspan> <tspan x="2675.86" y="485">I</tspan>
           </text>
         </g>
       </g>
