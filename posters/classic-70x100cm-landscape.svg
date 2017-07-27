@@ -7,22 +7,23 @@
   </defs>
   <g id="Page-2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
     <g id="70x100cm-landscape">
-      
+      <rect id="hide-this" fill="#D8D8D8" x="0" y="0" width="11811" height="8268"/>
       <path d="M0,0 L11811,0 L11811,8268 L0,8268 L0,0 Z M300,300 L11511,300 L11511,7968 L300,7968 L300,300 Z" id="white-padding" fill="#FFF"/>
-      <rect id="gradient" fill="url(#linearGradient-1)" x="240" y="5151" width="11307" height="2864"/>
+      <rect id="gradient-only-client" fill="url(#linearGradient-1)" x="240" y="5151" width="11307" height="2864"/>
+      <rect id="only-server-replace-with-image-classic-gradient-70x100cm-landscape.png" x="240" y="5151" width="11307" height="2864"/>
       <polygon id="black-outer-border" stroke="#000" stroke-width="42" points="321 7947 321 321 11490 321 11490 7947"/>
       <polygon id="white-middle-border" stroke="#FFF" stroke-width="54" points="369 7900 369 369 11442 369 11442 7900"/>
       <polygon id="black-inner-border" stroke="#000" stroke-width="28" points="410 7858 410 410 11401 410 11401 7858"/>
       <g id="labels" transform="translate(5906.000000, 6104.000000)">
-        <g id="center" text-anchor="middle">
+        <g id="center">
           <text id="text" font-family="JosefinSans-Light, Josefin Sans" font-size="140" font-weight="300" letter-spacing="30.0016918" fill="#343434">
-            <tspan x="0" y="1275">60.160°N / 24.942°</tspan> 
+            <tspan x="0" y="1275">60.160°N / 24.942°</tspan> <tspan x="1647.01045" y="1275" letter-spacing="30.0033836">E</tspan>
           </text>
           <text id="small-header" font-family="JosefinSans, Josefin Sans" font-size="190" font-weight="normal" letter-spacing="25" fill="#000">
-            <tspan x="0" y="920">FINLAN</tspan> 
+            <tspan x="0" y="920">FINLAN</tspan> <tspan x="845.02" y="920">D</tspan>
           </text>
           <text id="header" font-family="JosefinSans-Bold, Josefin Sans" font-size="510" font-weight="bold" letter-spacing="70" fill="#000">
-            <tspan x="0" y="485">HELSINK</tspan> 
+            <tspan x="0" y="485">HELSINK</tspan> <tspan x="2675.86" y="485">I</tspan>
           </text>
         </g>
       </g>
