@@ -1,6 +1,6 @@
 <svg width="8268px" height="5906px" viewBox="0 0 8268 5906" version="1.1" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <linearGradient x1="50%" y1="0%" x2="50%" y2="64.0154934%" id="linearGradient-1">
+    <linearGradient x1="50%" y1="0%" x2="50%" y2="59.1058856%" id="linearGradient-1">
       <stop stop-color="#FFF" stop-opacity="0" offset="0%"/>
       <stop stop-color="#FFF" offset="100%"/>
     </linearGradient>
@@ -9,7 +9,8 @@
     <g id="50x70cm-landscape">
       <rect id="hide-this" fill="#D8D8D8" x="0" y="0" width="8268" height="5906"/>
       <path d="M0,0 L8268,0 L8268,5906 L0,5906 L0,0 Z M210,210 L8058,210 L8058,5746 L210,5746 L210,210 Z" id="borders" fill="#FFF"/>
-      <rect id="gradient" fill="url(#linearGradient-1)" x="132" y="3430" width="8017" height="2317"/>
+      <rect id="gradient-only-client" fill="url(#linearGradient-1)" x="132" y="3430" width="8017" height="2317"/>
+      <rect id="only-server-replace-with-image-sans-gradient-50x70cm-landscape.png" x="132" y="3430" width="8017" height="2317"/>
       <g id="labels" transform="translate(4125.000000, 4545.000000)">
         <g id="center">
           <text id="text" font-family="JosefinSans-Light, Josefin Sans" font-size="100" font-weight="300" letter-spacing="24" fill="#343434">
