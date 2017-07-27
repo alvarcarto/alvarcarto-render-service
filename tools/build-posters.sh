@@ -8,7 +8,9 @@ echo -e "Optimizing ./posters/*.svg with svgo ..\n"
 
 echo -e "Removing old posters in posters/dist ..\n"
 rm -f ./posters/dist/*.svg
-rm -f ./posters/dist/images/*
+# Commented by default because it's faster to not download images on each
+# start
+# rm -f ./posters/dist/images/*
 rm -f ./*.png
 
 echo -e "Running custom sanitize ..\n"
