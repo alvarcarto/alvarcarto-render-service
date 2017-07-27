@@ -9,6 +9,8 @@ const xmldom = require('xmldom');
 
 const IMAGES_BASE_URL = process.env.IMAGES_BASE_URL || 'https://alvarcarto-poster-assets.s3-eu-west-1.amazonaws.com';
 const FORCE_DOWNLOAD = process.env.FORCE_DOWNLOAD === 'true';
+const SKIP_DOWNLOAD = process.env.SKIP_DOWNLOAD === 'true';
+
 const NODE_TYPE_ELEMENT = 1;
 const ONE_CM_IN_INCH = 0.393700787;
 const PRINT_DPI = 300;
@@ -214,6 +216,11 @@ function replaceAndDownloadImages(doc, startNode) {
 }
 
 function downloadImage(imageName) {
+  if (SKIP_DOWNLOAD) {
+    console.log('SKIP_DOWNLOAD=true, skipping download ..');
+    return;
+  }
+
   const imagesDir = path.join(DIST_DIR, 'images');
   const exists = fs.existsSync(path.join(imagesDir, imageName));
   if (exists && !FORCE_DOWNLOAD) {
