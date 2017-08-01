@@ -59,8 +59,8 @@ function createRouter() {
     query: {
       background: Joi.string().min(1).max(100).optional(),
       frames: Joi.string().min(1).max(100).optional(),
-      resizeToWidth: Joi.number().min(50).max(1000).optional(),
-      resizeToHeight: Joi.number().min(50).max(1000).optional(),
+      resizeToWidth: Joi.number().min(50).max(1200).optional(),
+      resizeToHeight: Joi.number().min(50).max(1200).optional(),
     },
   });
   router.get('/api/raster/placeit', validate(placeItSchema), rasterRender.getPlaceIt);
