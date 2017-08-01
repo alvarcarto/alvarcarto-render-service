@@ -16,7 +16,7 @@ const photoMetas = {
   'facebook-carousel': {
     fileName: 'facebook-carousel.png',
     type: 'center',
-    resizeToHeight: 1200,
+    resizeToHeight: 1450,
   },
   'white-frame-gold': {
     fileName: 'white-frame-gold.jpg',
@@ -202,7 +202,7 @@ function _renderPoster(opts) {
   return posterCore.render(opts)
     .then((posterImage) => {
       if (opts.frames === 'black') {
-        const borderSize = 20;
+        const borderSize = 14;
         return sharp(posterImage)
           .background({ r: 20, g: 20, b: 20 })
           .extend({ top: borderSize, bottom: borderSize, left: borderSize, right: borderSize })
