@@ -16,7 +16,7 @@ const photoMetas = {
   'facebook-carousel': {
     fileName: 'facebook-carousel.png',
     type: 'center',
-    resizeToHeight: 1400,
+    resizeToHeight: 1300,
   },
   'white-frame-gold': {
     fileName: 'white-frame-gold.jpg',
