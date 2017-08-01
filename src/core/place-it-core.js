@@ -203,7 +203,7 @@ function _renderPoster(opts) {
   return posterCore.render(opts)
     .then((posterImage) => {
       if (opts.frames === 'black') {
-        const borderSize = 14;
+        const borderSize = 20;
         return sharp(posterImage)
           .background({ r: 20, g: 20, b: 20 })
           .extend({ top: borderSize, bottom: borderSize, left: borderSize, right: borderSize })
