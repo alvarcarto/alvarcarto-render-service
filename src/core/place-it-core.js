@@ -16,7 +16,7 @@ const photoMetas = {
   'facebook-carousel': {
     fileName: 'facebook-carousel.png',
     type: 'center',
-    resizeToHeight: 1450,
+    resizeToHeight: 1400,
   },
   'white-frame-gold': {
     fileName: 'white-frame-gold.jpg',
@@ -121,9 +121,10 @@ const photoMetas = {
 };
 
 function render(_opts) {
+  const { resizeToWidth, resizeToHeight } = _opts;
   const opts = _.merge({
-    photo: 'brick-wall',
-  }, _opts);
+    photo: 'facebook-carousel',
+  }, _.omit(_opts, ['resizeToWidth', 'resizeToHeight']));
 
   const photoMeta = photoMetas[opts.photo];
   if (!photoMeta) {
@@ -144,10 +145,10 @@ function render(_opts) {
   return renderPromise
     .then((photoImage) => {
       const photo = sharp(photoImage);
-      if (_.isFinite(opts.resizeToWidth)) {
-        return photo.resize(opts.resizeToWidth, null);
-      } else if (_.isFinite(opts.resizeToHeight)) {
-        return photo.resize(null, opts.resizeToHeight);
+      if (_.isFinite(resizeToWidth)) {
+        return photo.resize(resizeToWidth, null);
+      } else if (_.isFinite(resizeToHeight)) {
+        return photo.resize(null, resizeToHeight);
       }
 
       return photo;
