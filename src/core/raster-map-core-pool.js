@@ -21,7 +21,7 @@ const mapnikCache = _.reduce(files, (memo, filePath) => {
   return _.extend({}, memo, {
     [styleName]: {
       map,
-      lock: new AsyncLock({ timeout: 10000, Promise: BPromise }),
+      lock: new AsyncLock({ timeout: 60000, Promise: BPromise }),
     },
   });
 }, {});
