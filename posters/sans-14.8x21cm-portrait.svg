@@ -1,26 +1,26 @@
-<svg width="1886px" height="2635px" viewBox="0 0 1886 2635" version="1.1" xmlns="http://www.w3.org/2000/svg">
+<svg width="1654px" height="2480px" viewBox="0 0 1654 2480" version="1.1" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <linearGradient x1="50%" y1="0%" x2="50%" y2="55.2823308%" id="linearGradient-1">
+    <linearGradient x1="50%" y1="0%" x2="50%" y2="54.0643938%" id="linearGradient-1">
       <stop stop-color="#FFF" stop-opacity="0" offset="0%"/>
       <stop stop-color="#FFF" offset="100%"/>
     </linearGradient>
   </defs>
   <g id="Page-2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-    <g id="a5-portrait" transform="translate(72.000000, 71.000000)">
-      <rect id="hide-this" fill="#D8D8D8" x="1" y="1" width="1740" height="2490"/>
-      <path id="borders" fill="#FFF"/>
-      <rect id="gradient-only-client" fill="url(#linearGradient-1)" x="1" y="1436" width="1740" height="1055"/>
-      <rect id="only-server-replace-with-image-sans-gradient-a5-portrait.png" x="1" y="1436" width="1740" height="1055"/>
-      <g id="labels" transform="translate(871.000000, 1899.000000)">
+    <g id="a5-portrait">
+      <rect id="hide-this" fill="#D8D8D8" x="0" y="0" width="1654" height="2480"/>
+      <path d="M0,0 L1654,0 L1654,2480 L0,2480 L0,0 Z M73,72 L1582,72 L1582,2408 L73,2408 L73,72 Z" id="borders" fill="#FFF"/>
+      <rect id="gradient-only-client" fill="url(#linearGradient-1)" x="0" y="1425" width="1654" height="993"/>
+      <rect id="only-server-replace-with-image-sans-gradient-a5-portrait.png" fill="url(#linearGradient-1)" x="0" y="1425" width="1654" height="993"/>
+      <g id="labels" transform="translate(827.000000, 1860.000000)">
         <g id="center">
           <text id="text" font-family="JosefinSans-Light, Josefin Sans" font-size="50" font-weight="300" letter-spacing="13.333334" fill="#343434">
-            <tspan x="0" y="410">60.160°N / 24.942°</tspan> <tspan x="635.350011" y="410" letter-spacing="16.6666679">E</tspan>
+            <tspan x="0" y="392">60.160°N / 24.942°</tspan> <tspan x="635.350011" y="392" letter-spacing="16.6666679">E</tspan>
           </text>
           <text id="small-header" font-family="JosefinSans, Josefin Sans" font-size="70" font-weight="normal" letter-spacing="11.666667" fill="#000">
-            <tspan x="0" y="282">FINLAN</tspan> <tspan x="326.060002" y="282" letter-spacing="9.07407475">D</tspan>
+            <tspan x="0" y="278">FINLAN</tspan> <tspan x="326.060002" y="278" letter-spacing="9.07407475">D</tspan>
           </text>
           <text id="header" font-family="JosefinSans-Bold, Josefin Sans" font-size="150" font-weight="bold" letter-spacing="18.75" fill="#000">
-            <tspan x="0" y="143">HELSINK</tspan> <tspan x="774.15" y="143" letter-spacing="28.125">I</tspan>
+            <tspan x="0" y="143">HELSI</tspan> <tspan x="516.6" y="143" letter-spacing="28.125">NK</tspan>
           </text>
         </g>
       </g>
