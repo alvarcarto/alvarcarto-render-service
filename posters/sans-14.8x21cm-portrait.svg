@@ -10,7 +10,7 @@
       <rect id="hide-this" fill="#D8D8D8" x="0" y="0" width="1654" height="2480"/>
       <path d="M0,0 L1654,0 L1654,2480 L0,2480 L0,0 Z M73,72 L1582,72 L1582,2408 L73,2408 L73,72 Z" id="borders" fill="#FFF"/>
       <rect id="gradient-only-client" fill="url(#linearGradient-1)" x="0" y="1425" width="1654" height="993"/>
-      <rect id="only-server-replace-with-image-sans-gradient-a5-portrait.png" fill="url(#linearGradient-1)" x="0" y="1425" width="1654" height="993"/>
+      <rect id="only-server-replace-with-image-sans-gradient-14.8x21cm-portrait.png" fill="url(#linearGradient-1)" x="0" y="1425" width="1654" height="993"/>
       <g id="labels" transform="translate(827.000000, 1860.000000)">
         <g id="center">
           <text id="text" font-family="JosefinSans-Light, Josefin Sans" font-size="50" font-weight="300" letter-spacing="13.333334" fill="#343434">
