@@ -61,6 +61,8 @@ function _reqToOpts(req) {
 
 function _getDefaultScale(size) {
   switch (size) {
+    case '14.8x21cm':
+      return 2;
     case '30x40cm':
       return 3;
     case '50x70cm':
