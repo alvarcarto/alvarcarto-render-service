@@ -303,8 +303,7 @@ function parsePosterSvg(svgString) {
 
 function readPosterFile(opts) {
   if (opts.custom) {
-    const basePath = path.join(getAbsPath('posters/custom'), opts.custom.filePath);
-    return fs.readFileAsync(`${basePath}.svg`, { encoding: 'utf8' });
+    return fs.readFileAsync(opts.custom.filePath, { encoding: 'utf8' });
   }
 
   const serverFileName = `${opts.posterStyle}-${opts.size}-${opts.orientation}-server.svg`;
