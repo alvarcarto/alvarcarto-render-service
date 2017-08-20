@@ -28,7 +28,7 @@ function main() {
       return BPromise.resolve();
     }
 
-    if (!_.endsWith(filePath, '.svg')) {
+    if (!_.endsWith(filePath, '.svg') || !_.endsWith(filePath, '.json')) {
       throw new Error(`Poster file with incorrect file format found: ${filePath}`);
     }
 
