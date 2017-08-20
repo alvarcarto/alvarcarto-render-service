@@ -18,7 +18,9 @@ const PRINT_DPI = 300;
 const DIST_DIR = path.join(__dirname, '../posters/dist');
 
 function main() {
-  const filePaths = glob.sync(path.join(__dirname, '../posters') + '/*');
+  const customFilePaths = glob.sync(path.join(__dirname, '../posters/custom') + '/*');
+  const filePaths = glob.sync(path.join(__dirname, '../posters') + '/*').concat(customFilePaths);
+
   console.log(`Found ${filePaths.length} posters, validating and sanitizing .. `);
 
   BPromise.each(filePaths, (filePath) => {
@@ -67,6 +69,14 @@ function _sanitizePoster(filePath) {
 function parseFilePath(filePath) {
   const str = path.basename(filePath, '.svg');
   const splitted = str.split('-');
+
+  if (_.includes(filePath, 'custom/')) {
+    return {
+      style: splitted[0],
+      custom: true,
+    };
+  }
+
   if (splitted.length !== 3) {
     throw new Error(`Unexpected amount of splits: ${splitted.length} in string "${str}"`);
   }
@@ -75,6 +85,7 @@ function parseFilePath(filePath) {
     style: splitted[0],
     size: splitted[1],
     orientation: splitted[2],
+    custom: false,
   };
   if (!_.includes(['landscape', 'portrait'], parsed.orientation)) {
     throw new Error(`Unexpected orientation in file path: ${parsed.orientation}`);
@@ -84,17 +95,22 @@ function parseFilePath(filePath) {
 }
 
 function transformAndSave(parsed, fileMeta, filePath) {
-  const newFilePath = path.join(DIST_DIR, path.basename(filePath));
+  const isCustom = _.includes(filePath, 'custom/');
+  const newFilePath = isCustom
+    ? path.join(DIST_DIR, 'custom/', path.basename(filePath))
+    : path.join(DIST_DIR, path.basename(filePath));
 
   return transformSvg(parsed)
     .then(() => {
-      const { size, orientation } = fileMeta;
-      const expectedDimensions = parseSizeToPixelDimensions(size, orientation);
-      const svgDimensions = getDimensions(parsed.svg);
-      const expected = `${expectedDimensions.width}x${expectedDimensions.height}`;
-      const actual = `${svgDimensions.width}x${svgDimensions.height}`;
-      if (expected !== actual) {
-        throw new Error(`SVG has incorrect dimensions: ${actual}, expected: ${expected}`);
+      if (isCustom) {
+        const { size, orientation } = fileMeta;
+        const expectedDimensions = parseSizeToPixelDimensions(size, orientation);
+        const svgDimensions = getDimensions(parsed.svg);
+        const expected = `${expectedDimensions.width}x${expectedDimensions.height}`;
+        const actual = `${svgDimensions.width}x${svgDimensions.height}`;
+        if (expected !== actual) {
+          throw new Error(`SVG has incorrect dimensions: ${actual}, expected: ${expected}`);
+        }
       }
 
       return writeFile(newFilePath, svgDocToString(parsed.doc));
