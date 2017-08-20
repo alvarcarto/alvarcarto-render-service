@@ -17,6 +17,9 @@ rm -f ./posters/dist/custom/*.svg
 # rm -f ./posters/dist/images/*
 rm -f ./*.png
 
+echo -e "Copying custom .json files ..\n"
+cp ./posters/custom/*.json ./posters/dist/custom/
+
 echo -e "Running custom sanitize ..\n"
 node tools/sanitize-posters.js
 

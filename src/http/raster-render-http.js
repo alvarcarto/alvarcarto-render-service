@@ -30,7 +30,7 @@ const getRenderCustom = ex.createRoute((req, res) => {
   }
 
   const file = req.query.file;
-  const fileBasePath = path.join(__dirname, '../../posters/custom/dist', file);
+  const fileBasePath = path.join(__dirname, '../../posters/dist/custom', file);
 
   return fs.readFileAsync(`${fileBasePath}.json`, { encoding: 'utf8' })
     .then(content => JSON.parse(content))
