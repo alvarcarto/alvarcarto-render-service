@@ -12,3 +12,7 @@ posters/dist/*
 !posters/dist/images
 posters/dist/images/*
 !posters/dist/images/.gitkeep
+
+!posters/dist/custom
+posters/dist/custom/*
+!posters/dist/custom/.gitkeep
