@@ -24,7 +24,7 @@ function main() {
   console.log(`Found ${filePaths.length} posters, validating and sanitizing .. `);
 
   BPromise.each(filePaths, (filePath) => {
-    if (path.basename(filePath) === 'dist') {
+    if (_.contains(['dist', 'custom'], path.basename(filePath))) {
       return BPromise.resolve();
     }
 
