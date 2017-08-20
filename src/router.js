@@ -65,6 +65,14 @@ function createRouter() {
   });
   router.get('/api/raster/placeit', validate(placeItSchema), rasterRender.getPlaceIt);
 
+  const renderCustomSchema = _.merge({}, rasterRenderSchema, {
+    query: {
+      file: Joi.string().min(1).max(100).optional(),
+      size: Joi.string().optional(),
+    },
+  });
+  router.get('/api/raster/render-custom', validate(renderCustomSchema), rasterRender.getRenderCustom);
+
   return router;
 }
 

@@ -1,8 +1,13 @@
+const BPromise = require('bluebird');
+const path = require('path');
 const _ = require('lodash');
+const fs = require('fs');
 const ex = require('../util/express');
 const posterCore = require('../core/poster-core');
 const placeItCore = require('../core/place-it-core');
 const ROLES = require('../enum/roles');
+
+BPromise.promisifyAll(fs);
 
 const getRender = ex.createRoute((req, res) => {
   const resizeDefined = _.has(req.query, 'resizeToWidth') || _.has(req.query, 'resizeToHeight');
@@ -12,6 +17,34 @@ const getRender = ex.createRoute((req, res) => {
 
   const opts = _reqToOpts(req);
   return posterCore.render(opts)
+    .then((image) => {
+      res.set('content-type', 'image/png');
+      res.send(image);
+    });
+});
+
+const getRenderCustom = ex.createRoute((req, res) => {
+  const resizeDefined = _.has(req.query, 'resizeToWidth') || _.has(req.query, 'resizeToHeight');
+  if (!resizeDefined && _.get(req, 'user.role') !== ROLES.ADMIN) {
+    ex.throwStatus(403, 'Anonymous requests must define a resize parameter.');
+  }
+
+  const file = req.query.file;
+  const fileBasePath = path.join(__dirname, '../../posters/custom', file);
+
+  return fs.readFileAsync(`${fileBasePath}.json`, { encoding: 'utf8' })
+    .then(content => JSON.parse(content))
+    .then((settings) => {
+      const opts = _.merge({}, _reqToOpts(req), {
+        custom: {
+          filePath: `${fileBasePath}.svg`,
+          middleLineStrokeWidth: settings.middleLineStrokeWidth,
+        },
+        scale: settings.scale,
+      });
+
+      return posterCore.render(opts);
+    })
     .then((image) => {
       res.set('content-type', 'image/png');
       res.send(image);
@@ -76,5 +109,6 @@ function _getDefaultScale(size) {
 
 module.exports = {
   getRender,
+  getRenderCustom,
   getPlaceIt,
 };
