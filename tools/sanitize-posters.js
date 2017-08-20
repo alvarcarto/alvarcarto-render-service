@@ -106,7 +106,7 @@ function transformAndSave(parsed, fileMeta, filePath) {
 
   return transformSvg(parsed)
     .then(() => {
-      if (isCustom) {
+      if (!isCustom) {
         const { size, orientation } = fileMeta;
         const expectedDimensions = parseSizeToPixelDimensions(size, orientation);
         const svgDimensions = getDimensions(parsed.svg);
