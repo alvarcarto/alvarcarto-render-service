@@ -4,7 +4,7 @@ const _ = require('lodash');
 const fs = require('fs');
 const ex = require('../util/express');
 const posterCore = require('../core/poster-core');
-const mapCore = require('../core/map-core');
+const mapCore = require('../core/raster-map-core');
 const placeItCore = require('../core/place-it-core');
 const ROLES = require('../enum/roles');
 
