@@ -1,0 +1,28 @@
+<svg width="2598px" height="3969px" viewBox="0 0 2598 3969" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient x1="50%" y1="0%" x2="50%" y2="37.8281265%" id="linearGradient-1">
+      <stop stop-color="#FFF" stop-opacity="0" offset="0%"/>
+      <stop stop-color="#FFF" offset="100%"/>
+    </linearGradient>
+  </defs>
+  <g id="Page-2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+    <g id="custom-84x55mm-portrait">
+      <rect id="hide-this" fill="#D8D8D8" x="0" y="0" width="2598" height="3969"/>
+      <path d="M0,0 L2598,0 L2598,3969 L0,3969 L0,0 Z M100,100 L2498,100 L2498,3869 L100,3869 L100,100 Z" id="borders" fill="#FFF"/>
+      <rect id="gradient-only-client" fill="url(#linearGradient-1)" x="68" y="2870" width="2458" height="1062"/>
+      <g id="labels" transform="translate(1299.000000, 3150.000000)">
+        <g id="center">
+          <text id="text" font-family="JosefinSans-Light, Josefin Sans" font-size="55" font-weight="300" letter-spacing="14.666667" fill="#343434">
+            <tspan x="0" y="481">60.160°N / 24.942°</tspan> <tspan x="698.885006" y="481" letter-spacing="13.4444447">E</tspan>
+          </text>
+          <text id="small-header" font-family="JosefinSans, Josefin Sans" font-size="80" font-weight="normal" letter-spacing="13.333333" fill="#000">
+            <tspan x="0" y="339">FINLAN</tspan> <tspan x="372.639998" y="339" letter-spacing="11.8518515">D</tspan>
+          </text>
+          <text id="header" font-family="JosefinSans-Bold, Josefin Sans" font-size="180" font-weight="bold" letter-spacing="22.5" fill="#000">
+            <tspan x="0" y="171">HELSINK</tspan> <tspan x="928.98" y="171" letter-spacing="16.875">I</tspan>
+          </text>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

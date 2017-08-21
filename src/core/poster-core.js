@@ -248,7 +248,6 @@ function setTexts(svgDoc, opts) {
   const { labelColor } = getMapStyle(opts.mapStyle);
   const { addLines, upperCaseLabels } = getPosterStyle(opts.posterStyle);
 
-
   const labelHeader = upperCaseLabels
     ? opts.labelHeader.toUpperCase()
     : opts.labelHeader;
@@ -265,10 +264,14 @@ function setTexts(svgDoc, opts) {
     setColor(smallHeaderEl, labelColor);
 
     if (addLines) {
+      const strokeWidth = opts.custom
+        ? opts.custom.middleLineStrokeWidth
+        : posterSizeToMiddleLineStrokeWidth(opts.size);
+
       addOrUpdateLines(svgDoc, getSvgFromDocument(svgDoc), smallHeaderEl, {
         getBBoxForSvgElement: textEl => getBBoxForSvgElement(svgDocToStr(svgDoc), textEl.getAttribute('id')),
         svgAttributes: {
-          'stroke-width': posterSizeToMiddleLineStrokeWidth(opts.size),
+          'stroke-width': strokeWidth,
         },
         debugLines: config.DEBUG_POSTER_LINES,
       });
@@ -299,6 +302,10 @@ function parsePosterSvg(svgString) {
 }
 
 function readPosterFile(opts) {
+  if (opts.custom) {
+    return fs.readFileAsync(opts.custom.filePath, { encoding: 'utf8' });
+  }
+
   const serverFileName = `${opts.posterStyle}-${opts.size}-${opts.orientation}-server.svg`;
   const serverAbsPath = path.join(__dirname, '../../posters/dist', serverFileName);
   const clientFileName = `${opts.posterStyle}-${opts.size}-${opts.orientation}.svg`;
