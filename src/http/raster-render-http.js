@@ -57,7 +57,27 @@ const getRenderMap = ex.createRoute((req, res) => {
     ex.throwStatus(403, 'Anonymous requests must define a resize parameter.');
   }
 
-  const mapOpts = _reqToOpts(req);
+  const width = Number(req.query.width);
+  const height = Number(req.query.height);
+
+  const maxSide = Math.max(width, height);
+  const mapOpts = {
+    width,
+    height,
+    mapStyle: req.query.mapStyle,
+    bounds: {
+      southWest: {
+        lat: Number(req.query.swLat),
+        lng: Number(req.query.swLng),
+      },
+      northEast: {
+        lat: Number(req.query.neLat),
+        lng: Number(req.query.neLng),
+      },
+    },
+    scale: Number(req.query.scale) || Math.sqrt(maxSide) / 20,
+  };
+
   return mapCore.render(_.omit(mapOpts, _.isNil))
     .then((image) => {
       res.set('content-type', 'image/png');
