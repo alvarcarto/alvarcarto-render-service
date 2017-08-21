@@ -4,6 +4,7 @@ const _ = require('lodash');
 const fs = require('fs');
 const ex = require('../util/express');
 const posterCore = require('../core/poster-core');
+const mapCore = require('../core/map-core');
 const placeItCore = require('../core/place-it-core');
 const ROLES = require('../enum/roles');
 
@@ -45,6 +46,19 @@ const getRenderCustom = ex.createRoute((req, res) => {
 
       return posterCore.render(opts);
     })
+    .then((image) => {
+      res.set('content-type', 'image/png');
+      res.send(image);
+    });
+});
+
+const getRenderMap = ex.createRoute((req, res) => {
+  if (_.get(req, 'user.role') !== ROLES.ADMIN) {
+    ex.throwStatus(403, 'Anonymous requests must define a resize parameter.');
+  }
+
+  const mapOpts = _reqToOpts(req);
+  return mapCore.render(_.omit(mapOpts, _.isNil))
     .then((image) => {
       res.set('content-type', 'image/png');
       res.send(image);
@@ -110,5 +124,6 @@ function _getDefaultScale(size) {
 module.exports = {
   getRender,
   getRenderCustom,
+  getRenderMap,
   getPlaceIt,
 };
