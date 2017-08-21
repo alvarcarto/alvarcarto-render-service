@@ -4,6 +4,7 @@ const _ = require('lodash');
 const fs = require('fs');
 const ex = require('../util/express');
 const posterCore = require('../core/poster-core');
+const mapCore = require('../core/raster-map-core');
 const placeItCore = require('../core/place-it-core');
 const ROLES = require('../enum/roles');
 
@@ -45,6 +46,39 @@ const getRenderCustom = ex.createRoute((req, res) => {
 
       return posterCore.render(opts);
     })
+    .then((image) => {
+      res.set('content-type', 'image/png');
+      res.send(image);
+    });
+});
+
+const getRenderMap = ex.createRoute((req, res) => {
+  if (_.get(req, 'user.role') !== ROLES.ADMIN) {
+    ex.throwStatus(403, 'Anonymous requests must define a resize parameter.');
+  }
+
+  const width = Number(req.query.width);
+  const height = Number(req.query.height);
+
+  const maxSide = Math.max(width, height);
+  const mapOpts = {
+    width,
+    height,
+    mapStyle: req.query.mapStyle,
+    bounds: {
+      southWest: {
+        lat: Number(req.query.swLat),
+        lng: Number(req.query.swLng),
+      },
+      northEast: {
+        lat: Number(req.query.neLat),
+        lng: Number(req.query.neLng),
+      },
+    },
+    scale: Number(req.query.scale) || Math.sqrt(maxSide) / 20,
+  };
+
+  return mapCore.render(_.omit(mapOpts, _.isNil))
     .then((image) => {
       res.set('content-type', 'image/png');
       res.send(image);
@@ -110,5 +144,6 @@ function _getDefaultScale(size) {
 module.exports = {
   getRender,
   getRenderCustom,
+  getRenderMap,
   getPlaceIt,
 };
