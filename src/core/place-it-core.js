@@ -16,7 +16,7 @@ const photoMetas = {
   'facebook-carousel': {
     fileName: 'facebook-carousel.png',
     type: 'center',
-    resizeToHeight: 1300,
+    resizeToSide: 1300,
   },
   'white-frame-gold': {
     fileName: 'white-frame-gold.jpg',
@@ -185,7 +185,16 @@ function _renderExact(photoMeta, opts) {
 }
 
 function _renderCenter(photoMeta, opts) {
-  const mapRenderOpts = _.omit(_.merge({}, opts, {
+  const newOpts = {};
+  if (photoMeta.resizeToSide) {
+    if (opts.orientation === 'portrait') {
+      newOpts.resizeToHeight = photoMeta.resizeToSide;
+    } else {
+      newOpts.resizeToWidth = photoMeta.resizeToSide;
+    }
+  }
+
+  const mapRenderOpts = _.omit(_.merge({}, opts, newOpts, {
     resizeToWidth: photoMeta.resizeToWidth,
     resizeToHeight: photoMeta.resizeToHeight,
   }), _.isNil);
