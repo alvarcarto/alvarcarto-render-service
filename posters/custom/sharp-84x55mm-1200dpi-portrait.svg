@@ -2,11 +2,11 @@
   <g id="Page-2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
     <g id="custom-84x55mm-portrait">
       <rect id="hide-this" fill="#D8D8D8" x="0" y="0" width="2598" height="3969"/>
-      <path d="M0,0 L2598,0 L2598,3969 L0,3969 L0,0 Z M100,100 L2498,100 L2498,3457 L100,3457 L100,100 Z" id="borders" fill="#FFF"/>
-      <g id="labels" transform="translate(1299.000000, 3617.000000)" font-size="150" font-family="JosefinSans-Bold, Josefin Sans" letter-spacing="18.75" fill="#000" font-weight="bold">
+      <path d="M0,0 L2598,0 L2598,3969 L0,3969 L0,0 Z M100,100 L2498,100 L2498,3545 L100,3545 L100,100 Z" id="borders" fill="#FFF"/>
+      <g id="labels" transform="translate(1299.000000, 3677.000000)" font-size="130" font-family="JosefinSans-Bold, Josefin Sans" letter-spacing="16.25" fill="#000" font-weight="bold">
         <g id="center">
           <text id="header">
-            <tspan x="0" y="143">HELSINK</tspan> <tspan x="774.15" y="143" letter-spacing="15.625">I</tspan>
+            <tspan x="0" y="124">HELSINK</tspan> <tspan x="670.93" y="124" letter-spacing="14.083333">I</tspan>
           </text>
         </g>
       </g>
