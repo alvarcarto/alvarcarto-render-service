@@ -14,6 +14,7 @@ const config = {
   DEBUG_POSTER_LINES: process.env.DEBUG_POSTER_LINES === 'true',
   SKIP_INITIAL_MAPNIK_CACHE: process.env.SKIP_INITIAL_MAPNIK_CACHE === 'true',
   SAVE_TEMP_FILES: process.env.SAVE_TEMP_FILES === 'true',
+  TILE_URL: process.env.TILE_URL || 'https://tile-api.alvarcarto.com/tiles/bw/{z}/{x}/{y}/tile.png',
 };
 
 console.log(`Using style directory: ${config.STYLE_DIR}`);
@@ -27,6 +28,9 @@ if (_.endsWith(config.FONT_DIR, '/')) {
 }
 if (_.endsWith(config.STYLE_DIR, '/')) {
   throw new Error('Configuration error, STYLE_DIR must not have trailing slash');
+}
+if (!config.TILE_URL) {
+  throw new Error('Configuration error, TILE_URL env var not set');
 }
 
 module.exports = config;

@@ -209,7 +209,7 @@ function _renderCenter(photoMeta, opts) {
 }
 
 function _renderPoster(opts) {
-  return posterCore.render(opts)
+  return posterCore.render(_.merge({ useTileRender: true }, opts))
     .then((posterImage) => {
       if (opts.frames === 'black') {
         const borderSize = 16;

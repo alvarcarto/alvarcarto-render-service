@@ -16,7 +16,7 @@ const xmldom = require('xmldom');
 const window = require('svgdom');
 const svgJs = require('svg.js');
 const rasterMapCore = require('./raster-map-core');
-const rasterMapCorePool = require('./raster-map-core-pool');
+const rasterTileMapCore = require('./raster-tile-map-core');
 const config = require('../config');
 
 // This needs to match the settings in frontend
@@ -38,7 +38,9 @@ window.setFontDir(config.FONT_DIR)
   .setFontFamilyMappings(fontMapping);
 
 function render(_opts) {
-  const opts = _.merge(_opts, {
+  const opts = _.merge({
+    useTileRender: false,
+  }, _opts, {
     uuid: uuid.v4(),
   });
 
@@ -99,28 +101,20 @@ function _normalRender(opts) {
 function _renderMap(opts) {
   return getPosterDimensions(opts)
     .then((dimensions) => {
-      let scale = opts.scale;
-      let mapCore = rasterMapCore;
-
-      // If resize parameters are defined, use map pooling
-      if (opts.resizeToWidth) {
-        const ratio = opts.resizeToWidth / dimensions.originalWidth;
-        scale *= ratio;
-        mapCore = rasterMapCorePool;
-      } else if (opts.resizeToHeight) {
-        const ratio = opts.resizeToHeight / dimensions.originalHeight;
-        scale *= ratio;
-        mapCore = rasterMapCorePool;
-      }
-
       const mapOpts = _.merge({}, opts, {
         width: dimensions.width,
         height: dimensions.height,
-        scale,
       });
+      // If resize parameters are defined, use map pooling
+      if (!opts.resizeToWidth && !opts.resizeToHeight) {
+        return BPromise.props({
+          mapImage: rasterMapCore.render(_.omit(mapOpts, _.isNil)),
+          dimensions,
+        });
+      }
 
       return BPromise.props({
-        mapImage: mapCore.render(_.omit(mapOpts, _.isNil)),
+        mapImage: rasterTileMapCore.render(mapOpts),
         dimensions,
       });
     })
