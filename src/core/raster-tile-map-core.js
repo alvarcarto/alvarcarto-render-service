@@ -16,15 +16,15 @@ function render(_opts) {
   }, _opts);
 
   if (opts.resizeToWidth) {
-    opts.minWidth = opts.resizeToWidth / 2;
+    opts.minWidth = Math.max(opts.resizeToWidth, 500);
     opts.minHeight = 0;
   } else if (opts.resizeToHeight) {
-    opts.minHeight = opts.resizeToHeight / 2;
+    opts.minHeight = Math.max(opts.resizeToHeight, 500);
     opts.minWidth = 0;
   }
 
   return tile(opts)
-    .then(image => {
+    .then((image) => {
       return sharp(image)
         .resize(opts.width, opts.height)
         .png()
