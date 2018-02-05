@@ -8,7 +8,7 @@ const config = require('../config');
 
 function render(_opts) {
   const opts = _.merge({
-    template: config.TILE_URL,
+    template: config.TILE_URL.replace(/\{style\}/g, _opts.mapStyle),
     swLat: _opts.bounds.southWest.lat,
     swLng: _opts.bounds.southWest.lng,
     neLat: _opts.bounds.northEast.lat,
