@@ -113,6 +113,23 @@ function _renderMap(opts) {
         });
       }
 
+      if (!opts.useTileRender) {
+        let scale = opts.scale;
+        
+        if (opts.resizeToWidth) {
+          const ratio = opts.resizeToWidth / dimensions.originalWidth;
+          scale *= ratio;
+        } else if (opts.resizeToHeight) {
+          const ratio = opts.resizeToHeight / dimensions.originalHeight;
+          scale *= ratio;
+        }
+
+        return BPromise.props({
+          mapImage: rasterMapCorePool.render(_.omit(_.merge({}, mapOpts, { scale }), _.isNil)),
+          dimensions,
+        });
+      }
+
       return BPromise.props({
         mapImage: rasterTileMapCore.render(mapOpts),
         dimensions,
