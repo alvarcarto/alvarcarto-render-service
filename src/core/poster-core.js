@@ -16,6 +16,7 @@ const xmldom = require('xmldom');
 const window = require('svgdom');
 const svgJs = require('svg.js');
 const rasterMapCore = require('./raster-map-core');
+const rasterMapCorePool = require('./raster-map-core-pool');
 const rasterTileMapCore = require('./raster-tile-map-core');
 const config = require('../config');
 
