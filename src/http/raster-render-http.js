@@ -20,6 +20,11 @@ const getRender = ex.createRoute((req, res) => {
   return posterCore.render(opts)
     .then((image) => {
       res.set('content-type', 'image/png');
+      if (req.query.download) {
+        const name = getAttachmentName(opts);
+        res.set('content-disposition', `attachment; filename=${name}.png;`);
+      }
+
       res.send(image);
     });
 });
@@ -48,6 +53,10 @@ const getRenderCustom = ex.createRoute((req, res) => {
     })
     .then((image) => {
       res.set('content-type', 'image/png');
+      if (req.query.download) {
+        const name = getAttachmentName(opts);
+        res.set('content-disposition', `attachment; filename=${name}.png;`);
+      }
       res.send(image);
     });
 });
@@ -81,6 +90,10 @@ const getRenderMap = ex.createRoute((req, res) => {
   return mapCore.render(_.omit(mapOpts, _.isNil))
     .then((image) => {
       res.set('content-type', 'image/png');
+      if (req.query.download) {
+        const name = getAttachmentName(opts);
+        res.set('content-disposition', `attachment; filename=${name}.png;`);
+      }
       res.send(image);
     });
 });
@@ -93,6 +106,10 @@ const getPlaceIt = ex.createRoute((req, res) => {
   return placeItCore.render(opts)
     .then((image) => {
       res.set('content-type', 'image/png');
+      if (req.query.download) {
+        const name = getAttachmentName(opts);
+        res.set('content-disposition', `attachment; filename=${name}.png;`);
+      }
       res.send(image);
     });
 });
@@ -139,6 +156,11 @@ function _getDefaultScale(size) {
   }
 
   throw new Error(`Unknown size: ${size}`);
+}
+
+function getAttachmentName(opts) {
+  const part1 = `${opts.labelHeader.toLowerCase()}-${opts.size.toLowerCase()}`
+  return `${part1}-${opts.posterStyle.toLowerCase()}-${opts.mapStyle.toLowerCase()}`;
 }
 
 module.exports = {

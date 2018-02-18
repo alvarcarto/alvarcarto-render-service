@@ -51,6 +51,7 @@ function createRouter() {
       labelHeader: Joi.string().optional(),
       labelSmallHeader: Joi.string().optional(),
       labelText: Joi.string().optional(),
+      download: Joi.boolean().optional(),
     },
   };
   router.get('/api/raster/render', validate(rasterRenderSchema), rasterRender.getRender);
@@ -61,6 +62,7 @@ function createRouter() {
       frames: Joi.string().min(1).max(100).optional(),
       resizeToWidth: Joi.number().min(50).max(1200).optional(),
       resizeToHeight: Joi.number().min(50).max(1200).optional(),
+      download: Joi.boolean().optional(),
     },
   });
   router.get('/api/raster/placeit', validate(placeItSchema), rasterRender.getPlaceIt);
@@ -69,6 +71,7 @@ function createRouter() {
     query: {
       file: Joi.string().min(1).max(100).optional(),
       size: Joi.string().optional(),
+      download: Joi.boolean().optional(),
     },
   });
   router.get('/api/raster/render-custom', validate(renderCustomSchema), rasterRender.getRenderCustom);
@@ -83,6 +86,7 @@ function createRouter() {
     neLat: Joi.number().min(-90).max(90).required(),
     neLng: Joi.number().min(-180).max(180).required(),
     scale: Joi.number().min(0).max(1000).optional(),
+    download: Joi.boolean().optional(),
   };
   router.get('/api/raster/render-map', validate(renderMapSchema), rasterRender.getRenderMap);
 
