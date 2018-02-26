@@ -84,14 +84,14 @@ const getRenderMap = ex.createRoute((req, res) => {
         lng: Number(req.query.neLng),
       },
     },
-    scale: Number(req.query.scale) || Math.sqrt(maxSide) / 20,
+    scale: Number(req.query.scale) || Math.sqrt(minSide) / 20,
   };
 
   return mapCore.render(_.omit(mapOpts, _.isNil))
     .then((image) => {
       res.set('content-type', 'image/png');
       if (req.query.download) {
-        const name = getAttachmentName(opts);
+        const name = `alvarcarto-map-${width}x${height}`;
         res.set('content-disposition', `attachment; filename=${name}.png;`);
       }
       res.send(image);
