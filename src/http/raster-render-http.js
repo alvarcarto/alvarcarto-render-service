@@ -69,7 +69,7 @@ const getRenderMap = ex.createRoute((req, res) => {
   const width = Number(req.query.width);
   const height = Number(req.query.height);
 
-  const maxSide = Math.max(width, height);
+  const minSide = Math.min(width, height);
   const mapOpts = {
     width,
     height,
