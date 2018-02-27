@@ -62,12 +62,13 @@ const getRenderCustom = ex.createRoute((req, res) => {
 });
 
 const getRenderMap = ex.createRoute((req, res) => {
-  if (_.get(req, 'user.role') !== ROLES.ADMIN) {
-    ex.throwStatus(403, 'Anonymous requests must define a resize parameter.');
-  }
-
   const width = Number(req.query.width);
   const height = Number(req.query.height);
+
+  const isTooLarge = width > 2500 || height > 2500 || width * height > 1200 * 2450;
+  if (_.get(req, 'user.role') !== ROLES.ADMIN && isTooLarge) {
+    ex.throwStatus(403, 'Anonymous requests must define a resize parameter.');
+  }
 
   const minSide = Math.min(width, height);
   const mapOpts = {

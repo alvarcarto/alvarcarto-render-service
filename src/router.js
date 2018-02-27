@@ -2,6 +2,7 @@ const Joi = require('joi');
 const _ = require('lodash');
 const validate = require('express-validation');
 const express = require('express');
+const RateLimit = require('express-rate-limit');
 const rasterRender = require('./http/raster-render-http');
 const config = require('./config');
 const ROLES = require('./enum/roles');
@@ -25,6 +26,13 @@ function createRouter() {
     }
 
     return next();
+  });
+
+  // Uses req.ip as the default identifier
+  const apiLimiter = new RateLimit({
+    windowMs: 10 * 60 * 1000,
+    max: 20,
+    delayMs: 0,
   });
 
   const rasterRenderSchema = {
@@ -54,7 +62,7 @@ function createRouter() {
       download: Joi.boolean().optional(),
     },
   };
-  router.get('/api/raster/render', validate(rasterRenderSchema), rasterRender.getRender);
+  //router.get('/api/raster/render', validate(rasterRenderSchema), rasterRender.getRender);
 
   const placeItSchema = _.merge({}, rasterRenderSchema, {
     query: {
@@ -65,7 +73,7 @@ function createRouter() {
       download: Joi.boolean().optional(),
     },
   });
-  router.get('/api/raster/placeit', validate(placeItSchema), rasterRender.getPlaceIt);
+  //router.get('/api/raster/placeit', validate(placeItSchema), rasterRender.getPlaceIt);
 
   const renderCustomSchema = _.merge({}, rasterRenderSchema, {
     query: {
@@ -74,7 +82,7 @@ function createRouter() {
       download: Joi.boolean().optional(),
     },
   });
-  router.get('/api/raster/render-custom', validate(renderCustomSchema), rasterRender.getRenderCustom);
+  //router.get('/api/raster/render-custom', validate(renderCustomSchema), rasterRender.getRenderCustom);
 
   const renderMapSchema = {
     width: Joi.number().integer().min(1).max(14000)
@@ -88,7 +96,7 @@ function createRouter() {
     scale: Joi.number().min(0).max(1000).optional(),
     download: Joi.boolean().optional(),
   };
-  router.get('/api/raster/render-map', validate(renderMapSchema), rasterRender.getRenderMap);
+  router.get('/api/raster/render-map', apiLimiter, validate(renderMapSchema), rasterRender.getRenderMap);
 
   return router;
 }

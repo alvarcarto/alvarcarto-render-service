@@ -11,6 +11,11 @@ const config = require('./config');
 
 function createApp() {
   const app = express();
+
+  // App is served behind CloudFlare proxy.
+  // This is needed to be able to use req.ip or req.secure
+  app.enable('trust proxy', 1);
+
   app.disable('x-powered-by');
 
   if (config.NODE_ENV !== 'production') {
