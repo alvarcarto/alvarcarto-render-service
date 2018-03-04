@@ -2,6 +2,7 @@ const BPromise = require('bluebird');
 const path = require('path');
 const _ = require('lodash');
 const fs = require('fs');
+const uuid = require('node-uuid');
 const ex = require('../util/express');
 const posterCore = require('../core/poster-core');
 const mapCore = require('../core/raster-map-core');
@@ -9,6 +10,7 @@ const placeItCore = require('../core/place-it-core');
 const ROLES = require('../enum/roles');
 
 BPromise.promisifyAll(fs);
+const TEMP_DIR = path.join(__dirname, '../../backgrounds');
 
 const getRender = ex.createRoute((req, res) => {
   const resizeDefined = _.has(req.query, 'resizeToWidth') || _.has(req.query, 'resizeToHeight');
@@ -90,12 +92,14 @@ const getRenderMap = ex.createRoute((req, res) => {
 
   return mapCore.render(_.omit(mapOpts, _.isNil))
     .then((image) => {
-      res.set('content-type', 'image/png');
-      if (req.query.download) {
-        const name = `alvarcarto-map-${width}x${height}`;
-        res.set('content-disposition', `attachment; filename=${name}.png;`);
-      }
-      res.send(image);
+      const name = `${uuid.v4()}.png`;
+      return BPromise.props({
+        file: fs.writeFileAsync(path.join(TEMP_DIR, name), image, { encoding: null }),
+        name,
+      });
+    })
+    .then(({ name }) => {
+      res.redirect(302, `/api/backgrounds/${name}`);
     });
 });
 
