@@ -1,3 +1,4 @@
+const path = require('path');
 const Joi = require('joi');
 const _ = require('lodash');
 const validate = require('express-validation');
