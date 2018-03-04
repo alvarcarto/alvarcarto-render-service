@@ -99,7 +99,7 @@ function createRouter() {
   };
   router.get('/api/raster/render-map', apiLimiter, validate(renderMapSchema), rasterRender.getRenderMap);
 
-  app.use('/api/backgrounds', apiLimiter, express.static(path.join(__dirname, '../backgrounds')));
+  router.use('/api/backgrounds', apiLimiter, express.static(path.join(__dirname, '../backgrounds')));
 
   return router;
 }
