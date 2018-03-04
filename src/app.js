@@ -4,7 +4,6 @@ const morgan = require('morgan');
 const bodyParser = require('body-parser');
 const compression = require('compression');
 const cors = require('cors');
-const RateLimit = require('express-rate-limit');
 const errorResponder = require('./middleware/error-responder');
 const errorLogger = require('./middleware/error-logger');
 const createRouter = require('./router');
@@ -38,14 +37,6 @@ function createApp() {
 
   // Initialize routes
   const router = createRouter();
-  // Uses req.ip as the default identifier
-  const apiLimiter = new RateLimit({
-    windowMs: 10 * 60 * 1000,
-    max: 20,
-    delayMs: 0,
-  });
-
-  app.use('/api/backgrounds', apiLimiter, express.static(path.join(__dirname, '../backgrounds')));
 
   app.use('/', router);
   app.use('/posters', express.static(path.join(__dirname, '../posters/dist')));

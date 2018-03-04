@@ -99,7 +99,7 @@ const getRenderMap = ex.createRoute((req, res) => {
       });
     })
     .then(({ name }) => {
-      res.redirect(302, `/api/backgrounds/${name}`);
+      res.redirect(302, `/render/api/backgrounds/${name}`);
     });
 });
 
