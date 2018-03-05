@@ -100,7 +100,7 @@ const getRenderMap = ex.createRoute((req, res) => {
     })
     .then(({ name }) => {
       res.json({
-        path: `/render/api/backgrounds/${name}`,
+        path: `/api/backgrounds/${name}`,
       });
     });
 });
