@@ -86,20 +86,28 @@ function createRouter() {
   //router.get('/api/raster/render-custom', validate(renderCustomSchema), rasterRender.getRenderCustom);
 
   const renderMapSchema = {
-    width: Joi.number().integer().min(1).max(14000)
-      .required(),
-    height: Joi.number().integer().min(1).max(14000)
-      .required(),
-    swLat: Joi.number().min(-90).max(90).required(),
-    swLng: Joi.number().min(-180).max(180).required(),
-    neLat: Joi.number().min(-90).max(90).required(),
-    neLng: Joi.number().min(-180).max(180).required(),
-    scale: Joi.number().min(0).max(1000).optional(),
-    download: Joi.boolean().optional(),
+    query: {
+      width: Joi.number().integer().min(1).max(14000)
+        .required(),
+      height: Joi.number().integer().min(1).max(14000)
+        .required(),
+      swLat: Joi.number().min(-90).max(90).required(),
+      swLng: Joi.number().min(-180).max(180).required(),
+      neLat: Joi.number().min(-90).max(90).required(),
+      neLng: Joi.number().min(-180).max(180).required(),
+      scale: Joi.number().min(0).max(1000).optional(),
+      mapStyle: Joi.string().valid([
+        'bg-black', 'bg-darkgray', 'bg-gray', 'bg-sunset',
+      ]).required(),
+      download: Joi.boolean().optional(),
+    },
   };
   router.get('/api/raster/render-map', apiLimiter, validate(renderMapSchema), rasterRender.getRenderMap);
 
-  router.use('/api/backgrounds', apiLimiter, express.static(path.join(__dirname, '../backgrounds')));
+  router.get('/api/backgrounds/:fileName', apiLimiter, (req, res) => {
+    const absPath = path.join(__dirname, '../backgrounds/', res.params.fileName);
+    res.download(absPath);
+  });
 
   return router;
 }
