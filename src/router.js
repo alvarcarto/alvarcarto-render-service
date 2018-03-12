@@ -105,7 +105,7 @@ function createRouter() {
   router.get('/api/raster/render-map', apiLimiter, validate(renderMapSchema), rasterRender.getRenderMap);
 
   router.get('/api/backgrounds/:fileName', apiLimiter, (req, res) => {
-    const absPath = path.join(__dirname, '../backgrounds/', res.params.fileName);
+    const absPath = path.join(__dirname, '../backgrounds/', req.params.fileName);
     res.download(absPath);
   });
 
