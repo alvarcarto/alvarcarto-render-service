@@ -5,7 +5,7 @@ const fs = require('fs');
 const uuid = require('node-uuid');
 const ex = require('../util/express');
 const posterCore = require('../core/poster-core');
-const mapCore = require('../core/raster-map-core');
+const mapCore = require('../core/raster-tile-map-core');
 const placeItCore = require('../core/place-it-core');
 const ROLES = require('../enum/roles');
 
