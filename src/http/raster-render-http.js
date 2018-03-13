@@ -67,7 +67,7 @@ const getRenderMap = ex.createRoute((req, res) => {
   const width = Number(req.query.width);
   const height = Number(req.query.height);
 
-  const isTooLarge = width > 2500 || height > 2500 || width * height > 1200 * 2450;
+  const isTooLarge = width > 3000 || height > 3000 || width * height > 4320000;
   if (_.get(req, 'user.role') !== ROLES.ADMIN && isTooLarge) {
     ex.throwStatus(403, 'Anonymous requests must define a resize parameter.');
   }
