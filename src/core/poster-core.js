@@ -45,6 +45,12 @@ function render(_opts) {
     uuid: uuid.v4(),
   });
 
+  const isSmallWidth = _.isFinite(opts.resizeToWidth) && opts.resizeToWidth < 300;
+  const isSmallHeight = _.isFinite(opts.resizeToHeight) && opts.resizeToHeight < 300;
+  if (isSmallWidth || isSmallHeight) {
+    opts.useTileRender = true;
+  }
+
   if (opts.labelsEnabled) {
     return _normalRender(opts)
       .finally(() => _deleteFiles(opts));
@@ -116,7 +122,7 @@ function _renderMap(opts) {
 
       if (!opts.useTileRender) {
         let scale = opts.scale;
-        
+
         if (opts.resizeToWidth) {
           const ratio = opts.resizeToWidth / dimensions.originalWidth;
           scale *= ratio;
