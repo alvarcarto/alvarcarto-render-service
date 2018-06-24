@@ -1,24 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <svg width="3543px" height="4724px" viewBox="0 0 3543 4724" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-  <title>
-    sharp-30x40cm-portrait
-  </title>
-  <defs>
-    <path d="M0,0 L3543,0 L3543,4725 L0,4725 L0,0 Z M133,133 L133,4179 L3410,4179 L3410,133 L133,133 Z" id="path-1"/>
-  </defs>
-  <g id="Page-2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-    <g id="30x40cm-portrait">
-      <rect id="hide-this" fill="#D8D8D8" x="0" y="0" width="3543" height="4725"/>
-      <g id="borders">
-        <use fill="#FFF" fill-rule="evenodd" xlink:href="#path-1"/>
-        <path stroke="#000" stroke-width="6" d="M3,3 L3,4722 L3540,4722 L3540,3 L3,3 Z M130,130 L3413,130 L3413,4182 L130,4182 L130,130 Z"/>
-      </g>
-      <g id="labels" transform="translate(1772.000000, 4338.000000)" fill="#262626" font-family="JosefinSans-Bold, Josefin Sans" font-size="160" font-weight="bold" letter-spacing="30">
-        <g id="center">
-          <text id="header">
-            <tspan x="0" y="152">HELSINK</tspan> <tspan x="944.56" y="152">I</tspan>
-          </text>
+    <!-- Generator: Sketch 49.3 (51167) - http://www.bohemiancoding.com/sketch -->
+    <title>sharp-rosegold-30x40cm-portrait</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <rect id="path-1" x="133" y="133" width="3277" height="4046"></rect>
+    </defs>
+    <g id="Page-2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="30x40cm-portrait">
+            <rect id="hide-this" fill="#D8D8D8" x="0" y="0" width="3543" height="4725"></rect>
+            <path d="M0,0 L3543,0 L3543,4725 L0,4725 L0,0 Z M133,133 L133,4179 L3410,4179 L3410,133 L133,133 Z" id="borders" fill="#FFFFFF"></path>
+            <g id="Rectangle">
+                <use fill="#D8D8D8" fill-rule="evenodd" xlink:href="#path-1"></use>
+                <rect stroke="#000000" stroke-width="12" x="139" y="139" width="3265" height="4034"></rect>
+            </g>
+            <g id="labels" transform="translate(1772.000000, 4338.000000)" fill="#262626" font-family="JosefinSans-Bold, Josefin Sans" font-size="160" font-weight="bold" letter-spacing="30">
+                <g id="center">
+                    <text id="header">
+                        <tspan x="0" y="152">HELSINK</tspan>
+                        <tspan x="944.56" y="152">I</tspan>
+                    </text>
+                </g>
+            </g>
         </g>
-      </g>
     </g>
-  </g>
 </svg>
