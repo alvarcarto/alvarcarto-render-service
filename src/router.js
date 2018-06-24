@@ -39,7 +39,7 @@ function createRouter() {
       mapStyle: Joi.string().valid([
         'bw', 'gray', 'black', 'petrol',
         'iceberg', 'marshmellow', 'copper',
-        'madang',
+        'madang', 'contrast-black',
       ]).required(),
       orientation: Joi.string().valid(['landscape', 'portrait']).required(),
       swLat: Joi.number().min(-90).max(90).required(),
