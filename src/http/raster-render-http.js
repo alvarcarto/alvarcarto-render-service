@@ -12,11 +12,23 @@ BPromise.promisifyAll(fs);
 
 const getRender = ex.createRoute((req, res) => {
   const resizeDefined = _.has(req.query, 'resizeToWidth') || _.has(req.query, 'resizeToHeight');
-  if (!resizeDefined && _.get(req, 'user.role') !== ROLES.ADMIN) {
+  const isAnon = _.get(req, 'user.role') !== ROLES.ADMIN;
+  if (!resizeDefined && isAnon) {
     ex.throwStatus(403, 'Anonymous requests must define a resize parameter.');
   }
 
   const opts = _reqToOpts(req);
+
+  if (isAnon) {
+    if (opts.resizeToWidth && resizeToWidth > 800) {
+      ex.throwStatus(403, 'resizeToWidth must be <= 800');
+    }
+
+    if (opts.resizeToHeight && resizeToHeight > 800) {
+      ex.throwStatus(403, 'resizeToHeight must be <= 800');
+    }
+  }
+
   return posterCore.render(opts)
     .then((image) => {
       res.set('content-type', 'image/png');
