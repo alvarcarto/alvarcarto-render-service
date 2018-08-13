@@ -20,11 +20,11 @@ const getRender = ex.createRoute((req, res) => {
   const opts = _reqToOpts(req);
 
   if (isAnon) {
-    if (opts.resizeToWidth && resizeToWidth > 800) {
+    if (opts.resizeToWidth && opts.resizeToWidth > 800) {
       ex.throwStatus(403, 'resizeToWidth must be <= 800');
     }
 
-    if (opts.resizeToHeight && resizeToHeight > 800) {
+    if (opts.resizeToHeight && opts.resizeToHeight > 800) {
       ex.throwStatus(403, 'resizeToHeight must be <= 800');
     }
   }
