@@ -1,0 +1,18 @@
+<svg width="5400px" height="7200px" viewBox="0 0 5400 7200" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <title>
+    sharp-18x24inch-portrait
+  </title>
+  <g id="Page-2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+    <g id="18x24inch-portrait">
+      <rect id="hide-this" fill="#D8D8D8" x="0" y="0" width="5400" height="7200"/>
+      <path d="M0,0 L5400,0 L5400,7200 L0,7200 L0,0 Z M210,210 L210,6422 L5190,6422 L5190,210 L210,210 Z" id="borders" fill="#FFF"/>
+      <g id="labels" transform="translate(2700.000000, 6650.000000)" fill="#262626" font-family="JosefinSans-Bold, Josefin Sans" font-size="260" font-weight="bold" letter-spacing="45">
+        <g id="center">
+          <text id="header">
+            <tspan x="0" y="247">HELSINK</tspan> <tspan x="1508.66" y="247">I</tspan>
+          </text>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

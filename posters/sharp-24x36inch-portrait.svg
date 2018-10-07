@@ -1,0 +1,18 @@
+<svg width="7200px" height="10800px" viewBox="0 0 7200 10800" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <title>
+    sharp-24x36inch-portrait
+  </title>
+  <g id="Page-2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+    <g id="24x36inch-portrait" transform="translate(0.000000, 0.000000)">
+      <rect id="hide-this" fill="#D8D8D8" x="0" y="0" width="7200" height="10800"/>
+      <path d="M0,0 L7200,0 L7200,10800 L0,10800 L0,0 Z M299,299 L299,9667 L6901,9667 L6901,299 L299,299 Z" id="borders" fill="#FFF"/>
+      <g id="labels" transform="translate(3600.000000, 9997.000000)" fill="#262626" font-family="JosefinSans-Bold, Josefin Sans" font-size="340" font-weight="bold" letter-spacing="60">
+        <g id="center">
+          <text id="header">
+            <tspan x="0" y="323">HELSINKI</tspan>
+          </text>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

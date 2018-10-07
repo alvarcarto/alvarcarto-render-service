@@ -362,8 +362,8 @@ function removeNode(node) {
 // Returns expected pixel dimensions for certain size, when
 // we are printing at certain `PRINT_DPI` resolution.
 function parseSizeToPixelDimensions(size, orientation) {
-  if (!_.isString(size) || !size.match(/[0-9]+x[0-9]+(cm|in)/)) {
-    throw new Error(`Size should match /[0-9]+x[0-9]+(cm|in)/, size: ${size}`);
+  if (!_.isString(size) || !size.match(/[0-9]+x[0-9]+(cm|inch)/)) {
+    throw new Error(`Size should match /[0-9]+x[0-9]+(cm|inch)/, size: ${size}`);
   }
 
   const unit = size.slice(-2);

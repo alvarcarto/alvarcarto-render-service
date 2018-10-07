@@ -1,0 +1,23 @@
+<svg width="7200px" height="5400px" viewBox="0 0 7200 5400" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <title>
+    bw-18x24inch-landscape
+  </title>
+  <g id="Page-2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+    <g id="18x24inch-landscape">
+      <rect id="hide-this" fill="#D8D8D8" x="0" y="0" width="7200" height="5400"/>
+      <path d="M0,0 L7200,0 L7200,5400 L0,5400 L0,0 Z M210,210 L210,4467 L6990,4467 L6990,210 L210,210 Z" id="borders" fill="#FFF"/>
+      <path d="M210,4464 L6990,4464" id="Line" stroke="#000" stroke-width="30"/>
+      <g id="labels" transform="translate(200.000000, 4553.000000)" font-style="condensed">
+        <text id="text" font-family="RobotoCondensed-Light, Roboto Condensed" font-size="90" font-weight="300" letter-spacing="24.54545" fill="#343434">
+          <tspan x="11" y="618">60.160°N / 24.942°</tspan> <tspan x="1129.40013" y="618" letter-spacing="27.61364">E</tspan>
+        </text>
+        <text id="small-header" font-family="RobotoCondensed-Light, Roboto Condensed" font-size="130" font-weight="300" letter-spacing="4.333333" fill="#000">
+          <tspan x="5" y="423">FINLAND</tspan>
+        </text>
+        <text id="header" font-family="RobotoCondensed-Bold, Roboto Condensed" font-size="230" font-weight="bold" fill="#000">
+          <tspan x="0" y="213">HELSINKI</tspan>
+        </text>
+      </g>
+    </g>
+  </g>
+</svg>

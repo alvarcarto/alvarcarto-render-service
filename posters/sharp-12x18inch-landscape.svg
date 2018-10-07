@@ -1,0 +1,18 @@
+<svg width="5400px" height="3600px" viewBox="0 0 5400 3600" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <title>
+    sharp-12x18inch-landscape
+  </title>
+  <g id="Page-2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+    <g id="12x18inch-landscape">
+      <rect id="hide-this" fill="#D8D8D8" x="0" y="0" width="5400" height="3600"/>
+      <path d="M0,0 L5400,0 L5400,3600 L0,3600 L0,0 Z M133,133 L133,3097 L5267,3097 L5267,133 L133,133 Z" id="borders" fill="#FFF"/>
+      <g id="labels" transform="translate(2700.000000, 3248.000000)" fill="#262626" font-family="JosefinSans-Bold, Josefin Sans" font-size="160" font-weight="bold" letter-spacing="30">
+        <g id="center">
+          <text id="header">
+            <tspan x="0" y="152">HELSINK</tspan> <tspan x="944.56" y="152">I</tspan>
+          </text>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

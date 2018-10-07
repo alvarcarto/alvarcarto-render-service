@@ -157,13 +157,24 @@ function _reqToOpts(req) {
 
 function _getDefaultScale(size) {
   switch (size) {
+    case 'A6':
+      return 1;
+    // A5
     case '14.8x21cm':
       return 2;
+
     case '30x40cm':
       return 3;
     case '50x70cm':
       return 4;
     case '70x100cm':
+      return 5;
+
+    case '12x18inch':
+      return 3;
+    case '18x24inch':
+      return 4;
+    case '24x36inch':
       return 5;
   }
 

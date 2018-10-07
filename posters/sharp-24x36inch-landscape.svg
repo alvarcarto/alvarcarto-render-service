@@ -1,0 +1,18 @@
+<svg width="10800px" height="7200px" viewBox="0 0 10800 7200" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <title>
+    sharp-24x36inch-landscape
+  </title>
+  <g id="Page-2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+    <g id="24x36inch-landscape">
+      <rect id="hide-this" fill="#D8D8D8" x="0" y="0" width="10800" height="7200"/>
+      <path d="M0,0 L10800,0 L10800,7200 L0,7200 L0,0 Z M299,302 L299,6059 L10501,6059 L10501,302 L299,302 Z" id="borders" fill="#FFF"/>
+      <g id="labels" transform="translate(5400.000000, 6398.000000)" fill="#262626" font-family="JosefinSans-Bold, Josefin Sans" font-size="340" font-weight="bold" letter-spacing="54.4">
+        <g id="center">
+          <text id="header">
+            <tspan x="0" y="323">HELSINKI</tspan>
+          </text>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,35 @@
+<svg width="7200px" height="5400px" viewBox="0 0 7200 5400" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <title>
+    classic-18x24inch-landscape
+  </title>
+  <defs>
+    <linearGradient x1="50%" y1="0%" x2="50%" y2="46.2207245%" id="linearGradient-1">
+      <stop stop-color="#FFF" stop-opacity="0" offset="0%"/>
+      <stop stop-color="#FFF" offset="100%"/>
+    </linearGradient>
+  </defs>
+  <g id="Page-2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+    <g id="18x24inch-landscape">
+      <rect id="hide-this" fill="#D8D8D8" x="0" y="0" width="7200" height="5400"/>
+      <path d="M0,0 L7200,0 L7200,5400 L0,5400 L0,0 Z M194,194 L194,5206 L7006,5206 L7006,194 L194,194 Z" id="white-padding" fill="#FFF"/>
+      <rect id="gradient-only-client" fill="url(#linearGradient-1)" x="194" y="3410" width="6812" height="1796"/>
+      <rect id="only-server-replace-with-image-classic-gradient-18x24inch-landscape.png" x="194" y="3410" width="6812" height="1796"/>
+      <polygon id="black-outer-border" stroke="#000" stroke-width="32" points="210 5190 210 210 6990 210 6990 5190"/>
+      <polygon id="white-middle-border" stroke="#FFF" stroke-width="40" points="246 5154 246 246 6954 246 6954 5154"/>
+      <polygon id="black-inner-border" stroke="#000" stroke-width="20" points="276 5124 276 276 6924 276 6924 5124"/>
+      <g id="labels" transform="translate(3601.000000, 4024.000000)">
+        <g id="center">
+          <text id="text" font-family="JosefinSans-Light, Josefin Sans" font-size="80" font-weight="300" letter-spacing="19.2" fill="#343434">
+            <tspan x="0" y="804">60.160°N / 24.942°</tspan> <tspan x="970.56" y="804" letter-spacing="15.36">E</tspan>
+          </text>
+          <text id="small-header" font-family="JosefinSans-Regular, Josefin Sans" font-size="112" font-weight="normal" letter-spacing="16" fill="#000">
+            <tspan x="0" y="586">FINLAN</tspan> <tspan x="532.016" y="586" letter-spacing="14.93333">D</tspan>
+          </text>
+          <text id="header" font-family="JosefinSans-Bold, Josefin Sans" font-size="330" font-weight="bold" letter-spacing="39.07895" fill="#000">
+            <tspan x="0" y="314">HELSINK</tspan> <tspan x="1788.58265" y="314" letter-spacing="36.84587">I</tspan>
+          </text>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>
