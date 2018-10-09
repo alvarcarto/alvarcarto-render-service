@@ -7,7 +7,7 @@
     "start": "npm run build-posters && nodemon --watch ./src -e js --exec \"babel-node --presets es2015 src/index.js\"",
     "build": "babel ./src -d ./dist --presets es2015",
     "build-posters": "./tools/build-posters.sh",
-    "clean-posters": "rm posters/dist/images/*.png && rm posters/dist/*.svg && rm posters/dist/custom/*.svg && rm posters/dist/custom/*.json",
+    "clean-posters": "rm -f posters/dist/images/*.png && rm -f posters/dist/*.svg && rm -f posters/dist/custom/*.svg && rm -f posters/dist/custom/*.json",
     "start-prod": "npm run build-posters && node ./dist/index.js",
     "lint": "eslint ./src",
     "test": "echo \"Error: no test specified\" && exit 1"
