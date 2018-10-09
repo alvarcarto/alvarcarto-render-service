@@ -1,4 +1,7 @@
 <svg width="8268px" height="5906px" viewBox="0 0 8268 5906" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <title>
+    classic-50x70cm-landscape
+  </title>
   <defs>
     <linearGradient x1="50%" y1="0%" x2="50%" y2="45.8575513%" id="linearGradient-1">
       <stop stop-color="#FFF" stop-opacity="0" offset="0%"/>
@@ -8,7 +11,7 @@
   <g id="Page-2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
     <g id="50x70cm-landscape">
       <rect id="hide-this" fill="#D8D8D8" x="0" y="0" width="8268" height="5906"/>
-      <path d="M0,0 L8268,0 L8268,5906 L0,5906 L0,0 Z M235,235 L8033,235 L8033,5671 L235,5671 L235,235 Z" id="white-padding" fill="#FFF"/>
+      <path d="M0,0 L8268,0 L8268,5906 L0,5906 L0,0 Z M235,235 L235,5671 L8033,5671 L8033,235 L235,235 Z" id="white-padding" fill="#FFF"/>
       <rect id="gradient-only-client" fill="url(#linearGradient-1)" x="131" y="3661" width="8007" height="2057"/>
       <rect id="only-server-replace-with-image-classic-gradient-50x70cm-landscape.png" x="131" y="3661" width="8007" height="2057"/>
       <polygon id="black-outer-border" stroke="#000" stroke-width="32" points="251 5655 251 251 8017 251 8017 5655"/>
@@ -17,13 +20,13 @@
       <g id="labels" transform="translate(4134.000000, 4338.000000)">
         <g id="center">
           <text id="text" font-family="JosefinSans-Light, Josefin Sans" font-size="100" font-weight="300" letter-spacing="24" fill="#343434">
-            <tspan x="0" y="944">60.160°N / 24.942°</tspan> <tspan x="1222.7" y="944">E</tspan>
+            <tspan x="0" y="944">60.160°N / 24.942°</tspan> <tspan x="1213.2" y="944">E</tspan>
           </text>
-          <text id="small-header" font-family="JosefinSans, Josefin Sans" font-size="140" font-weight="normal" letter-spacing="20" fill="#000">
-            <tspan x="0" y="683">FINLAN</tspan> <tspan x="632.12" y="683">D</tspan>
+          <text id="small-header" font-family="JosefinSans-Regular, Josefin Sans" font-size="140" font-weight="normal" letter-spacing="20" fill="#000">
+            <tspan x="0" y="683">FINLAN</tspan> <tspan x="665.02" y="683">D</tspan>
           </text>
           <text id="header" font-family="JosefinSans-Bold, Josefin Sans" font-size="380" font-weight="bold" letter-spacing="45" fill="#000">
-            <tspan x="0" y="361">HELSINK</tspan> <tspan x="1943.68" y="361">I</tspan>
+            <tspan x="0" y="361">HELSINK</tspan> <tspan x="2059.58" y="361">I</tspan>
           </text>
         </g>
       </g>

@@ -1,10 +1,13 @@
 <svg width="8268px" height="11811px" viewBox="0 0 8268 11811" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <title>
+    sharp-70x100cm-portrait
+  </title>
   <g id="Page-2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
     <g id="70x100cm-portrait">
-      
-      <path d="M0,0 L8268,0 L8268,11811 L0,11811 L0,0 Z M299,299 L7969,299 L7969,10572 L299,10572 L299,299 Z" id="borders" fill="#FFF"/>
-      <g id="labels" transform="translate(4134.000000, 10989.000000)" font-size="340" font-family="JosefinSans-Bold, Josefin Sans" letter-spacing="60" fill="#262626" font-weight="bold">
-        <g id="center" text-anchor="middle">
+      <rect id="hide-this" fill="#D8D8D8" x="0" y="0" width="8268" height="11811"/>
+      <path d="M0,0 L8268,0 L8268,11811 L0,11811 L0,0 Z M299,299 L299,10572 L7969,10572 L7969,299 L299,299 Z" id="borders" fill="#FFF"/>
+      <g id="labels" transform="translate(4134.000000, 10989.000000)" fill="#262626" font-family="JosefinSans-Bold, Josefin Sans" font-size="340" font-weight="bold" letter-spacing="60">
+        <g id="center">
           <text id="header">
             <tspan x="0" y="323">HELSINKI</tspan>
           </text>

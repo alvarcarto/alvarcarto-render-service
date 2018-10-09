@@ -3,7 +3,7 @@
     classic-24x36inch-portrait
   </title>
   <defs>
-    <linearGradient x1="50%" y1="0%" x2="50%" y2="47.4969143%" id="linearGradient-1">
+    <linearGradient x1="50%" y1="0%" x2="50%" y2="41.8115363%" id="linearGradient-1">
       <stop stop-color="#FFF" stop-opacity="0" offset="0%"/>
       <stop stop-color="#FFF" offset="100%"/>
     </linearGradient>
@@ -12,12 +12,12 @@
     <g id="24x36inch-portrait">
       <rect id="hide-this" fill="#D8D8D8" x="0" y="0" width="7200" height="10800"/>
       <path d="M0,0 L7200,0 L7200,10800 L0,10800 L0,0 Z M279,279 L279,10521 L6921,10521 L6921,279 L279,279 Z" id="white-padding" fill="#FFF"/>
-      <rect id="gradient-only-client" fill="url(#linearGradient-1)" x="279" y="7603" width="6642" height="2918"/>
-      <rect id="only-server-replace-with-image-classic-gradient-24x36inch-portrait.png" x="279" y="7603" width="6642" height="2918"/>
+      <rect id="gradient-only-client" fill="url(#linearGradient-1)" x="0" y="7831" width="7200" height="2969"/>
+      <rect id="only-server-replace-with-image-classic-gradient-24x36inch-portrait.png" x="0" y="7831" width="7200" height="2969"/>
       <polygon id="black-outer-border" stroke="#000" stroke-width="42" points="300 10500 300 300 6900 300 6900 10500"/>
       <polygon id="white-middle-border" stroke="#FFF" stroke-width="54" points="348 10452 348 348 6852 348 6852 10452"/>
       <polygon id="black-inner-border" stroke="#000" stroke-width="28" points="389 10411 389 389 6811 389 6811 10411"/>
-      <g id="labels" transform="translate(3601.000000, 8591.000000)">
+      <g id="labels" transform="translate(3601.000000, 8711.000000)">
         <g id="center">
           <text id="text" font-family="JosefinSans-Light, Josefin Sans" font-size="120" font-weight="300" letter-spacing="25.71573" fill="#343434">
             <tspan x="0" y="1148">60.160°N / 24.942°</tspan> <tspan x="1400.32314" y="1148" letter-spacing="23.7376">E</tspan>
