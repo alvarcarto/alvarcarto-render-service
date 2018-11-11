@@ -17,6 +17,13 @@ const PRINT_DPI = 300;
 
 const DIST_DIR = path.join(__dirname, '../posters/dist');
 
+const SIZES_IN_INCHES = {
+  A6: { width: 4.1, height: 5.8 },
+  A5: { width: 5.8, height: 8.3 },
+  A4: { width: 8.3, height: 11.7 },
+  A3: { width: 11.7, height: 16.5 },
+};
+
 function main() {
   const customFilePaths = glob.sync(path.join(__dirname, '../posters/custom') + '/*');
   const filePaths = glob.sync(path.join(__dirname, '../posters') + '/*').concat(customFilePaths);
@@ -362,6 +369,15 @@ function removeNode(node) {
 // Returns expected pixel dimensions for certain size, when
 // we are printing at certain `PRINT_DPI` resolution.
 function parseSizeToPixelDimensions(size, orientation) {
+  if (_.has(SIZES_IN_INCHES, size)) {
+    const { width, height } = SIZES_IN_INCHES[size];
+
+    return resolveOrientation({
+      width: Math.round(width * PRINT_DPI, 0),
+      height: Math.round(height * PRINT_DPI, 0),
+    }, orientation);
+  }
+
   if (!_.isString(size) || !size.match(/[0-9]+x[0-9]+(cm|inch)/)) {
     throw new Error(`Size should match /[0-9]+x[0-9]+(cm|inch)/, size: ${size}`);
   }

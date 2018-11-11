@@ -1,0 +1,18 @@
+<svg width="1230px" height="1740px" viewBox="0 0 1230 1740" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <title>
+    sharp-A6-portrait
+  </title>
+  <g id="Page-2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+    <g id="A6-portrait">
+      <rect id="hide-this" fill="#D8D8D8" x="0" y="0" width="1230" height="1740"/>
+      <path d="M0,0 L1230,0 L1230,1740 L0,1740 L0,0 Z M50,50 L50,1588 L1180,1588 L1180,50 L50,50 Z" id="borders" fill="#FFF"/>
+      <g id="labels" transform="translate(615.000000, 1631.000000)" fill="#000" font-family="JosefinSans-Bold, Josefin Sans" font-size="50" font-weight="bold" letter-spacing="3.95000005">
+        <g id="center">
+          <text id="header">
+            <tspan x="0" y="48">HELSINK</tspan> <tspan x="257.2" y="48">I</tspan>
+          </text>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>
