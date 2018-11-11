@@ -159,6 +159,13 @@ function _getDefaultScale(size) {
   switch (size) {
     case 'A6':
       return 1;
+    case 'A5':
+      return 2;
+    case 'A4':
+      return 2.5;
+    case 'A3':
+      return 3;
+
     // A5
     case '14.8x21cm':
       return 2;

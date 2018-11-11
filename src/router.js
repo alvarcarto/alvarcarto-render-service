@@ -29,7 +29,12 @@ function createRouter() {
 
   const rasterRenderSchema = {
     query: {
-      size: Joi.string().valid(['30x40cm', '50x70cm', '70x100cm', '12x18inch', '18x24inch', '24x36inch', 'A6', '14.8x21cm']).required(),
+      size: Joi.string().valid([
+        '30x40cm', '50x70cm', '70x100cm',
+        '12x18inch', '18x24inch', '24x36inch',
+        'A6', 'A5', 'A4', 'A3',
+        '14.8x21cm',
+      ]).required(),
       resizeToWidth: Joi.number().min(50).optional(),
       resizeToHeight: Joi.number().min(50).optional(),
       posterStyle: Joi.string().valid([
