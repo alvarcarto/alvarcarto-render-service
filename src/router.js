@@ -41,11 +41,11 @@ function createRouter() {
         'sharp', 'classic', 'sans', 'bw',
         'pacific', 'summer', 'round',
       ]).required(),
-      mapStyle: Joi.string().valid([
-        'bw', 'gray', 'black', 'petrol',
-        'iceberg', 'marshmellow', 'copper',
-        'madang', 'contrast-black',
-      ]).required(),
+      mapStyle: Joi.string()
+        .regex(/^[a-zA-Z0-9-_]+$/)
+        .min(1)
+        .max(40)
+        .required(),
       orientation: Joi.string().valid(['landscape', 'portrait']).required(),
       swLat: Joi.number().min(-90).max(90).required(),
       swLng: Joi.number().min(-180).max(180).required(),
