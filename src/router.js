@@ -104,7 +104,14 @@ function createRouter() {
   };
   router.get('/api/raster/render-map', apiLimiter, validate(renderMapSchema), rasterRender.getRenderMap);
 
-  router.get('/api/backgrounds/:fileName', apiLimiter, (req, res) => {
+  const getBackgroundSchema = {
+    params: {
+      fileName: Joi.string()
+        .regex(/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{4}-[89AB][0-9A-F]{4}-[0-9A-F]{12}\.[A-Z]{3}$/i)
+        .required(),
+    },
+  };
+  router.get('/api/backgrounds/:fileName', apiLimiter, validate(getBackgroundSchema), (req, res) => {
     const absPath = path.join(__dirname, '../backgrounds/', req.params.fileName);
     res.download(absPath);
   });
@@ -113,3 +120,4 @@ function createRouter() {
 }
 
 module.exports = createRouter;
+
