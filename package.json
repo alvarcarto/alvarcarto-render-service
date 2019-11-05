@@ -16,7 +16,7 @@
   "license": "UNLICENSED",
   "dependencies": {
     "@alvarcarto/mosaic": "^0.2.2",
-    "alvarcarto-common": "git+https://alvarcarto-integration:c20a4fe9a8771c17eab5f0470fba434ab2fcf901@github.com/kimmobrunfeldt/alvarcarto-common.git#v5.0.0",
+    "alvarcarto-common": "git+https://alvarcarto-integration:c20a4fe9a8771c17eab5f0470fba434ab2fcf901@github.com/kimmobrunfeldt/alvarcarto-common.git#v6.0.0",
     "async-lock": "^1.0.0",
     "babel-cli": "^6.18.0",
     "babel-preset-es2015": "^6.18.0",
