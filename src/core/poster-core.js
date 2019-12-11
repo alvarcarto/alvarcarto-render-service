@@ -41,6 +41,7 @@ window.setFontDir(config.FONT_DIR)
 function render(_opts) {
   const opts = _.merge({
     useTileRender: false,
+    material: 'paper',
   }, _opts, {
     uuid: uuid.v4(),
   });
@@ -264,7 +265,7 @@ function svgDocToStr(svgDoc) {
 
 function setTexts(svgDoc, opts) {
   const { labelColor } = getMapStyle(opts.mapStyle);
-  const { addLines, upperCaseLabels } = getPosterStyle(opts.posterStyle);
+  const { addLines, upperCaseLabels } = getPosterStyle(opts.posterStyle, opts.material);
 
   const labelHeader = upperCaseLabels
     ? opts.labelHeader.toUpperCase()
