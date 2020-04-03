@@ -1,9 +1,5 @@
 const _ = require('lodash');
-const BPromise = require('bluebird');
 const path = require('path');
-const lwip = BPromise.promisifyAll(require('lwip'));
-BPromise.promisifyAll(require('lwip/lib/Image').prototype);
-BPromise.promisifyAll(require('lwip/lib/Batch').prototype);
 const sharp = require('sharp');
 const posterCore = require('./poster-core');
 
@@ -166,12 +162,6 @@ function _renderExact(photoMeta, opts) {
   }), _.isNil);
 
   return _renderPoster(mapRenderOpts)
-    .then(poster =>
-      lwip.openAsync(poster, 'png')
-        .then(p => p.fadeAsync(0.03))
-        .then(p => p.darkenAsync(0.05))
-        .then(p => p.toBufferAsync('png')),
-    )
     .then(posterImage =>
       sharp(getFilePath(`./images/${photoMeta.fileName}`))
         .overlayWith(posterImage, {
