@@ -33,7 +33,7 @@
     "jsdom": "^9.8.3",
     "lodash": "^4.17.2",
     "lwip": "0.0.9",
-    "mapnik": "3.5.x",
+    "mapnik": "3.7.x",
     "morgan": "^1.7.0",
     "node-uuid": "^1.4.7",
     "request": "^2.79.0",
