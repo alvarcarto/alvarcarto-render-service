@@ -15,7 +15,7 @@
   "author": "Alvar Carto",
   "license": "UNLICENSED",
   "dependencies": {
-    "@alvarcarto/mosaic": "^0.2.2",
+    "@alvarcarto/mosaic": "^1.0.0",
     "alvarcarto-common": "git+https://alvarcarto-integration:c20a4fe9a8771c17eab5f0470fba434ab2fcf901@github.com/kimmobrunfeldt/alvarcarto-common.git#v7.0.0",
     "async-lock": "^1.0.0",
     "babel-cli": "^6.18.0",
@@ -33,7 +33,7 @@
     "jsdom": "^9.8.3",
     "lodash": "^4.17.2",
     "lwip": "0.0.9",
-    "mapnik": "3.7.x",
+    "mapnik": "4.x",
     "morgan": "^1.7.0",
     "node-uuid": "^1.4.7",
     "request": "^2.79.0",
