@@ -14,6 +14,7 @@ const config = {
   DEBUG_POSTER_LINES: process.env.DEBUG_POSTER_LINES === 'true',
   SKIP_INITIAL_MAPNIK_CACHE: process.env.SKIP_INITIAL_MAPNIK_CACHE === 'true',
   SAVE_TEMP_FILES: process.env.SAVE_TEMP_FILES === 'true',
+  DEBUG_MAPNIK: process.env.DEBUG_MAPNIK === 'true',
   TILE_URL: process.env.TILE_URL || 'https://tile-api.alvarcarto.com/tiles/{style}/{z}/{x}/{y}/tile.png',
 };
 

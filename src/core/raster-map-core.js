@@ -7,6 +7,9 @@ const config = require('../config');
 
 mapnik.register_default_fonts();
 mapnik.register_default_input_plugins();
+if (config.DEBUG_MAPNIK) {
+  mapnik.Logger.setSeverity(mapnik.Logger.DEBUG);
+}
 
 function render(_opts) {
   const opts = _.merge({
