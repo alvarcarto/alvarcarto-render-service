@@ -27,6 +27,10 @@ const getRender = ex.createRoute((req, res) => {
     if (opts.resizeToHeight && opts.resizeToHeight > 800) {
       ex.throwStatus(403, 'resizeToHeight must be <= 800');
     }
+  } else {
+    // Set very long timeout
+    req.setTimeout(10 * 60 * 1000);
+    res.setTimeout(10 * 60 * 1000);
   }
 
   return posterCore.render(opts)
@@ -46,6 +50,10 @@ const getRenderCustom = ex.createRoute((req, res) => {
   if (!resizeDefined && _.get(req, 'user.role') !== ROLES.ADMIN) {
     ex.throwStatus(403, 'Anonymous requests must define a resize parameter.');
   }
+
+  // Set very long timeout
+  req.setTimeout(10 * 60 * 1000);
+  res.setTimeout(10 * 60 * 1000);
 
   const file = req.query.file;
   const fileBasePath = path.join(__dirname, '../../posters/dist/custom', file);
@@ -77,6 +85,10 @@ const getRenderMap = ex.createRoute((req, res) => {
   if (_.get(req, 'user.role') !== ROLES.ADMIN) {
     ex.throwStatus(403, 'Anonymous requests must define a resize parameter.');
   }
+
+  // Set very long timeout
+  req.setTimeout(10 * 60 * 1000);
+  res.setTimeout(10 * 60 * 1000);
 
   const width = Number(req.query.width);
   const height = Number(req.query.height);
