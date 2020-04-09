@@ -10,6 +10,10 @@ const ROLES = require('../enum/roles');
 
 BPromise.promisifyAll(fs);
 
+// Set very long timeout. Needed for rendering e.g. roads for the whole world
+// Enable only for API authenticated users!
+const SOCKET_TIMEOUT = 30 * 60 * 1000;
+
 const getRender = ex.createRoute((req, res) => {
   const resizeDefined = _.has(req.query, 'resizeToWidth') || _.has(req.query, 'resizeToHeight');
   const isAnon = _.get(req, 'user.role') !== ROLES.ADMIN;
@@ -28,9 +32,8 @@ const getRender = ex.createRoute((req, res) => {
       ex.throwStatus(403, 'resizeToHeight must be <= 800');
     }
   } else {
-    // Set very long timeout
-    req.setTimeout(10 * 60 * 1000);
-    res.setTimeout(10 * 60 * 1000);
+    req.setTimeout(SOCKET_TIMEOUT);
+    res.setTimeout(SOCKET_TIMEOUT);
   }
 
   return posterCore.render(opts)
@@ -51,9 +54,8 @@ const getRenderCustom = ex.createRoute((req, res) => {
     ex.throwStatus(403, 'Anonymous requests must define a resize parameter.');
   }
 
-  // Set very long timeout
-  req.setTimeout(10 * 60 * 1000);
-  res.setTimeout(10 * 60 * 1000);
+  req.setTimeout(SOCKET_TIMEOUT);
+  res.setTimeout(SOCKET_TIMEOUT);
 
   const file = req.query.file;
   const fileBasePath = path.join(__dirname, '../../posters/dist/custom', file);
@@ -86,9 +88,8 @@ const getRenderMap = ex.createRoute((req, res) => {
     ex.throwStatus(403, 'Anonymous requests must define a resize parameter.');
   }
 
-  // Set very long timeout
-  req.setTimeout(10 * 60 * 1000);
-  res.setTimeout(10 * 60 * 1000);
+  req.setTimeout(SOCKET_TIMEOUT);
+  res.setTimeout(SOCKET_TIMEOUT);
 
   const width = Number(req.query.width);
   const height = Number(req.query.height);
