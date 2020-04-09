@@ -5,6 +5,7 @@ const fs = require('fs');
 const ex = require('../util/express');
 const posterCore = require('../core/poster-core');
 const mapCore = require('../core/raster-map-core');
+const tileMapCore = require('../core/raster-tile-map-core');
 const placeItCore = require('../core/place-it-core');
 const ROLES = require('../enum/roles');
 
@@ -12,7 +13,7 @@ BPromise.promisifyAll(fs);
 
 // Set very long timeout. Needed for rendering e.g. roads for the whole world
 // Enable only for API authenticated users!
-const SOCKET_TIMEOUT = 30 * 60 * 1000;
+const SOCKET_TIMEOUT = 10 * 60 * 1000;
 
 const getRender = ex.createRoute((req, res) => {
   const resizeDefined = _.has(req.query, 'resizeToWidth') || _.has(req.query, 'resizeToHeight');
@@ -76,7 +77,7 @@ const getRenderCustom = ex.createRoute((req, res) => {
     .then((image) => {
       res.set('content-type', 'image/png');
       if (req.query.download) {
-        const name = getAttachmentName(opts);
+        const name = 'alvarcarto-custom';
         res.set('content-disposition', `attachment; filename=${name}.png;`);
       }
       res.send(image);
@@ -112,7 +113,11 @@ const getRenderMap = ex.createRoute((req, res) => {
     scale: Number(req.query.scale) || Math.sqrt(minSide) / 20,
   };
 
-  return mapCore.render(_.omit(mapOpts, _.isNil))
+  const imagePromise = req.query.useTileRender
+    ? tileMapCore.render(_.omit(mapOpts, _.isNil))
+    : mapCore.render(_.omit(mapOpts, _.isNil));
+
+  return imagePromise
     .then((image) => {
       res.set('content-type', 'image/png');
       if (req.query.download) {
@@ -147,6 +152,7 @@ function _reqToOpts(req) {
     primaryColor: req.query.primaryColor,
     size,
     orientation: req.query.orientation,
+    useTileRender: req.query.useTileRender,
     resizeToWidth: req.query.resizeToWidth ? Number(req.query.resizeToWidth) : null,
     resizeToHeight: req.query.resizeToHeight ? Number(req.query.resizeToHeight) : null,
     bounds: {
