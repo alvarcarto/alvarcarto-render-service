@@ -2,7 +2,8 @@
 *.mbtiles
 node_modules
 
-./*.png
+
+/*.png
 dist/*
 
 
