@@ -9,12 +9,17 @@ const config = {
   NODE_ENV: process.env.NODE_ENV,
   LOG_LEVEL: process.env.LOG_LEVEL,
   API_KEY: process.env.API_KEY,
-  STYLE_DIR: process.env.STYLE_DIR || path.join('../alvarcarto-cartocss-bw'),
+  STYLE_DIR: process.env.STYLE_DIR || path.join('/home/alvar/mapnik-styles'),
   FONT_DIR: process.env.FONT_DIR || '/usr/share/fonts/truetype/google-fonts',
   DEBUG_POSTER_LINES: process.env.DEBUG_POSTER_LINES === 'true',
   SKIP_INITIAL_MAPNIK_CACHE: process.env.SKIP_INITIAL_MAPNIK_CACHE === 'true',
   SAVE_TEMP_FILES: process.env.SAVE_TEMP_FILES === 'true',
   DEBUG_MAPNIK: process.env.DEBUG_MAPNIK === 'true',
+  MAPNIK_POSTGIS_DBNAME: process.env.MAPNIK_POSTGIS_DBNAME,
+  MAPNIK_POSTGIS_HOST: process.env.MAPNIK_POSTGIS_HOST,
+  MAPNIK_POSTGIS_PORT: process.env.MAPNIK_POSTGIS_PORT,
+  MAPNIK_POSTGIS_USER: process.env.MAPNIK_POSTGIS_USER,
+  MAPNIK_POSTGIS_PASSWORD: process.env.MAPNIK_POSTGIS_PASSWORD,
   TILE_URL: process.env.TILE_URL || 'https://tile-api.alvarcarto.com/tiles/{style}/{z}/{x}/{y}/tile.png',
 };
 

@@ -23,6 +23,7 @@ function render(_opts) {
     opts.minWidth = 0;
   }
 
+  logger.info('Rendering map with tiles.. ');
   return tile(opts)
     .then((image) => {
       return sharp(image)

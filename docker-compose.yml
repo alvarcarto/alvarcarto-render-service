@@ -1,0 +1,21 @@
+version: "3.7"
+
+services:
+  render:
+    image: alvar-map-node
+    environment:
+      # Don't change this port!
+      # To expose different port for host machine, see ports config below
+      - PORT=8080
+      - API_KEY=secret
+      - MAPNIK_POSTGIS_HOST=host.docker.internal
+      - MAPNIK_POSTGIS_PORT=4321
+    command: bash -i -c 'nvm use 8 && npm start'
+    working_dir: /home/alvar/alvarcarto-render-service
+    volumes:
+      - .:/home/alvar/alvarcarto-render-service
+      - ../alvarcarto-cartocss/dist:/home/alvar/mapnik-styles
+      - ../alvarcarto-cartocss/:/home/alvar/alvarcarto-cartocss
+    ports:
+      # To expose tile service at 3333 port to the host machine, write "3333:8080" here
+      - "8001:8080"

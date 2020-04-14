@@ -1,3 +1,4 @@
+const fs = require('fs');
 const BPromise = require('bluebird');
 const path = require('path');
 const glob = require('glob');
@@ -5,18 +6,21 @@ const _ = require('lodash');
 const mapnik = require('mapnik');
 const AsyncLock = require('async-lock');
 const logger = require('../util/logger')(__filename);
+const { replacePostgisParametersFileSync, AUTOGEN_SUFFIX } = require('../util/mapnik');
 const config = require('../config');
 const rasterMapCore = require('./raster-map-core');
 
 // Pre-load and initialize map for each mapnik style
-const files = glob.sync(`${config.STYLE_DIR}/*.xml`);
+const files = _.filter(glob.sync(`${config.STYLE_DIR}/*.xml`), filePath => !_.endsWith(filePath, `${AUTOGEN_SUFFIX}.xml`));
 logger.info(`Preloading ${files.length} mapnik styles ..`);
 
 const mapnikCache = _.reduce(files, (memo, filePath) => {
   const styleName = path.basename(filePath, '.xml');
 
   const map = BPromise.promisifyAll(new mapnik.Map(500, 500));
-  map.loadSync(filePath, { strict: true });
+
+  const autogenStylePath = replacePostgisParametersFileSync(filePath);
+  map.loadSync(autogenStylePath, { strict: true });
 
   return _.extend({}, memo, {
     [styleName]: {

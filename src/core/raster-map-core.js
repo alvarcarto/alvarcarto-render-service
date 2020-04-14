@@ -1,9 +1,13 @@
+const fs = require('fs');
 const BPromise = require('bluebird');
 const path = require('path');
 const _ = require('lodash');
 const mapnik = require('mapnik');
 const logger = require('../util/logger')(__filename);
+const { replacePostgisParametersFile } = require('../util/mapnik');
 const config = require('../config');
+
+BPromise.promisifyAll(fs);
 
 mapnik.register_default_fonts();
 mapnik.register_default_input_plugins();
@@ -28,9 +32,11 @@ function render(_opts) {
   } else {
     logger.info('Creating a new mapnik map instance ..');
     mapInstance = BPromise.promisifyAll(new mapnik.Map(opts.width, opts.height));
-    mapPromise = mapInstance.loadAsync(opts.stylesheetPath, {
-      strict: true,
-    });
+
+    mapPromise = replacePostgisParametersFile(opts.stylesheetPath)
+      .then(newFilePath => mapInstance.loadAsync(newFilePath, {
+        strict: true,
+      }));
   }
 
   return mapPromise

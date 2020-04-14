@@ -6,6 +6,16 @@ This service depends on Mapnik server (https://github.com/gravitystorm/openstree
 It's non-trivial to install, so it
 has been automated in [this repository](https://github.com/kimmobrunfeldt/alvarcarto-map-server).
 
+## Local docker development
+
+To get started:
+
+* `docker-compose run render bash`
+* `nvm use 8`
+* `npm install`
+* `docker-compose up`
+
+
 ## How map is created
 
 1. Render a map with a resolution which will result to a 300DPI print
@@ -17,3 +27,5 @@ has been automated in [this repository](https://github.com/kimmobrunfeldt/alvarc
   dynamically replaced with a DOM parser/modifier.
 
 3. Save the combined huge image
+
+

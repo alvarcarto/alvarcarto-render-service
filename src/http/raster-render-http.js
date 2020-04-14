@@ -13,6 +13,9 @@ BPromise.promisifyAll(fs);
 
 // Set very long timeout. Needed for rendering e.g. roads for the whole world
 // Enable only for API authenticated users!
+// NOTE: This was still not enough to render world at zoom level 4
+//       I suspect this to be the issue: https://github.com/mapnik/mapnik/issues/3644
+//       or some other timeout inside mapnik node bindings or mapnik
 const SOCKET_TIMEOUT = 10 * 60 * 1000;
 
 const getRender = ex.createRoute((req, res) => {
