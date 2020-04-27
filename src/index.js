@@ -12,7 +12,7 @@ BPromise.config({
 const app = createApp();
 const server = app.listen(config.PORT, () => {
   logger.info(
-    'Express server listening on http://localhost:%d/ in %s mode',
+    'Express server listening on http://localhost:%d/ in %s mode (Docker might expose different port to host)',
     config.PORT,
     app.get('env')
   );
