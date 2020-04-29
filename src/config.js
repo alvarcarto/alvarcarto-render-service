@@ -9,7 +9,8 @@ const config = {
   NODE_ENV: process.env.NODE_ENV,
   LOG_LEVEL: process.env.LOG_LEVEL,
   API_KEY: process.env.API_KEY,
-  STYLE_DIR: process.env.STYLE_DIR || path.join('/home/alvar/mapnik-styles'),
+  STYLE_DIR: process.env.STYLE_DIR || '/home/alvar/mapnik-styles',
+  BACKGROUNDS_DIR: process.env.BACKGROUNDS_DIR || path.join(__dirname, '../tmp-downloads'),
   FONT_DIR: process.env.FONT_DIR || '/usr/share/fonts/truetype/google-fonts',
   DEBUG_POSTER_LINES: process.env.DEBUG_POSTER_LINES === 'true',
   SKIP_INITIAL_MAPNIK_CACHE: process.env.SKIP_INITIAL_MAPNIK_CACHE === 'true',
@@ -23,9 +24,6 @@ const config = {
   CLUSTER_INSTANCES: Number(process.env.CLUSTER_INSTANCES) || 1,
   TILE_URL: process.env.TILE_URL || 'https://tile-api.alvarcarto.com/tiles/{style}/{z}/{x}/{y}/tile.png',
 };
-
-console.log(`Using style directory: ${config.STYLE_DIR}`);
-console.log(`Using font directory: ${config.FONT_DIR}`);
 
 if (!config.API_KEY) {
   throw new Error('Configuration error, API_KEY env var not set');

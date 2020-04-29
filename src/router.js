@@ -1,6 +1,8 @@
+const path = require('path');
 const Joi = require('joi');
 const _ = require('lodash');
 const validate = require('express-validation');
+const RateLimit = require('express-rate-limit');
 const express = require('express');
 const rasterRender = require('./http/raster-render-http');
 const config = require('./config');
@@ -27,9 +29,17 @@ function createRouter() {
     return next();
   });
 
+  // Uses req.ip as the default identifier
+  // Note that this uses in-memory limiter! In cluster mode the allowed requests are roughly
+  // instances * max
+  const apiLimiter = new RateLimit({
+    windowMs: 10 * 60 * 1000,
+    max: 10,
+  });
 
   const rasterRenderSchema = {
     query: {
+      format: Joi.string().valid(['png', 'jpg', 'pdf', 'svg']).optional(),
       size: Joi.string().valid([
         '30x40cm', '50x70cm', '70x100cm',
         '12x18inch', '18x24inch', '24x36inch',
@@ -65,6 +75,7 @@ function createRouter() {
 
   const placeItSchema = _.merge({}, rasterRenderSchema, {
     query: {
+      format: Joi.string().valid(['png', 'jpg']).optional(),
       background: Joi.string().min(1).max(100).optional(),
       frames: Joi.string().min(1).max(100).optional(),
       resizeToWidth: Joi.number().min(50).max(1200).optional(),
@@ -86,20 +97,36 @@ function createRouter() {
   router.get('/api/raster/render-custom', validate(renderCustomSchema), rasterRender.getRenderCustom);
 
   const renderMapSchema = {
-    width: Joi.number().integer().min(1).max(14000)
-      .required(),
-    height: Joi.number().integer().min(1).max(14000)
-      .required(),
-    swLat: Joi.number().min(-90).max(90).required(),
-    swLng: Joi.number().min(-180).max(180).required(),
-    neLat: Joi.number().min(-90).max(90).required(),
-    neLng: Joi.number().min(-180).max(180).required(),
-    scale: Joi.number().min(0).max(1000).optional(),
-    download: Joi.boolean().optional(),
-    useTileRender: Joi.boolean().optional(),
+    query: {
+      format: Joi.string().valid(['png', 'jpg', 'pdf', 'svg']).optional(),
+      width: Joi.number().integer().min(1).max(14000)
+        .required(),
+      height: Joi.number().integer().min(1).max(14000)
+        .required(),
+      swLat: Joi.number().min(-90).max(90).required(),
+      swLng: Joi.number().min(-180).max(180).required(),
+      neLat: Joi.number().min(-90).max(90).required(),
+      neLng: Joi.number().min(-180).max(180).required(),
+      scale: Joi.number().min(0).max(1000).optional(),
+      download: Joi.boolean().optional(),
+      useTileRender: Joi.boolean().optional(),
+    },
   };
   router.get('/api/raster/render-map', validate(renderMapSchema), rasterRender.getRenderMap);
+  router.get('/api/raster/render-background', apiLimiter, validate(renderMapSchema), rasterRender.getRenderBackground);
 
+  const getBackgroundSchema = {
+    params: {
+      fileName: Joi.string()
+        .regex(/^[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}\.[A-Z]{3}$/i)
+        .required(),
+    },
+  };
+
+  router.get('/api/backgrounds/:fileName', apiLimiter, validate(getBackgroundSchema), (req, res) => {
+    const absPath = path.join(config.BACKGROUNDS_DIR, req.params.fileName);
+    res.download(absPath);
+  });
   return router;
 }
 
