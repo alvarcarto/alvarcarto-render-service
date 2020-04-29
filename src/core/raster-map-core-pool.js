@@ -1,4 +1,5 @@
 const fs = require('fs');
+const cluster = require('cluster');
 const BPromise = require('bluebird');
 const path = require('path');
 const glob = require('glob');
@@ -10,27 +11,32 @@ const { replacePostgisParametersFileSync, AUTOGEN_SUFFIX } = require('../util/ma
 const config = require('../config');
 const rasterMapCore = require('./raster-map-core');
 
-// Pre-load and initialize map for each mapnik style
-const files = _.filter(glob.sync(`${config.STYLE_DIR}/*.xml`), filePath => !_.endsWith(filePath, `${AUTOGEN_SUFFIX}.xml`));
-logger.info(`Preloading ${files.length} mapnik styles ..`);
+let mapnikCache = {};
+if (cluster.isMaster) {
+  logger.info('Skipping mapnik style preloading as this is the cluster master ..');
+} else {
+  // Pre-load and initialize map for each mapnik style
+  const files = _.filter(glob.sync(`${config.STYLE_DIR}/*.xml`), filePath => !_.endsWith(filePath, `${AUTOGEN_SUFFIX}.xml`));
+  logger.info(`Preloading ${files.length} mapnik styles ..`);
 
-const mapnikCache = _.reduce(files, (memo, filePath) => {
-  const styleName = path.basename(filePath, '.xml');
+  mapnikCache = _.reduce(files, (memo, filePath) => {
+    const styleName = path.basename(filePath, '.xml');
 
-  const map = BPromise.promisifyAll(new mapnik.Map(500, 500));
+    const map = BPromise.promisifyAll(new mapnik.Map(500, 500));
 
-  const autogenStylePath = replacePostgisParametersFileSync(filePath);
-  map.loadSync(autogenStylePath, { strict: true });
+    const autogenStylePath = replacePostgisParametersFileSync(filePath);
+    map.loadSync(autogenStylePath, { strict: true });
 
-  return _.extend({}, memo, {
-    [styleName]: {
-      map,
-      lock: new AsyncLock({ timeout: 60000, Promise: BPromise }),
-    },
-  });
-}, {});
+    return _.extend({}, memo, {
+      [styleName]: {
+        map,
+        lock: new AsyncLock({ timeout: 60000, Promise: BPromise }),
+      },
+    });
+  }, {});
 
-logger.info('Mapnik styles loaded.');
+  logger.info('Mapnik styles loaded.');
+}
 
 function render(_opts) {
   const opts = _.merge({}, _opts);

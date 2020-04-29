@@ -1,8 +1,13 @@
+// WARNING: This utility does not work for multiple process if the DB parameters need
+//          to be different across processes. This utility is copied to tile service
+
 const fs = require('fs');
+const uuid = require('node-uuid');
 const path = require('path');
 const BPromise = require('bluebird');
 const _ = require('lodash');
 const config = require('../config');
+const logger = require('./logger')(__filename);
 
 BPromise.promisifyAll(fs);
 
@@ -54,7 +59,11 @@ async function replacePostgisParametersFile(stylesheetPath) {
   const newXmlString = replacePostgisParametersString(xmlString);
   const newPath = getAutogenStylePath(stylesheetPath);
 
-  await fs.writeFileAsync(newPath, newXmlString, { encoding: 'utf8' });
+  const dirName = path.dirname(newPath);
+  const tmpFile = path.join(dirName, `tmp-${uuid.v4()}`);
+  logger.info(`Writing new Mapnik config ${tmpFile} -> ${newPath}`);
+  await fs.writeFileAsync(tmpFile, newXmlString, { encoding: 'utf8' });
+  await fs.renameAsync(tmpFile, newPath);
   return newPath;
 }
 
@@ -64,7 +73,15 @@ function replacePostgisParametersFileSync(stylesheetPath) {
   const newXmlString = replacePostgisParametersString(xmlString);
   const newPath = getAutogenStylePath(stylesheetPath);
 
-  fs.writeFileSync(newPath, newXmlString, { encoding: 'utf8' });
+  // Complicated file write to make the write atomic
+  // atomic rename depends on file system, but in this case it is good enough
+  // Tmp file must be created straight to destination dir to prevent:
+  // "Error: EXDEV: cross-device link not permitted"
+  const dirName = path.dirname(newPath);
+  const tmpFile = path.join(dirName, `tmp-${uuid.v4()}`);
+  logger.info(`Writing new Mapnik config ${tmpFile} -> ${newPath}`);
+  fs.writeFileSync(tmpFile, newXmlString, { encoding: 'utf8' });
+  fs.renameSync(tmpFile, newPath);
   return newPath;
 }
 

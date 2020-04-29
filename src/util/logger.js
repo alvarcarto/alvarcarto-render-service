@@ -11,7 +11,7 @@ function createLogger(filePath) {
   const logger = new winston.Logger({
     transports: [new winston.transports.Console({
       colorize: COLORIZE,
-      label: fileName,
+      label: `pid${process.pid}-${fileName}`,
       timestamp: true,
     })],
   });

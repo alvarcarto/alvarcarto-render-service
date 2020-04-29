@@ -20,6 +20,7 @@ const config = {
   MAPNIK_POSTGIS_PORT: process.env.MAPNIK_POSTGIS_PORT,
   MAPNIK_POSTGIS_USER: process.env.MAPNIK_POSTGIS_USER,
   MAPNIK_POSTGIS_PASSWORD: process.env.MAPNIK_POSTGIS_PASSWORD,
+  CLUSTER_INSTANCES: Number(process.env.CLUSTER_INSTANCES) || 1,
   TILE_URL: process.env.TILE_URL || 'https://tile-api.alvarcarto.com/tiles/{style}/{z}/{x}/{y}/tile.png',
 };
 
