@@ -15,7 +15,7 @@ if (config.DEBUG_MAPNIK) {
   mapnik.Logger.setSeverity(mapnik.Logger.DEBUG);
 }
 
-function render(_opts) {
+async function render(_opts) {
   const opts = _.merge({
     map: null,
     scale: 1,
@@ -24,47 +24,37 @@ function render(_opts) {
   }, _opts);
 
   let mapInstance;
-  let mapPromise;
   if (opts.map) {
     logger.info('Reusing given mapnik map instance ..');
     mapInstance = BPromise.promisifyAll(opts.map);
-    mapPromise = BPromise.resolve(mapInstance);
   } else {
     logger.info('Creating a new mapnik map instance ..');
-    mapInstance = BPromise.promisifyAll(new mapnik.Map(opts.width, opts.height));
+    const newMap = BPromise.promisifyAll(new mapnik.Map(opts.width, opts.height));
+    const newStyleFilePath = await replacePostgisParametersFile(opts.stylesheetPath);
+    console.log(newStyleFilePath)
+    console.log((await fs.readFileAsync(newStyleFilePath, { encoding: 'utf8' })).length)
 
-    mapPromise = replacePostgisParametersFile(opts.stylesheetPath)
-      .then(newFilePath => mapInstance.loadAsync(newFilePath, {
-        strict: true,
-      }));
+    mapInstance = await newMap.loadAsync(newStyleFilePath, {
+      strict: true,
+    });
   }
 
-  return mapPromise
-    .then(() => {
-      const merc = new mapnik.Projection('+init=epsg:3857');
-      /*
-        bounds: {
-          southWest: { lat: .., lng: .. },
-          northEast: { lat: .., lng: .. },
-        }
-      */
-      const coord1 = merc.forward([opts.bounds.southWest.lng, opts.bounds.southWest.lat]);
-      const coord2 = merc.forward([opts.bounds.northEast.lng, opts.bounds.northEast.lat]);
-      const extent = coord1.concat(coord2);
-      mapInstance.extent = extent;
+  const merc = new mapnik.Projection('+init=epsg:3857');
+  /*
+    bounds: {
+      southWest: { lat: .., lng: .. },
+      northEast: { lat: .., lng: .. },
+    }
+  */
+  const coord1 = merc.forward([opts.bounds.southWest.lng, opts.bounds.southWest.lat]);
+  const coord2 = merc.forward([opts.bounds.northEast.lng, opts.bounds.northEast.lat]);
+  const extent = coord1.concat(coord2);
+  mapInstance.extent = extent;
 
-      const image = new mapnik.Image(opts.width, opts.height);
-      return BPromise.props({
-        map: mapInstance.renderAsync(image, {
-          scale: opts.scale,
-        }),
-        image,
-      });
-    })
-    .then((result) => {
-      const image = BPromise.promisifyAll(result.image);
-      return image.encodeAsync(opts.format);
-    });
+  const image = BPromise.promisifyAll(new mapnik.Image(opts.width, opts.height));
+  await mapInstance.renderAsync(image, { scale: opts.scale });
+  const encoded = await image.encodeAsync(opts.format);
+  return encoded;
 }
 
 module.exports = {
