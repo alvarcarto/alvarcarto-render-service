@@ -20,9 +20,5 @@ rm -f ./*.png
 echo -e "Copying custom .json files ..\n"
 cp ./posters/custom/*.json ./posters/dist/custom/
 
-echo -e "Running custom sanitize ..\n"
-node tools/sanitize-posters.js
-
-echo -e "Copying images to project root for SVG rendering .."
-echo -e "This is a hack to fix SVG image links\n"
-cp posters/dist/images/* .
+echo -e "Running custom transformation and validation for posters ..\n"
+node tools/transform-posters.js

@@ -35,7 +35,7 @@ function createApp() {
     origin: '*',
     methods: ['GET'],
   };
-  logger.info(`Using CORS options: ${corsOpts}`);
+  logger.info(`Using CORS options: ${JSON.stringify(corsOpts)}`);
   app.use(cors(corsOpts));
 
   // Initialize routes

@@ -5,6 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "start": "npm run build-posters && npm run watch",
+    "bash": "docker-compose run -t render bash -i -c 'nvm use 8'",
     "watch": "nodemon --watch ./src --verbose --watch ../alvarcarto-cartocss/dist/ --ignore '*autogen.xml' -e js,xml src/index.js",
     "build": "echo 'Deprecated! Babel build step was removed'",
     "build-posters": "./tools/build-posters.sh",
@@ -39,7 +40,7 @@
     "server-destroy": "^1.0.1",
     "sharp": "0.17.x",
     "svg.js": "^2.6.2",
-    "svgdom": "git+https://github.com/kimmobrunfeldt/svgdom.git#master",
+    "svgdom": "0.0.21",
     "text-to-svg": "^3.1.0",
     "winston": "^2.3.1",
     "xmldom": "^0.1.27"

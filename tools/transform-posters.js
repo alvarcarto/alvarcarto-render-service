@@ -44,14 +44,14 @@ function main() {
     }
 
     console.log(`\nProcessing ${filePath} ..`);
-    return _sanitizePoster(filePath);
+    return _transformPoster(filePath);
   })
     .catch((err) => {
       throw err;
     });
 }
 
-function _sanitizePoster(filePath) {
+function _transformPoster(filePath) {
   const fileMeta = parseFilePath(filePath);
 
   return readFile(filePath)
@@ -267,25 +267,26 @@ function downloadImage(imageName) {
     });
 }
 
-function replaceRectWithImage(doc, node, imageName) {
-  return sharp(path.join(DIST_DIR, 'images/', imageName)).metadata()
-    .then((meta) => {
-      const expected = `${node.getAttribute('width')}x${node.getAttribute('height')}`;
-      const actual = `${meta.width}x${meta.height}`;
-      if (expected !== actual) {
-        throw new Error(`Image ${imageName} has incorrect dimensions: ${actual}, expected: ${expected}`);
-      }
+async function replaceRectWithImage(doc, node, imageName) {
+  const image = sharp(path.join(DIST_DIR, 'images/', imageName));
+  const meta = await image.metadata();
+  const imageData = await image.png().toBuffer();
 
-      const image = doc.createElementNS('http://www.w3.org/2000/svg', 'image');
-      image.setAttribute('x', node.getAttribute('x'));
-      image.setAttribute('y', node.getAttribute('y'));
-      image.setAttribute('width', node.getAttribute('width'));
-      image.setAttribute('height', node.getAttribute('height'));
-      image.setAttribute('xlink:href', imageName);
+  const expected = `${node.getAttribute('width')}x${node.getAttribute('height')}`;
+  const actual = `${meta.width}x${meta.height}`;
+  if (expected !== actual) {
+    throw new Error(`Image ${imageName} has incorrect dimensions: ${actual}, expected: ${expected}`);
+  }
 
-      const parent = node.parentNode;
-      parent.replaceChild(image, node);
-    });
+  const imageEl = doc.createElementNS('http://www.w3.org/2000/svg', 'image');
+  imageEl.setAttribute('x', node.getAttribute('x'));
+  imageEl.setAttribute('y', node.getAttribute('y'));
+  imageEl.setAttribute('width', node.getAttribute('width'));
+  imageEl.setAttribute('height', node.getAttribute('height'));
+  imageEl.setAttribute('xlink:href', `data:image/png;base64,${imageData.toString('base64')}`);
+
+  const parent = node.parentNode;
+  parent.replaceChild(imageEl, node);
 }
 
 // Traverses whole node tree "down" depth-first starting from node.
