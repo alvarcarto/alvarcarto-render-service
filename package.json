@@ -5,8 +5,8 @@
   "main": "src/index.js",
   "scripts": {
     "start": "npm run build-posters && npm run watch",
-    "bash": "docker-compose run cartocss bash -c 'bash --rcfile <(echo \"source ~/.bashrc; nvm use 8\")'",
-    "watch": "nodemon --watch ./src --verbose --watch ../alvarcarto-cartocss/dist/ --ignore '*autogen.xml' -e js,xml src/index.js",
+    "bash": "docker-compose run render bash -c 'bash --rcfile <(echo \"source ~/.bashrc; nvm use 8\")'",
+    "watch": "nodemon -L --verbose --watch ./src --watch ../alvarcarto-cartocss/dist/ --ignore '*autogen.xml' -e js,xml src/index.js",
     "build": "echo 'Deprecated! Babel build step was removed'",
     "build-posters": "./tools/build-posters.sh",
     "clean-posters": "rm -f posters/dist/images/*.png && rm -f posters/dist/*.svg && rm -f posters/dist/custom/*.svg && rm -f posters/dist/custom/*.json",
@@ -36,6 +36,7 @@
     "mapnik": "3.7.x",
     "morgan": "^1.7.0",
     "node-uuid": "^1.4.7",
+    "nodemon": "^2.0.3",
     "request": "^2.79.0",
     "server-destroy": "^1.0.1",
     "sharp": "0.17.x",
@@ -50,7 +51,6 @@
     "eslint-config-airbnb-base": "^10.0.1",
     "eslint-plugin-import": "^2.2.0",
     "flow-remove-types": "^1.0.5",
-    "nodemon": "^1.11.0",
     "svgo": "^0.7.2"
   }
 }

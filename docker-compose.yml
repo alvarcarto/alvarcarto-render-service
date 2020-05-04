@@ -10,7 +10,7 @@ services:
       - API_KEY=secret
       - MAPNIK_POSTGIS_HOST=host.docker.internal
       - MAPNIK_POSTGIS_PORT=4321
-    command: bash -i -c 'nvm use 8 && npm start'
+    command: bash -i -c 'nvm use 8 && npm run watch'
     working_dir: /home/alvar/alvarcarto-render-service
     volumes:
       - .:/home/alvar/alvarcarto-render-service

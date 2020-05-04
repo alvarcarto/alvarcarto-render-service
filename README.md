@@ -10,9 +10,9 @@ has been automated in [this repository](https://github.com/kimmobrunfeldt/alvarc
 
 To get started:
 
-* `docker-compose run render bash`
-* `nvm use 8`
+* `npm run bash` to enter bash inside docker.
 * `npm install`
+* Exit back to host
 * `docker-compose up`
 
 
