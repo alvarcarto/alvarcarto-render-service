@@ -31,9 +31,6 @@ async function render(_opts) {
     logger.info('Creating a new mapnik map instance ..');
     const newMap = BPromise.promisifyAll(new mapnik.Map(opts.width, opts.height));
     const newStyleFilePath = await replacePostgisParametersFile(opts.stylesheetPath);
-    console.log(newStyleFilePath)
-    console.log((await fs.readFileAsync(newStyleFilePath, { encoding: 'utf8' })).length)
-
     mapInstance = await newMap.loadAsync(newStyleFilePath, {
       strict: true,
     });
