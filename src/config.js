@@ -11,7 +11,10 @@ const config = {
   API_KEY: process.env.API_KEY,
   STYLE_DIR: process.env.STYLE_DIR || '/home/alvar/mapnik-styles',
   BACKGROUNDS_DIR: process.env.BACKGROUNDS_DIR || path.join(__dirname, '../tmp-downloads'),
-  FONT_DIR: process.env.FONT_DIR || '/usr/share/fonts/truetype/google-fonts',
+  // Guessing: this must be under posters/dist to allow svg to reference the font files
+  //           it was not verified as there were multiple issues with the fonts at the same time, see
+  //           https://github.com/lovell/sharp/issues/2195
+  FONT_DIR: path.join(__dirname, '../posters/dist/fonts'),
   DEBUG_POSTER_LINES: process.env.DEBUG_POSTER_LINES === 'true',
   SKIP_INITIAL_MAPNIK_CACHE: process.env.SKIP_INITIAL_MAPNIK_CACHE === 'true',
   SAVE_TEMP_FILES: process.env.SAVE_TEMP_FILES === 'true',

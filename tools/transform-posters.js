@@ -136,6 +136,7 @@ function transformSvg(parsed) {
 
   sanitizeSvgElements(parsed.doc);
   centerElements(parsed.doc, parsed.svg);
+  fontFamiliesInQuotes(parsed.doc, parsed.svg);
 
   return BPromise.resolve()
     .tap(() => {
@@ -215,6 +216,20 @@ function hasOnlyServerOrClientElements(doc, startNode) {
   });
 
   return hasAny;
+}
+
+function fontFamiliesInQuotes(doc, startNode) {
+  traverse(doc, startNode, (node) => {
+    if (node.nodeType !== NODE_TYPE_ELEMENT || !node.hasAttributes()) {
+      return;
+    }
+
+    const fontFamily = node.getAttribute('font-family');
+    if (_.isString(fontFamily) && fontFamily.trim().length > 0 && fontFamily.trim()[0] !== '\'') {
+      console.log(`Setting font-family in single quotes for element #${getNodeId(node)}`);
+      node.setAttribute('font-family', `'${fontFamily}'`);
+    }
+  });
 }
 
 function centerElements(doc, startNode) {
