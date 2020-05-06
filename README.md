@@ -15,6 +15,8 @@ To get started:
 * Exit back to host
 * `docker-compose up`
 
+**Warning: posters are built into posters/dist, and the final poster images contain absolute system paths to referenced png images!**
+
 
 ## How map is created
 

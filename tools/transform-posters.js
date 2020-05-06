@@ -132,6 +132,8 @@ function transformAndSave(parsed, fileMeta, filePath) {
 }
 
 function transformSvg(parsed) {
+  parsed.svg.setAttribute('xmlns:xlink', 'http://www.w3.org/1999/xlink');
+
   sanitizeSvgElements(parsed.doc);
   centerElements(parsed.doc, parsed.svg);
 
@@ -268,9 +270,9 @@ function downloadImage(imageName) {
 }
 
 async function replaceRectWithImage(doc, node, imageName) {
-  const image = sharp(path.join(DIST_DIR, 'images/', imageName));
+  const imageAbsPath = path.join(DIST_DIR, 'images/', imageName);
+  const image = sharp(imageAbsPath);
   const meta = await image.metadata();
-  const imageData = await image.png().toBuffer();
 
   const expected = `${node.getAttribute('width')}x${node.getAttribute('height')}`;
   const actual = `${meta.width}x${meta.height}`;
@@ -283,7 +285,8 @@ async function replaceRectWithImage(doc, node, imageName) {
   imageEl.setAttribute('y', node.getAttribute('y'));
   imageEl.setAttribute('width', node.getAttribute('width'));
   imageEl.setAttribute('height', node.getAttribute('height'));
-  imageEl.setAttribute('xlink:href', `data:image/png;base64,${imageData.toString('base64')}`);
+  // https://stackoverflow.com/questions/2961624/rsvg-doesnt-render-linked-images
+  imageEl.setAttribute('xlink:href', `file://${imageAbsPath}`);
 
   const parent = node.parentNode;
   parent.replaceChild(imageEl, node);
