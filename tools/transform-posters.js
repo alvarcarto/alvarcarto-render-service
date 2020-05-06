@@ -301,7 +301,7 @@ async function replaceRectWithImage(doc, node, imageName) {
   imageEl.setAttribute('width', node.getAttribute('width'));
   imageEl.setAttribute('height', node.getAttribute('height'));
   // https://stackoverflow.com/questions/2961624/rsvg-doesnt-render-linked-images
-  imageEl.setAttribute('xlink:href', `file://${imageAbsPath}`);
+  imageEl.setAttribute('xlink:href', imageAbsPath);
 
   const parent = node.parentNode;
   parent.replaceChild(imageEl, node);
