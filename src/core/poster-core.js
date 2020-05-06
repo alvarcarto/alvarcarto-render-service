@@ -88,8 +88,13 @@ function _renderWithoutLabels(opts) {
           width: dimensions.width - (2 * dimensions.padding),
           height: dimensions.height - (2 * dimensions.padding),
         })
-        .background({ r: 255, g: 255, b: 255 })
-        .extend(dimensions.padding)
+        .extend({
+          top: dimensions.padding,
+          left: dimensions.padding,
+          right: dimensions.padding,
+          bottom: dimensions.padding,
+          background: { r: 255, g: 255, b: 255 },
+        })
         .png()
         .toBuffer(),
     );
@@ -182,8 +187,7 @@ function _renderPoster(opts) {
       const tmpSvgPath = getAbsPath(`${opts.uuid}.svg`);
       return BPromise.props({
         svgImage:
-          sharp(tmpSvgPath, { density: 72 })
-            .limitInputPixels(false)
+          sharp(tmpSvgPath, { density: 72, limitInputPixels: false })
             .resize(dimensions.width, dimensions.height)
             .png()
             .toBuffer(),
@@ -200,10 +204,11 @@ function _renderPoster(opts) {
     })
     .then(result =>
       sharp(result.mapImage)
-        .overlayWith(result.svgImage, {
+        .composite([{
+          input: result.svgImage,
           top: 0,
           left: 0,
-        })
+        }])
         .png()
         .toBuffer(),
     )

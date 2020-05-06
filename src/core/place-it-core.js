@@ -164,11 +164,12 @@ function _renderExact(photoMeta, opts) {
   return _renderPoster(mapRenderOpts)
     .then(posterImage =>
       sharp(getFilePath(`./images/${photoMeta.fileName}`))
-        .overlayWith(posterImage, {
+        .composite([{
+          input: posterImage,
           top: photoMeta.topLeft.y,
           left: photoMeta.topLeft.x,
           gravity: sharp.gravity.northwest,
-        })
+        }])
         .png()
         .toBuffer(),
     );
@@ -192,7 +193,7 @@ function _renderCenter(photoMeta, opts) {
   return _renderPoster(mapRenderOpts)
     .then(posterImage =>
       sharp(getFilePath(`./images/${photoMeta.fileName}`))
-        .overlayWith(posterImage)
+        .composite([{ input: posterImage }])
         .png()
         .toBuffer(),
     );
@@ -204,8 +205,13 @@ function _renderPoster(opts) {
       if (opts.frames === 'black') {
         const borderSize = 16;
         return sharp(posterImage)
-          .background({ r: 20, g: 20, b: 20 })
-          .extend({ top: borderSize, bottom: borderSize, left: borderSize, right: borderSize })
+          .extend({
+            top: borderSize,
+            bottom: borderSize,
+            left: borderSize,
+            right: borderSize,
+            background: { r: 20, g: 20, b: 20 },
+          })
           .png()
           .toBuffer();
       }
