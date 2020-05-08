@@ -1,5 +1,3 @@
-const BPromise = require('bluebird');
-const path = require('path');
 const _ = require('lodash');
 const sharp = require('sharp');
 const { tile } = require('@alvarcarto/mosaic');
@@ -15,26 +13,22 @@ function render(_opts) {
     neLng: _opts.bounds.northEast.lng,
   }, _opts);
 
+  const requestedWidth = opts.width;
+  const requestedHeight = opts.height;
   if (opts.resizeToWidth) {
-    opts.minWidth = Math.max(opts.resizeToWidth, 500);
-    opts.minHeight = 0;
+    opts.width = opts.resizeToWidth || requestedWidth;
+    opts.height = Math.round((opts.width / requestedWidth) * opts.height);
   } else if (opts.resizeToHeight) {
-    opts.minHeight = Math.max(opts.resizeToHeight, 500);
-    opts.minWidth = 0;
+    opts.height = opts.resizeToHeight || requestedHeight;
+    opts.width = Math.round((opts.height / requestedHeight) * opts.width);
   }
 
   logger.info('Rendering map with tiles.. ');
   return tile(opts)
     .then(async (image) => {
-      const sharpObj = sharp(image, { limitInputPixels: false });
-      const meta = await sharpObj.metadata();
+      const meta = await sharp(image, { limitInputPixels: false }).metadata();
       logger.info(`Received stiched map with dimensions: ${meta.width}x${meta.height}`);
-      const newImageBuf = await sharpObj
-        .resize(opts.width, opts.height)
-        .png()
-        .toBuffer();
-
-      return newImageBuf;
+      return image;
     });
 }
 
