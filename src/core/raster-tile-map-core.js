@@ -25,11 +25,16 @@ function render(_opts) {
 
   logger.info('Rendering map with tiles.. ');
   return tile(opts)
-    .then((image) => {
-      return sharp(image)
+    .then(async (image) => {
+      const sharpObj = sharp(image, { limitInputPixels: false });
+      const meta = await sharpObj.metadata();
+      logger.info(`Received stiched map with dimensions: ${meta.width}x${meta.height}`);
+      const newImageBuf = await sharpObj
         .resize(opts.width, opts.height)
         .png()
         .toBuffer();
+
+      return newImageBuf;
     });
 }
 

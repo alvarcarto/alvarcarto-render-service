@@ -81,7 +81,7 @@ function _renderWithoutLabels(opts) {
   return _renderMap(opts)
     // Add white borders on top of map image
     .then(({ mapImage, dimensions }) =>
-      sharp(mapImage)
+      sharp(mapImage, { limitInputPixels: false })
         .extract({
           left: dimensions.padding,
           top: dimensions.padding,
@@ -162,7 +162,7 @@ function _renderPoster(opts) {
   return BPromise.props({
     svgString: readPosterFile(opts),
     dimensions: getPosterDimensions(opts),
-    mapMeta: sharp(opts.mapImage).metadata(),
+    mapMeta: sharp(opts.mapImage, { limitInputPixels: false }).metadata(),
   })
     .then((result) => {
       const parsed = parsePosterSvg(result.svgString);
@@ -203,7 +203,7 @@ function _renderPoster(opts) {
       return BPromise.resolve();
     })
     .then(result =>
-      sharp(result.mapImage)
+      sharp(result.mapImage, { limitInputPixels: false })
         .composite([{
           input: result.svgImage,
           top: 0,

@@ -204,7 +204,7 @@ function _renderPoster(opts) {
     .then((posterImage) => {
       if (opts.frames === 'black') {
         const borderSize = 16;
-        return sharp(posterImage)
+        return sharp(posterImage, { limitInputPixels: false })
           .extend({
             top: borderSize,
             bottom: borderSize,

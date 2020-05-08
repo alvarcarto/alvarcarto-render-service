@@ -286,7 +286,7 @@ function downloadImage(imageName) {
 
 async function replaceRectWithImage(doc, node, imageName) {
   const imageAbsPath = path.join(DIST_DIR, 'images/', imageName);
-  const image = sharp(imageAbsPath);
+  const image = sharp(imageAbsPath, { limitInputPixels: false });
   const meta = await image.metadata();
 
   const expected = `${node.getAttribute('width')}x${node.getAttribute('height')}`;
