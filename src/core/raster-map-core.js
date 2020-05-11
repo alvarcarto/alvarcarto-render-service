@@ -19,9 +19,13 @@ async function render(_opts) {
   const opts = _.merge({
     map: null,
     scale: 1,
-    format: 'png32',
     stylesheetPath: path.join(config.STYLE_DIR, `${_opts.mapStyle}.xml`),
   }, _opts);
+
+  let format = opts.format;
+  if (format === 'jpg') {
+    format = 'jpeg';
+  }
 
   let mapInstance;
   if (opts.map) {
@@ -49,8 +53,9 @@ async function render(_opts) {
   mapInstance.extent = extent;
 
   const image = BPromise.promisifyAll(new mapnik.Image(opts.width, opts.height));
-  await mapInstance.renderAsync(image, { scale: opts.scale });
-  const encoded = await image.encodeAsync(opts.format);
+  await mapInstance.renderFileAsync(`output.${opts.format}`, { scale: opts.scale, format });
+  await mapInstance.renderAsync(image, { scale: opts.scale, image_format: format });
+  const encoded = await image.encodeAsync(format);
   return encoded;
 }
 

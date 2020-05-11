@@ -2,6 +2,7 @@ const BPromise = require('bluebird');
 const path = require('path');
 const _ = require('lodash');
 const uuid = require('node-uuid');
+const mimeTypes = require('mime-types');
 const fs = require('fs');
 const ex = require('../util/express');
 const posterCore = require('../core/poster-core');
@@ -252,7 +253,7 @@ function getAttachmentName(opts) {
 }
 
 function getMimeType(opts) {
-  return `image/${opts.format}`;
+  return mimeTypes.contentType(opts.format);
 }
 
 module.exports = {
