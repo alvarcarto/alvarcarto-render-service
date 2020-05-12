@@ -1,6 +1,7 @@
 const fs = require('fs');
 const BPromise = require('bluebird');
 const path = require('path');
+const uuid = require('node-uuid');
 const _ = require('lodash');
 const mapnik = require('mapnik');
 const logger = require('../util/logger')(__filename);
@@ -15,6 +16,11 @@ if (config.DEBUG_MAPNIK) {
   mapnik.Logger.setSeverity(mapnik.Logger.DEBUG);
 }
 
+function getAbsPath(relativePath) {
+  const absPath = path.join(__dirname, '../..', relativePath);
+  return absPath;
+}
+
 async function render(_opts) {
   const opts = _.merge({
     map: null,
@@ -25,6 +31,10 @@ async function render(_opts) {
   let format = opts.format;
   if (format === 'jpg') {
     format = 'jpeg';
+  }
+
+  if (!_.includes(['png', 'jpeg', 'svg', 'pdf'], format)) {
+    throw new Error(`Unsupported map format: ${format}`);
   }
 
   let mapInstance;
@@ -52,11 +62,22 @@ async function render(_opts) {
   const extent = coord1.concat(coord2);
   mapInstance.extent = extent;
 
-  const image = BPromise.promisifyAll(new mapnik.Image(opts.width, opts.height));
-  await mapInstance.renderFileAsync(`output.${opts.format}`, { scale: opts.scale, format });
-  await mapInstance.renderAsync(image, { scale: opts.scale, image_format: format });
-  const encoded = await image.encodeAsync(format);
-  return encoded;
+  if (format === 'png' || format === 'jpeg') {
+    const image = BPromise.promisifyAll(new mapnik.Image(opts.width, opts.height));
+    await mapInstance.renderAsync(image, { scale: opts.scale });
+    const encoded = await image.encodeAsync(format);
+    return encoded;
+  }
+
+  // Here's the code for render method, it didn't seem like it would support PDF or SVG
+  // output. renderFile method was guided in one issue by library author.
+  // https://github.com/mapnik/node-mapnik/blob/v3.7.2/src/mapnik_map.cpp#L1662
+  const tmpUuid = uuid.v4();
+  const tmpFilePath = getAbsPath(`map-${tmpUuid}.${opts.format}`);
+  await mapInstance.renderFileAsync(tmpFilePath, { scale: opts.scale, format });
+  const fileBuf = await fs.readFileAsync(tmpFilePath, { encoding: null });
+  await fs.unlinkAsync(tmpFilePath);
+  return fileBuf;
 }
 
 module.exports = {

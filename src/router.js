@@ -4,7 +4,7 @@ const _ = require('lodash');
 const validate = require('express-validation');
 const RateLimit = require('express-rate-limit');
 const express = require('express');
-const rasterRender = require('./http/raster-render-http');
+const render = require('./http/render-http');
 const config = require('./config');
 const ROLES = require('./enum/roles');
 
@@ -37,7 +37,7 @@ function createRouter() {
     max: 10,
   });
 
-  const rasterRenderSchema = {
+  const renderSchema = {
     query: {
       format: Joi.string().valid(['png', 'jpg', 'pdf', 'svg']).optional(),
       size: Joi.string().valid([
@@ -71,21 +71,9 @@ function createRouter() {
       useTileRender: Joi.boolean().optional(),
     },
   };
-  router.get('/api/raster/render', validate(rasterRenderSchema), rasterRender.getRender);
+  router.get('/api/raster/render', validate(renderSchema), render.getRender);
 
-  const placeItSchema = _.merge({}, rasterRenderSchema, {
-    query: {
-      background: Joi.string().min(1).max(100).optional(),
-      frames: Joi.string().min(1).max(100).optional(),
-      resizeToWidth: Joi.number().min(50).max(1200).optional(),
-      resizeToHeight: Joi.number().min(50).max(1200).optional(),
-      download: Joi.boolean().optional(),
-      useTileRender: Joi.boolean().optional(),
-    },
-  });
-  router.get('/api/raster/placeit', validate(placeItSchema), rasterRender.getPlaceIt);
-
-  const renderCustomSchema = _.merge({}, rasterRenderSchema, {
+  const renderCustomSchema = _.merge({}, renderSchema, {
     query: {
       file: Joi.string().min(1).max(100).optional(),
       size: Joi.string().optional(),
@@ -93,7 +81,7 @@ function createRouter() {
       useTileRender: Joi.boolean().optional(),
     },
   });
-  router.get('/api/raster/render-custom', validate(renderCustomSchema), rasterRender.getRenderCustom);
+  router.get('/api/raster/render-custom', validate(renderCustomSchema), render.getRenderCustom);
 
   const renderMapSchema = {
     query: {
@@ -111,8 +99,8 @@ function createRouter() {
       useTileRender: Joi.boolean().optional(),
     },
   };
-  router.get('/api/raster/render-map', validate(renderMapSchema), rasterRender.getRenderMap);
-  router.get('/api/raster/render-background', apiLimiter, validate(renderMapSchema), rasterRender.getRenderBackground);
+  router.get('/api/raster/render-map', validate(renderMapSchema), render.getRenderMap);
+  router.get('/api/raster/render-background', apiLimiter, validate(renderMapSchema), render.getRenderBackground);
 
   const getBackgroundSchema = {
     params: {

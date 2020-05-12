@@ -8,7 +8,6 @@ const ex = require('../util/express');
 const posterCore = require('../core/poster-core');
 const mapCore = require('../core/raster-map-core');
 const tileMapCore = require('../core/raster-tile-map-core');
-const placeItCore = require('../core/place-it-core');
 const config = require('../config');
 const ROLES = require('../enum/roles');
 
@@ -104,7 +103,7 @@ const getRenderMap = ex.createRoute((req, res) => {
     .then((image) => {
       res.set('content-type', `image/${mapOpts.format}`);
       if (req.query.download) {
-        const name = `alvarcarto-map-${width}x${height}`;
+        const name = `alvarcarto-map-${mapOpts.width}x${mapOpts.height}`;
         res.set('content-disposition', `attachment; filename=${name}.${mapOpts.format};`);
       }
       res.send(image);
@@ -143,22 +142,6 @@ const getRenderBackground = ex.createRoute((req, res) => {
       res.json({
         path: `/api/backgrounds/${name}`,
       });
-    });
-});
-
-const getPlaceIt = ex.createRoute((req, res) => {
-  const opts = _.merge({}, _reqToOpts(req), {
-    photo: req.query.background,
-    frames: req.query.frames,
-  });
-  return placeItCore.render(opts)
-    .then((image) => {
-      res.set('content-type', getMimeType(opts));
-      if (req.query.download) {
-        const name = getAttachmentName(opts);
-        res.set('content-disposition', `attachment; filename=${name}.${opts.format};`);
-      }
-      res.send(image);
     });
 });
 
@@ -261,5 +244,4 @@ module.exports = {
   getRenderCustom,
   getRenderMap,
   getRenderBackground,
-  getPlaceIt,
 };
