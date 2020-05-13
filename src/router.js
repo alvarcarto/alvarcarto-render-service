@@ -7,6 +7,10 @@ const express = require('express');
 const render = require('./http/render-http');
 const config = require('./config');
 const ROLES = require('./enum/roles');
+const {
+  SHARP_RASTER_IMAGE_TYPES,
+  MAPNIK_RASTER_IMAGE_TYPES,
+} = require('./util/poster');
 
 const validTokens = config.API_KEY.split(',');
 
@@ -39,7 +43,10 @@ function createRouter() {
 
   const renderSchema = {
     query: {
-      format: Joi.string().valid(['png', 'jpg', 'pdf', 'svg']).optional(),
+      // If you add a new format, make sure it will work correctly in poster and mapnik render
+      // pdf-png is our own naming for a PDF that has png map embedded
+      format: Joi.string().valid(SHARP_RASTER_IMAGE_TYPES.concat(['pdf', 'pdf-png', 'svg'])).optional(),
+      quality: Joi.number().min(1).max(100),
       size: Joi.string().valid([
         '30x40cm', '50x70cm', '70x100cm',
         '12x18inch', '18x24inch', '24x36inch',
@@ -85,7 +92,9 @@ function createRouter() {
 
   const renderMapSchema = {
     query: {
-      format: Joi.string().valid(['png', 'jpg', 'pdf', 'svg']).optional(),
+      // These must be currently supported by Mapnik and sharp
+      format: Joi.string().valid(MAPNIK_RASTER_IMAGE_TYPES.concat(['pdf', 'svg'])).optional(),
+      quality: Joi.number().min(1).max(100),
       width: Joi.number().integer().min(1).max(14000)
         .required(),
       height: Joi.number().integer().min(1).max(14000)

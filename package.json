@@ -44,6 +44,8 @@
     "request": "^2.79.0",
     "server-destroy": "^1.0.1",
     "sharp": "0.25.x",
+    "stream-to-promise": "^2.2.0",
+    "svg-to-pdfkit": "^0.1.8",
     "svg.js": "^2.6.2",
     "svgdom": "0.0.21",
     "text-to-svg": "^3.1.0",

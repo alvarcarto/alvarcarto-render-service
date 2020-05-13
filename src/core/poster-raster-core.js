@@ -1,67 +1,53 @@
 const BPromise = require('bluebird');
 const _ = require('lodash');
 const sharp = require('sharp');
-const uuid = require('node-uuid');
 const fs = BPromise.promisifyAll(require('fs'));
 const window = require('svgdom');
-const rasterMapCore = require('./map-core');
-const rasterMapCorePool = require('./map-core-pool');
+const mapCore = require('./map-core');
+const mapCorePool = require('./map-core-pool');
 const rasterTileMapCore = require('./raster-tile-map-core');
 const {
   getPosterDimensions,
   transformPosterSvgDoc,
-  parsePosterSvg,
+  parseSvgString,
   readPosterFile,
   getTempPath,
 } = require('../util/poster');
 const config = require('../config');
 
 
-// TODO: Move temp file deletion to poster-core
 async function render(opts) {
   window.setFontDir(config.FONT_DIR)
     .setFontFamilyMappings(opts.fontMapping);
 
-  try {
-    return await _renderAndDeleteTempFiles(opts);
-  } finally {
-    await _deleteFiles(opts);
-  }
-}
-
-async function _renderAndDeleteTempFiles(opts) {
   const isSmallWidth = _.isFinite(opts.resizeToWidth) && opts.resizeToWidth < 300;
   const isSmallHeight = _.isFinite(opts.resizeToHeight) && opts.resizeToHeight < 300;
   if (isSmallWidth || isSmallHeight) {
     opts.useTileRender = true;
   }
 
-  if (opts.labelsEnabled) {
-    return await _normalRender(opts);
+  // Request a PNG from mapnik and re-encode it to requested format with sharp later.
+  // Note that tile-renderer will always return png
+  const newOpts = _.extend({}, opts, {
+    format: 'png',
+  });
+  let image;
+  if (newOpts.labelsEnabled) {
+    image = await _normalRender(newOpts);
+  } else {
+    image = await _renderWithoutLabels(newOpts);
   }
 
-  return await _renderWithoutLabels(opts);
-}
-
-async function _deleteFiles(opts) {
-  if (config.SAVE_TEMP_FILES) {
-    return;
+  if (opts.format !== 'png') {
+    image = await convertToFormat(image, newOpts);
   }
 
-  const tmpSvgPath = getTempPath(`${opts.uuid}.svg`);
-  try {
-    await fs.unlinkAsync(tmpSvgPath);
-  } catch (err) {
-    if (err.code !== 'ENOENT') {
-      throw err;
-    }
-  }
+  return image;
 }
 
 async function _renderWithoutLabels(opts) {
   const { mapImage, dimensions } = await _renderMapWithTempFileSaving(opts);
 
-  // TODO: Return based on format
   const pngBuf = await sharp(mapImage, { limitInputPixels: false })
     .extract({
       left: dimensions.padding,
@@ -89,8 +75,14 @@ async function _normalRender(opts) {
     mapImage,
   });
 
-  const image = await _renderPoster(posterOpts);
-  return image;
+  const pngBuf = await _renderPoster(posterOpts);
+  return pngBuf;
+}
+
+async function convertToFormat(pngBuf, opts) {
+  return await sharp(pngBuf, { limitInputPixels: false })
+    .toFormat(opts.format, { quality: opts.quality })
+    .toBuffer();
 }
 
 async function _renderMapWithTempFileSaving(opts) {
@@ -111,11 +103,11 @@ async function _renderMap(opts) {
     height: dimensions.height,
   });
 
-  // If no resize parameters are defined, use rasterMapCore to avoid any possible issues with
+  // If no resize parameters are defined, use mapCore to avoid any possible issues with
   // pooling
   if (!opts.resizeToWidth && !opts.resizeToHeight) {
     return {
-      mapImage: await rasterMapCore.render(_.omit(mapOpts, _.isNil)),
+      mapImage: await mapCore.render(_.omit(mapOpts, _.isNil)),
       dimensions,
     };
   }
@@ -136,7 +128,7 @@ async function _renderMap(opts) {
   }
 
   return {
-    mapImage: await rasterMapCorePool.render(_.omit(_.merge({}, mapOpts, { scale }), _.isNil)),
+    mapImage: await mapCorePool.render(_.omit(_.merge({}, mapOpts, { scale }), _.isNil)),
     dimensions,
   };
 }
@@ -147,14 +139,14 @@ async function _renderPoster(opts) {
   // TODO: no dimensions necessarily
   const mapMeta = await sharp(opts.mapImage, { limitInputPixels: false }).metadata();
 
-  const parsed = parsePosterSvg(svgString);
+  const parsed = parseSvgString(svgString);
   const expected = `${dimensions.width}x${dimensions.height}`;
   const actual = `${mapMeta.width}x${mapMeta.height}`;
   if (expected !== actual) {
     throw new Error(`Map image has incorrect dimensions: ${actual}, expected: ${expected}`);
   }
 
-  const newSvgString = transformPosterSvgDoc(parsed.doc, opts);
+  const newSvgString = transformPosterSvgDoc(parsed.doc, _.extend({}, opts, { serialize: true }));
   const tmpSvgPath = getTempPath(`${opts.uuid}.svg`);
 
   await fs.writeFileAsync(tmpSvgPath, newSvgString, { encoding: 'utf-8' });

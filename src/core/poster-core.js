@@ -8,7 +8,13 @@ const posterRasterCore = require('./poster-raster-core');
 const posterSvgCore = require('./poster-svg-core');
 const posterPdfCore = require('./poster-pdf-core');
 const config = require('../config');
-const { getTempPath } = require('../util/poster');
+const {
+  getTempPath,
+  SHARP_RASTER_IMAGE_TYPES,
+} = require('../util/poster');
+
+const globAsync = BPromise.promisify(glob);
+const FONT_FILES = glob.sync(`${config.FONT_DIR}/*.ttf`);
 
 async function render(_opts) {
   const opts = _.merge({
@@ -19,15 +25,14 @@ async function render(_opts) {
   });
 
   try {
-    return await _renderAndDeleteTempFiles(opts);
+    return await _renderPoster(opts);
   } finally {
     await _deleteFiles(opts);
   }
 }
 
-async function _renderAndDeleteTempFiles(opts) {
-  const files = glob.sync(`${config.FONT_DIR}/*.ttf`);
-  const fontMapping = _.reduce(files, (memo, filePath) => {
+async function _renderPoster(opts) {
+  const fontMapping = _.reduce(FONT_FILES, (memo, filePath) => {
     const fontName = path.basename(filePath, '.ttf');
     const fileName = path.basename(filePath);
     const newFonts = { [fontName]: fileName };
@@ -38,11 +43,14 @@ async function _renderAndDeleteTempFiles(opts) {
     return _.extend({}, memo, newFonts);
   }, {});
 
-  const newOpts = _.extend({}, opts, { fontMapping });
+  const newOpts = _.extend({}, opts, {
+    fontMapping,
+    // This render function is injected to the options
+    // for pdf-png rendering, to eliminate circular dependency
+    originalRender: render,
+  });
 
-  // TODO: Solve how to delete temp files, maybe just glob with the opts.uuid prefix?
-  // TODO: Add a proper temp files folder
-  if (newOpts.format === 'png' || newOpts.format === 'jpg') {
+  if (_.includes(SHARP_RASTER_IMAGE_TYPES, newOpts.format)) {
     return await posterRasterCore.render(newOpts);
   } else if (newOpts.format === 'svg') {
     return await posterSvgCore.render(newOpts);
@@ -60,12 +68,20 @@ async function _deleteFiles(opts) {
     return;
   }
 
-  const tmpSvgPath = getTempPath(`${opts.uuid}.svg`);
-  try {
-    await fs.unlinkAsync(tmpSvgPath);
-  } catch (err) {
-    if (err.code !== 'ENOENT') {
-      throw err;
+  const filePattern = `${opts.uuid}*`;
+  if (filePattern.length < 10) {
+    throw new Error(`Unsafe delete pattern detected: ${filePattern}`);
+  }
+  const pattern = getTempPath(filePattern);
+  const files = await globAsync(pattern);
+
+  for (let i = 0; i < files.length; i += 0) {
+    try {
+      await fs.unlinkAsync(files[i]);
+    } catch (err) {
+      if (err.code !== 'ENOENT') {
+        throw err;
+      }
     }
   }
 }

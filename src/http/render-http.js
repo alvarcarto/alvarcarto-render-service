@@ -6,10 +6,15 @@ const mimeTypes = require('mime-types');
 const fs = require('fs');
 const ex = require('../util/express');
 const posterCore = require('../core/poster-core');
-const mapCore = require('../core/raster-map-core');
+const mapCore = require('../core/map-core');
 const tileMapCore = require('../core/raster-tile-map-core');
 const config = require('../config');
 const ROLES = require('../enum/roles');
+const {
+  SHARP_RASTER_IMAGE_TYPES,
+  dimensionsToDefaultScale,
+  parseSizeToPixelDimensions,
+} = require('../util/poster');
 
 BPromise.promisifyAll(fs);
 
@@ -22,10 +27,10 @@ const SOCKET_TIMEOUT = 10 * 60 * 1000;
 
 const getRender = ex.createRoute((req, res) => {
   // Don't allow anon request to request vector formats
-  const customFormat = _.has(req.query, 'format') && _.includes(['png', 'jpg'], req.query.format);
+  const isAllowedFormat = _.has(req.query, 'format') && _.includes(SHARP_RASTER_IMAGE_TYPES, req.query.format);
   const resizeDefined = _.has(req.query, 'resizeToWidth') || _.has(req.query, 'resizeToHeight');
   const isAnon = _.get(req, 'user.role') !== ROLES.ADMIN;
-  if (isAnon && (!resizeDefined || customFormat)) {
+  if (isAnon && (!resizeDefined || !isAllowedFormat)) {
     ex.throwStatus(403, 'Anonymous requests must define a resize parameter.');
   }
 
@@ -101,7 +106,7 @@ const getRenderMap = ex.createRoute((req, res) => {
 
   return imagePromise
     .then((image) => {
-      res.set('content-type', `image/${mapOpts.format}`);
+      res.set('content-type', getMimeType(mapOpts));
       if (req.query.download) {
         const name = `alvarcarto-map-${mapOpts.width}x${mapOpts.height}`;
         res.set('content-disposition', `attachment; filename=${name}.${mapOpts.format};`);
@@ -147,6 +152,7 @@ const getRenderBackground = ex.createRoute((req, res) => {
 
 function _reqToOpts(req) {
   const size = req.query.size;
+  const dims = parseSizeToPixelDimensions(size, req.query.orientation);
   const opts = {
     format: req.query.format || 'png',
     mapStyle: req.query.mapStyle,
@@ -158,11 +164,13 @@ function _reqToOpts(req) {
     resizeToWidth: req.query.resizeToWidth ? Number(req.query.resizeToWidth) : null,
     resizeToHeight: req.query.resizeToHeight ? Number(req.query.resizeToHeight) : null,
     bounds: _reqToBounds(req),
-    scale: Number(req.query.scale) || _getDefaultScale(size),
+    // The order of width, height doesn't matter in dimensionsToDefaultScale function
+    scale: Number(req.query.scale) || dimensionsToDefaultScale(dims.width, dims.height),
     labelsEnabled: Boolean(req.query.labelsEnabled),
     labelHeader: req.query.labelHeader || '',
     labelSmallHeader: req.query.labelSmallHeader || '',
     labelText: req.query.labelText || '',
+    quality: Number(req.query.quality) || 100,
   };
   return opts;
 }
@@ -170,15 +178,14 @@ function _reqToOpts(req) {
 function _reqToRenderMapOpts(req) {
   const width = Number(req.query.width);
   const height = Number(req.query.height);
-
-  const minSide = Math.min(width, height);
   const mapOpts = {
     width,
     height,
     mapStyle: req.query.mapStyle,
     bounds: _reqToBounds(req),
-    scale: Number(req.query.scale) || Math.sqrt(minSide) / 20,
+    scale: Number(req.query.scale) || dimensionsToDefaultScale(width, height),
     format: req.query.format || 'png',
+    quality: Number(req.query.quality) || 100,
   };
 
   return mapOpts;
@@ -197,46 +204,17 @@ function _reqToBounds(req) {
   };
 }
 
-function _getDefaultScale(size) {
-  switch (size) {
-    case 'A6':
-      return 1;
-    case 'A5':
-      return 2;
-    case 'A4':
-      return 2.5;
-    case 'A3':
-      return 3;
-
-    // A5
-    case '14.8x21cm':
-      return 2;
-
-    case '30x40cm':
-      return 3;
-    case '50x70cm':
-      return 4;
-    case '70x100cm':
-      return 5;
-
-    case '12x18inch':
-      return 3;
-    case '18x24inch':
-      return 4;
-    case '24x36inch':
-      return 5;
-  }
-
-  throw new Error(`Unknown size: ${size}`);
-}
-
 function getAttachmentName(opts) {
-  const part1 = `${opts.labelHeader.toLowerCase()}-${opts.size.toLowerCase()}`
+  const part1 = `${opts.labelHeader.toLowerCase()}-${opts.size.toLowerCase()}`;
   return `${part1}-${opts.posterStyle.toLowerCase()}-${opts.mapStyle.toLowerCase()}`;
 }
 
 function getMimeType(opts) {
-  return mimeTypes.contentType(opts.format);
+  let format = opts.format;
+  if (format === 'pdf-png') {
+    format = 'pdf';
+  }
+  return mimeTypes.contentType(format);
 }
 
 module.exports = {

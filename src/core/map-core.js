@@ -7,6 +7,7 @@ const mapnik = require('mapnik');
 const logger = require('../util/logger')(__filename);
 const { replacePostgisParametersFile } = require('../util/mapnik');
 const config = require('../config');
+const { MAPNIK_RASTER_IMAGE_TYPES } = require('../util/poster');
 
 BPromise.promisifyAll(fs);
 
@@ -33,7 +34,8 @@ async function render(_opts) {
     format = 'jpeg';
   }
 
-  if (!_.includes(['png', 'jpeg', 'svg', 'pdf'], format)) {
+  const supported = MAPNIK_RASTER_IMAGE_TYPES.concat(['svg', 'pdf']);
+  if (!_.includes(supported, format)) {
     throw new Error(`Unsupported map format: ${format}`);
   }
 
@@ -62,7 +64,8 @@ async function render(_opts) {
   const extent = coord1.concat(coord2);
   mapInstance.extent = extent;
 
-  if (format === 'png' || format === 'jpeg') {
+  // Raster images can be rendered with mapnik Image
+  if (_.includes(MAPNIK_RASTER_IMAGE_TYPES, format)) {
     const image = BPromise.promisifyAll(new mapnik.Image(opts.width, opts.height));
     await mapInstance.renderAsync(image, { scale: opts.scale });
     const encoded = await image.encodeAsync(format);
