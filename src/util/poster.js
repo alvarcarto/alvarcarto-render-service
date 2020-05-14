@@ -1,6 +1,7 @@
 const BPromise = require('bluebird');
 const path = require('path');
 const _ = require('lodash');
+const querystring = require('querystring');
 const fs = BPromise.promisifyAll(require('fs'));
 const {
   addOrUpdateLines,
@@ -44,9 +45,6 @@ async function getPosterDimensions(opts) {
     svgDimensions.height = opts.resizeToHeight;
   }
 
-  const side = Math.min(svgDimensions.width, svgDimensions.height);
-  const padding = Math.floor(EMPTY_MAP_PADDING_FACTOR * side);
-
   return {
     width: svgDimensions.width,
     height: svgDimensions.height,
@@ -54,8 +52,13 @@ async function getPosterDimensions(opts) {
     originalHeight: originalSvgDimensions.height,
 
     // Used when no labels are printed
-    padding,
+    padding: calculatePadding(svgDimensions),
   };
+}
+
+function calculatePadding(dims) {
+  const side = Math.min(dims.width, dims.height);
+  return Math.floor(EMPTY_MAP_PADDING_FACTOR * side);
 }
 
 function transformPosterSvgDoc(svgDoc, opts = {}) {
@@ -74,6 +77,63 @@ function transformPosterSvgDoc(svgDoc, opts = {}) {
 function svgDocToString(svgDoc) {
   const s = new xmldom.XMLSerializer();
   return s.serializeToString(svgDoc);
+}
+
+// Traverses whole node tree "down" depth-first starting from node.
+// Callback is called for each found node
+function traverse(doc, node, cb) {
+  cb(node);
+
+  if (node.hasChildNodes()) {
+    for (let i = 0; i < node.childNodes.length; ++i) {
+      const childNode = node.childNodes.item(i);
+      traverse(doc, childNode, cb);
+    }
+  }
+}
+
+function getSvgDocFonts(svgDoc) {
+  const fonts = [];
+  const svgEl = getSvgElement(svgDoc);
+  traverse(svgDoc, svgEl, (node) => {
+    if (node.nodeType !== NODE_TYPE_ELEMENT || !node.hasAttributes()) {
+      return;
+    }
+
+    const fontFamily = node.getAttribute('font-family');
+    if (_.isString(fontFamily) && fontFamily.trim().length > 0) {
+      const nodeFonts = fontFamily.split(',');
+      _.forEach(nodeFonts, (fontAttribute) => {
+        const cleaned = fontAttribute.replace(/'/g, '').replace(/"/g, '').trim();
+        fonts.push(cleaned);
+      });
+    }
+  });
+
+  return _.uniq(fonts);
+}
+
+function matchFont(fontName, fontMapping) {
+  const cleanName = fontName.replace(/'/g, '').replace(/"/g, '').trim();
+  if (_.has(fontMapping, cleanName)) {
+    return fontMapping[cleanName];
+  }
+
+  const noSpaceName = cleanName.replace(/ /g, '');
+  if (_.has(fontMapping, noSpaceName)) {
+    return fontMapping[noSpaceName];
+  }
+
+  throw new Error(`Font mapping is missing font: ${fontName}`);
+}
+
+function getFirstFontFamily(fontFamily) {
+  if (!_.isString(fontFamily) || fontFamily.trim().length === 0) {
+    throw new Error(`Invalid font-family: ${fontFamily}`);
+  }
+  const fonts = fontFamily.split(',');
+  const cleaned = fonts[0].replace(/'/g, '').replace(/"/g, '').trim();
+  return cleaned;
 }
 
 function setTexts(svgDoc, opts) {
@@ -289,6 +349,26 @@ function parseSize(size) {
   };
 }
 
+function posterMetaQuery(opts) {
+  const meta = {
+    swLat: Number(opts.bounds.southWest.lat).toFixed(4),
+    swLng: Number(opts.bounds.southWest.lng).toFixed(4),
+    neLat: Number(opts.bounds.northEast.lat).toFixed(4),
+    neLng: Number(opts.bounds.northEast.lng).toFixed(4),
+    size: opts.size,
+    mapStyle: opts.mapStyle,
+    posterStyle: opts.posterStyle,
+    material: opts.material,
+    orientation: opts.orientation,
+    labelsEnabled: opts.labelsEnabled,
+    labelHeader: opts.labelHeader,
+    labelSmallHeader: opts.labelSmallHeader,
+    labelText: opts.labelText,
+    mapnikScale: Number(opts.scale).toFixed(2),
+  };
+  return querystring.stringify(meta);
+}
+
 function resolveOrientation(dimensions, orientation) {
   if (orientation === 'landscape') {
     return _.merge({}, dimensions, {
@@ -309,11 +389,17 @@ module.exports = {
   getNodeDimensions,
   transformPosterSvgDoc,
   parseSvgString,
+  traverse,
   readPosterFile,
   getTempPath,
+  matchFont,
+  calculatePadding,
   parseSizeToPixelDimensions,
   svgDocToString,
+  getSvgDocFonts,
+  getFirstFontFamily,
   getSvgElement,
+  posterMetaQuery,
   dimensionsToDefaultScale,
   parseSize,
   NODE_TYPE_ELEMENT,

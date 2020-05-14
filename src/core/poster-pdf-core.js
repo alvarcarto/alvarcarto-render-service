@@ -1,9 +1,12 @@
 const BPromise = require('bluebird');
 const _ = require('lodash');
+const path = require('path');
 const fs = BPromise.promisifyAll(require('fs'));
 const sharp = require('sharp');
 const convert = require('convert-units');
+const fontkit = require('fontkit');
 const PDFLib = require('pdf-lib');
+const PDFLibFontkit = require('@pdf-lib/fontkit');
 const PDFKitDocument = require('pdfkit');
 const SVGtoPDF = require('svg-to-pdfkit');
 const streamToPromise = require('stream-to-promise');
@@ -13,15 +16,20 @@ const {
   getPosterDimensions,
   parseSvgString,
   transformPosterSvgDoc,
-  getNodeDimensions,
   svgDocToString,
   getSvgElement,
   parseSize,
+  posterMetaQuery,
   getTempPath,
+  getSvgDocFonts,
+  matchFont,
+  getFirstFontFamily,
+  calculatePadding,
 } = require('../util/poster');
 const config = require('../config');
 const logger = require('../util/logger')(__filename);
 
+BPromise.promisifyAll(fontkit);
 const PDFLibDocument = PDFLib.PDFDocument;
 
 function parseUnit(str) {
@@ -43,9 +51,13 @@ function parseUnit(str) {
   };
 }
 
-function normalizeDimensions(dim) {
-  const parsedWidth = parseUnit(dim.width);
-  const parsedHeight = parseUnit(dim.height);
+function normalizeDimensions(opts) {
+  const parsedSize = parseSize(opts.size);
+  const widthStr = `${parsedSize.width}${parsedSize.unit}`;
+  const heightStr = `${parsedSize.height}${parsedSize.unit}`;
+
+  const parsedWidth = parseUnit(widthStr);
+  const parsedHeight = parseUnit(heightStr);
   return {
     width: convert(parsedWidth.value).from(parsedWidth.unit).to('in'),
     height: convert(parsedHeight.value).from(parsedHeight.unit).to('in'),
@@ -109,6 +121,169 @@ async function generatePdfWithEmbeddedImage(input, opts = {}) {
   };
 }
 
+// Original function here: https://github.com/alafr/SVG-to-PDFKit/blob/15ab82dff389bb990dd4e9493ce8531cf9eb6298/source.js#L2446
+function fontCallback(doc, fontPsMapping, familyAttr, bold, italic, fontOptions) {
+  const family = getFirstFontFamily(familyAttr);
+  if (bold && italic && _.has(doc._registeredFonts, `${family}-BoldItalic`)) {
+    logger.debug(`Found a match for font ${family} -> ${family}-BoldItalic (bold and italic styles)`);
+    return family;
+  }
+
+  if (bold && _.has(doc._registeredFonts, `${family}-Bold`)) {
+    logger.debug(`Found a match for font ${family} -> ${family}-Bold (bold style)`);
+    return family;
+  }
+
+  if (italic && _.has(doc._registeredFonts, `${family}-Italic`)) {
+    logger.debug(`Found a match for font ${family} -> ${family}-Italic (italic style)`);
+    return family;
+  }
+
+  if (_.has(doc._registeredFonts, family)) {
+    logger.debug(`Found a match for font ${family} -> ${family}`);
+    return family;
+  }
+
+  const psName = fontPsMapping[family];
+  if (_.has(doc._registeredFonts, psName)) {
+    logger.info(`Found a match for font ${family} -> ${psName}`);
+    return psName;
+  }
+
+  throw new Error(`No matching font found for ${family} (${familyAttr}) in SVG -> PDF conversion`);
+}
+
+async function addPaddings(pdfPage, dims, color = PDFLib.rgb(1, 1, 1)) {
+  const combos = [
+    // top
+    { x: 0, y: 0, width: dims.width, height: dims.padding },
+    // left
+    { x: 0, y: 0, width: dims.padding, height: dims.height },
+    // right
+    { x: dims.width - dims.padding, y: 0, width: dims.padding, height: dims.height },
+    // bottom
+    { x: 0, y: dims.height - dims.padding, width: dims.width, height: dims.padding },
+  ];
+
+  _.forEach(combos, (combo) => {
+    pdfPage.drawRectangle({
+      ...combo,
+      borderWidth: 0,
+      color,
+    });
+  });
+}
+
+async function posterSvgToPdf(svgDoc, pdfDims, fontMapping) {
+  const pdf = new PDFKitDocument({ autoFirstPage: false });
+
+  const svgNode = getSvgElement(svgDoc);
+  // px values need to be changed to pt for correct size
+  svgNode.setAttribute('width', `${pdfDims.width}pt`);
+  svgNode.setAttribute('height', `${pdfDims.height}pt`);
+
+  const fontPsMapping = {};
+  const fonts = getSvgDocFonts(svgDoc);
+  logger.info(`Found fonts from SVG: ${JSON.stringify(fonts)}`);
+  await BPromise.each(fonts, async (fontName) => {
+    const fontFileName = matchFont(fontName, fontMapping);
+    const fontPath = path.join(config.FONT_DIR, fontFileName);
+
+    // We're not using the postscript name for mapping in the end, but the filename
+    // However this code was left here in case we need to do matching with postscript name
+    // later
+    const font = await fontkit.openAsync(fontPath);
+    fontPsMapping[fontName] = font.postscriptName;
+
+    logger.info(`Embedding font ${fontPath}`);
+    pdf.registerFont(fontName, fontPath);
+  });
+
+  pdf.addPage({
+    size: [pdfDims.width, pdfDims.height],
+    layout: pdfDims.width > pdfDims.height ? 'landscape' : 'portrait',
+    margin: 0,
+  });
+
+  SVGtoPDF(pdf, svgDocToString(svgDoc), 0, 0, {
+    fontCallback: fontCallback.bind(fontCallback, pdf, fontPsMapping),
+  });
+  pdf.end();
+
+  const pdfBuf = await streamToPromise(pdf);
+  return pdfBuf;
+}
+
+async function generateVectorPdf(opts) {
+  const posterSvgStr = await readPosterFile(_.extend({}, opts, { clientVersion: true }));
+  const posterDims = await getPosterDimensions(opts);
+
+  assertAspectRatio(posterDims, opts);
+
+  const parsedPoster = parseSvgString(posterSvgStr);
+  const posterDoc = transformPosterSvgDoc(parsedPoster.doc, opts);
+
+  const targetDims = normalizeDimensions(opts);
+  const pdfDims = calculateDocDimensions(targetDims);
+  const pdfDimToPosterDimRatio = (pdfDims.width / posterDims.width);
+  const mapOpts = _.merge({}, opts, {
+    width: posterDims.width,
+    height: posterDims.height,
+    format: 'pdf',
+  });
+  const mapPdfBuf = await mapCore.render(_.omit(mapOpts, _.isNil));
+  const pdfDoc = await PDFLibDocument.create();
+  pdfDoc.registerFontkit(PDFLibFontkit);
+  pdfDoc.setTitle(`Map poster ${opts.size}`);
+  pdfDoc.setSubject(posterMetaQuery(opts));
+  pdfDoc.setAuthor('Alvar Carto (alvarcarto.com). Map data by OpenStreetMap contributors.');
+  pdfDoc.setCreator('pdf-lib (https://github.com/Hopding/pdf-lib)');
+  pdfDoc.setCreationDate(new Date());
+  pdfDoc.setModificationDate(new Date());
+
+  const mapPdfBytes = await PDFLibDocument.load(mapPdfBuf);
+  const mapElement = await pdfDoc.embedPage(mapPdfBytes.getPages()[0]);
+  const mapDims = mapElement.scale(pdfDimToPosterDimRatio);
+  const page = pdfDoc.addPage([pdfDims.width, pdfDims.height]);
+  page.drawPage(mapElement, {
+    ...mapDims,
+    x: 0,
+    y: 0,
+  });
+
+  if (!opts.labelsEnabled) {
+    addPaddings(page, _.extend({}, pdfDims, {
+      padding: calculatePadding(pdfDims),
+    }));
+  } else {
+    const overlayPdfBuf = await posterSvgToPdf(posterDoc, pdfDims, opts.fontMapping);
+    if (config.SAVE_TEMP_FILES) {
+      const tmpPath = getTempPath(`${opts.uuid}-svgtopdf.pdf`);
+      await fs.writeFileAsync(tmpPath, overlayPdfBuf, { encoding: null });
+    }
+
+    const overlayPdfBytes = await PDFLibDocument.load(overlayPdfBuf);
+    const [overlayElement] = await pdfDoc.embedPdf(overlayPdfBytes);
+    // const overlayDims = overlayElement.scale(pdfDimToPosterDimRatio);
+    page.drawPage(overlayElement, {
+      x: 0,
+      y: 0,
+    });
+  }
+
+  const pdfBytes = await pdfDoc.save();
+  return {
+    // Uint8Array to Buffer
+    data: Buffer.from(pdfBytes.buffer, 'binary'),
+    meta: {
+      posterWidth: posterDims.width,
+      posterHeight: posterDims.height,
+      targetWidthInch: targetDims.width,
+      targetHeightInch: targetDims.height,
+    },
+  };
+}
+
 async function renderPngEmbedded(opts) {
   const pngOpts = _.extend({}, opts, { format: 'png' });
   const posterPng = await opts.originalRender(pngOpts);
@@ -118,91 +293,20 @@ async function renderPngEmbedded(opts) {
     await fs.writeFileAsync(tmpPngPath, posterPng, { encoding: null });
   }
 
-  const parsedSize = parseSize(opts.size);
-  const pdf = await generatePdfWithEmbeddedImage(posterPng, {
-    width: `${parsedSize.width}${parsedSize.unit}`,
-    height: `${parsedSize.height}${parsedSize.unit}`,
-  });
+  const pdf = await generatePdfWithEmbeddedImage(posterPng, opts);
 
   // Target dimensions are in inches, the dpi is simply pixels / inches
-  logger.info(`Generated PDF with dpi ${pdf.meta.imageWidth / pdf.meta.targetWidthInch}`);
+  logger.info(`Generated PDF with embedded PNG with dpi ${pdf.meta.imageWidth / pdf.meta.targetWidthInch}`);
   logger.info('Meta:', pdf.meta);
   return pdf.data;
 }
 
-async function posterSvgToPdf(svgDoc) {
-  const pdf = new PDFKitDocument({ autoFirstPage: false });
-
-  const svgNode = getSvgElement(svgDoc);
-  const nodeDims = getNodeDimensions(svgNode);
-  pdf.addPage({
-    size: [nodeDims.width, nodeDims.height],
-    margin: 0,
-  });
-
-  SVGtoPDF(pdf, svgDocToString(svgDoc), 0, 0);
-  pdf.end();
-
-  const pdfBuf = await streamToPromise(pdf);
-  return pdfBuf;
-}
-
 async function renderVector(opts) {
-  const posterSvgStr = await readPosterFile(_.extend({}, opts, { clientVersion: true }));
-  const posterDims = await getPosterDimensions(opts);
+  const pdf = await generateVectorPdf(opts);
 
-  const parsedPoster = parseSvgString(posterSvgStr);
-  const posterDoc = transformPosterSvgDoc(parsedPoster.doc, opts);
-
-  const mapOpts = _.merge({}, opts, {
-    width: posterDims.width,
-    height: posterDims.height,
-    format: 'pdf',
-  });
-  const mapPdfBuf = await mapCore.render(_.omit(mapOpts, _.isNil));
-
-  if (!opts.labelsEnabled) {
-    throw new Error(`Not implemented`)
-    // addPaddings(posterDoc, posterDims);
-  }
-
-  const pdfDims = {
-    width: posterDims.width,
-    height: posterDims.height,
-  };
-  const pdfDoc = await PDFLibDocument.create();
-  const mapPdfBytes = await PDFLibDocument.load(mapPdfBuf);
-  const fullPage = {
-    left: 0,
-    bottom: 0,
-    right: pdfDims.width,
-    top: pdfDims.height,
-  };
-  const mapElement = await pdfDoc.embedPage(mapPdfBytes.getPages()[0], fullPage);
-  console.log('mapelement', mapElement.size());
-
-  const overlayPdfBuf = await posterSvgToPdf(posterDoc);
-  const overlayPdfBytes = await PDFLibDocument.load(overlayPdfBuf);
-  const overlayElement = await pdfDoc.embedPage(overlayPdfBytes.getPages()[0], fullPage);
-  console.log('overlayelement', overlayElement.size());
-
-  // TODO: Set page width so that it'll match physical dimensions
-  const page = pdfDoc.addPage([pdfDims.width, pdfDims.height]);
-  page.drawPage(mapElement, {
-    x: 0,
-    y: 0,
-    width: pdfDims.width,
-    height: pdfDims.height,
-  });
-  page.drawPage(overlayElement, {
-    x: 0,
-    y: 0,
-    width: pdfDims.width,
-    height: pdfDims.height,
-  });
-
-  const pdfBytes = await pdfDoc.save();
-  return Buffer.from(pdfBytes.buffer, 'binary');
+  logger.info(`Generated vector PDF for target size ${opts.size}`);
+  logger.info('Meta:', pdf.meta);
+  return pdf.data;
 }
 
 async function render(_opts) {

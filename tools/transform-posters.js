@@ -10,6 +10,7 @@ const {
   getNodeDimensions,
   parseSizeToPixelDimensions,
   NODE_TYPE_ELEMENT,
+  traverse,
 } = require('../src/util/poster');
 
 const IMAGES_BASE_URL = process.env.IMAGES_BASE_URL || 'https://alvarcarto-poster-assets.s3-eu-west-1.amazonaws.com';
@@ -293,19 +294,6 @@ async function replaceRectWithImage(doc, node, imageName) {
 
   const parent = node.parentNode;
   parent.replaceChild(imageEl, node);
-}
-
-// Traverses whole node tree "down" depth-first starting from node.
-// Callback is called for each found node
-function traverse(doc, node, cb) {
-  cb(node);
-
-  if (node.hasChildNodes()) {
-    for (let i = 0; i < node.childNodes.length; ++i) {
-      const childNode = node.childNodes.item(i);
-      traverse(doc, childNode, cb);
-    }
-  }
 }
 
 function getNodeId(node) {

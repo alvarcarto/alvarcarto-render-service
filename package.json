@@ -18,6 +18,7 @@
   "license": "UNLICENSED",
   "dependencies": {
     "@alvarcarto/mosaic": "^3.0.1",
+    "@pdf-lib/fontkit": "0.0.4",
     "alvarcarto-common": "git+https://alvarcarto-integration:c20a4fe9a8771c17eab5f0470fba434ab2fcf901@github.com/kimmobrunfeldt/alvarcarto-common.git#v7.0.0",
     "async-lock": "^1.0.0",
     "bluebird": "^3.4.6",
@@ -30,6 +31,7 @@
     "express": "^4.14.0",
     "express-rate-limit": "^5.1.1",
     "express-validation": "^1.0.1",
+    "fontkit": "^1.8.1",
     "glob": "^7.1.2",
     "joi": "^9.2.0",
     "jsdom": "^9.8.3",
