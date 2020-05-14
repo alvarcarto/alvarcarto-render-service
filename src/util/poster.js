@@ -333,6 +333,15 @@ function parseSizeToPixelDimensions(size, orientation) {
 }
 
 function parseSize(size) {
+  if (_.has(SIZES_IN_INCHES, size)) {
+    const dim = SIZES_IN_INCHES[size];
+    return {
+      width: dim.width,
+      height: dim.height,
+      unit: 'inch',
+    };
+  }
+
   if (!_.isString(size) || !size.match(/[0-9]+x[0-9]+(cm|inch)/)) {
     throw new Error(`Size should match /[0-9]+x[0-9]+(cm|inch)/, size: ${size}`);
   }

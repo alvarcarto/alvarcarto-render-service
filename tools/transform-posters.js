@@ -9,6 +9,7 @@ const {
   parseSvgString,
   getNodeDimensions,
   parseSizeToPixelDimensions,
+  svgDocToString,
   NODE_TYPE_ELEMENT,
   traverse,
 } = require('../src/util/poster');

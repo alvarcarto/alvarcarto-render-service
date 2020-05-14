@@ -174,7 +174,7 @@ async function addPaddings(pdfPage, dims, color = PDFLib.rgb(1, 1, 1)) {
   });
 }
 
-async function posterSvgToPdf(svgDoc, pdfDims, fontMapping) {
+async function posterSvgToPdf(svgDoc, pdfDims, opts) {
   const pdf = new PDFKitDocument({ autoFirstPage: false });
 
   const svgNode = getSvgElement(svgDoc);
@@ -186,7 +186,7 @@ async function posterSvgToPdf(svgDoc, pdfDims, fontMapping) {
   const fonts = getSvgDocFonts(svgDoc);
   logger.info(`Found fonts from SVG: ${JSON.stringify(fonts)}`);
   await BPromise.each(fonts, async (fontName) => {
-    const fontFileName = matchFont(fontName, fontMapping);
+    const fontFileName = matchFont(fontName, opts.fontMapping);
     const fontPath = path.join(config.FONT_DIR, fontFileName);
 
     // We're not using the postscript name for mapping in the end, but the filename
@@ -207,6 +207,31 @@ async function posterSvgToPdf(svgDoc, pdfDims, fontMapping) {
 
   SVGtoPDF(pdf, svgDocToString(svgDoc), 0, 0, {
     fontCallback: fontCallback.bind(fontCallback, pdf, fontPsMapping),
+    colorCallback: (parsed, raw) => {
+      if (!raw) {
+        return raw;
+      }
+
+      if (!parsed) {
+        return parsed;
+      }
+
+      const [[r, g, b], a] = parsed;
+
+      if (!opts.spotColor) {
+        return parsed;
+      }
+
+      const isTransparent = a === 0;
+      const isWhite = r === 255 && g === 255 && b === 255;
+      if (!isTransparent && !isWhite) {
+        const newColor = [opts.spotColor.value, 1];
+        logger.info(`Set color ${raw} ([rgb],a: ${JSON.stringify(parsed)}) to spot color ${newColor}`);
+        return newColor;
+      }
+
+      return [[0, 0, 0, 0], a];
+    },
   });
   pdf.end();
 
@@ -256,7 +281,7 @@ async function generateVectorPdf(opts) {
       padding: calculatePadding(pdfDims),
     }));
   } else {
-    const overlayPdfBuf = await posterSvgToPdf(posterDoc, pdfDims, opts.fontMapping);
+    const overlayPdfBuf = await posterSvgToPdf(posterDoc, pdfDims, opts);
     if (config.SAVE_TEMP_FILES) {
       const tmpPath = getTempPath(`${opts.uuid}-svgtopdf.pdf`);
       await fs.writeFileAsync(tmpPath, overlayPdfBuf, { encoding: null });

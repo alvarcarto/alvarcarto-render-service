@@ -194,6 +194,7 @@ function _reqToOpts(req) {
     primaryColor: req.query.primaryColor,
     size,
     spotColor: req.query.spotColor ? parseSpotColor(req.query.spotColor) : null,
+    spotColorName: req.query.spotColorName,
     orientation: req.query.orientation,
     useTileRender: req.query.useTileRender,
     resizeToWidth: req.query.resizeToWidth ? Number(req.query.resizeToWidth) : null,
