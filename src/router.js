@@ -47,6 +47,7 @@ function createRouter() {
       // pdf-png is our own naming for a PDF that has png map embedded
       format: Joi.string().valid(SHARP_RASTER_IMAGE_TYPES.concat(['pdf', 'pdf-png', 'svg'])).optional(),
       quality: Joi.number().min(1).max(100),
+      spotColor: Joi.string().optional(),
       size: Joi.string().valid([
         '30x40cm', '50x70cm', '70x100cm',
         '12x18inch', '18x24inch', '24x36inch',

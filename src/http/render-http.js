@@ -34,6 +34,10 @@ const getRender = ex.createRoute((req, res) => {
     ex.throwStatus(403, 'Anonymous requests must define a resize parameter.');
   }
 
+  if (_.has(req.query, 'spotColor') && req.query.format !== 'pdf') {
+    ex.throwStatus(400, 'Option spotColor is only allowed when format is pdf');
+  }
+
   const opts = _reqToOpts(req);
 
   if (isAnon) {
@@ -150,6 +154,36 @@ const getRenderBackground = ex.createRoute((req, res) => {
     });
 });
 
+function parseSpotColor(color) {
+  const cmykRegex = /^cmyk\((.*)\)$/;
+  if (color.match(cmykRegex)) {
+    const inside = cmykRegex.exec(color)[0];
+    const numbers = _.map(inside.split(','), i => parseFloat(i));
+    if (numbers.length !== 4) {
+      ex.throwStatus(400, 'CMYK color must have exactly 4 numbers');
+    }
+    return {
+      type: 'cmyk',
+      value: numbers,
+    };
+  }
+
+  const rgbRegex = /^rgb\((.*)\)$/;
+  if (color.match(rgbRegex)) {
+    const inside = rgbRegex.exec(color)[0];
+    const numbers = _.map(inside.split(','), i => parseFloat(i));
+    if (numbers.length !== 3) {
+      ex.throwStatus(400, 'RGB color must have exactly 3 numbers');
+    }
+    return {
+      type: 'rgb',
+      value: numbers,
+    };
+  }
+
+  ex.throwStatus(400, 'Option spotColor incorrect format! Must be in format rgb(0, 0, 0) or cmyk(0, 0, 0, 0).');
+}
+
 function _reqToOpts(req) {
   const size = req.query.size;
   const dims = parseSizeToPixelDimensions(size, req.query.orientation);
@@ -159,6 +193,7 @@ function _reqToOpts(req) {
     posterStyle: req.query.posterStyle,
     primaryColor: req.query.primaryColor,
     size,
+    spotColor: req.query.spotColor ? parseSpotColor(req.query.spotColor) : null,
     orientation: req.query.orientation,
     useTileRender: req.query.useTileRender,
     resizeToWidth: req.query.resizeToWidth ? Number(req.query.resizeToWidth) : null,
