@@ -157,7 +157,7 @@ const getRenderBackground = ex.createRoute((req, res) => {
 function parseSpotColor(color) {
   const cmykRegex = /^cmyk\((.*)\)$/;
   if (color.match(cmykRegex)) {
-    const inside = cmykRegex.exec(color)[0];
+    const inside = cmykRegex.exec(color)[1];
     const numbers = _.map(inside.split(','), i => parseFloat(i));
     if (numbers.length !== 4) {
       ex.throwStatus(400, 'CMYK color must have exactly 4 numbers');
@@ -170,7 +170,7 @@ function parseSpotColor(color) {
 
   const rgbRegex = /^rgb\((.*)\)$/;
   if (color.match(rgbRegex)) {
-    const inside = rgbRegex.exec(color)[0];
+    const inside = rgbRegex.exec(color)[1];
     const numbers = _.map(inside.split(','), i => parseFloat(i));
     if (numbers.length !== 3) {
       ex.throwStatus(400, 'RGB color must have exactly 3 numbers');
