@@ -22,6 +22,7 @@ const {
   posterMetaQuery,
   getTempPath,
   getSvgDocFonts,
+  getNodeDimensions,
   matchFont,
   getFirstFontFamily,
   calculatePadding,
@@ -199,6 +200,10 @@ async function posterSvgToPdf(svgDoc, pdfDims, opts) {
     pdf.registerFont(fontName, fontPath);
   });
 
+  if (opts.spotColor) {
+    pdf.addSpotColor(opts.spotColorName, ...opts.spotColor.value);
+  }
+
   pdf.addPage({
     size: [pdfDims.width, pdfDims.height],
     layout: pdfDims.width > pdfDims.height ? 'landscape' : 'portrait',
@@ -208,12 +213,8 @@ async function posterSvgToPdf(svgDoc, pdfDims, opts) {
   SVGtoPDF(pdf, svgDocToString(svgDoc), 0, 0, {
     fontCallback: fontCallback.bind(fontCallback, pdf, fontPsMapping),
     colorCallback: (parsed, raw) => {
-      if (!raw) {
-        return raw;
-      }
-
-      if (!parsed) {
-        return parsed;
+      if (!raw || !parsed) {
+        return opts.spotColor ? [[0, 0, 0, 0], 1] : parsed;
       }
 
       const [[r, g, b], a] = parsed;
@@ -223,14 +224,13 @@ async function posterSvgToPdf(svgDoc, pdfDims, opts) {
       }
 
       const isTransparent = a === 0;
-      const isWhite = r === 255 && g === 255 && b === 255;
-      if (!isTransparent && !isWhite) {
-        const newColor = [opts.spotColor.value, 1];
-        logger.info(`Set color ${raw} ([rgb],a: ${JSON.stringify(parsed)}) to spot color ${newColor}`);
-        return newColor;
+      const isWhite = r > 254.9 && g > 254.9 && b > 254.9;
+      if (isTransparent || isWhite) {
+        return [[0, 0, 0, 0], a];
       }
 
-      return [[0, 0, 0, 0], a];
+      logger.info(`Set color ${raw} (${JSON.stringify(parsed)}) to spot color named ${opts.spotColorName}`);
+      return [opts.spotColorName, 1];
     },
   });
   pdf.end();
@@ -239,6 +239,62 @@ async function posterSvgToPdf(svgDoc, pdfDims, opts) {
   return pdfBuf;
 }
 
+function setPdfMetadata(pdfDoc, opts) {
+  pdfDoc.setTitle(`Map poster ${opts.size}`);
+  pdfDoc.setSubject(posterMetaQuery(opts));
+  pdfDoc.setAuthor('Alvar Carto (alvarcarto.com). Map data by OpenStreetMap contributors.');
+  pdfDoc.setCreator('pdf-lib (https://github.com/Hopding/pdf-lib)');
+  pdfDoc.setCreationDate(new Date());
+  pdfDoc.setModificationDate(new Date());
+}
+
+// This renders a vector PDF but uses svg-poster-core to render the full poster
+// as SVG first, and then it is converted to PDF with SVGtoPDF.
+// The method allows an easier way to change all colors to the spot color
+// with the colorCallback functionality
+// If this issue moves forward: https://github.com/Hopding/pdf-lib/issues/445
+// we could replace the colors in PDF format, but until that this seems to be the best
+// work around
+async function generateVectorPdfFromOnlySvg(opts) {
+  const svgOpts = _.extend({}, opts, { format: 'svg' });
+  const fullPosterSvgStr = await opts.originalRender(svgOpts);
+  const parsedPoster = parseSvgString(fullPosterSvgStr);
+  const fullPosterDoc = parsedPoster.doc;
+
+  const posterDims = await getNodeDimensions(parsedPoster.svg);
+  assertAspectRatio(posterDims, opts);
+
+  const targetDims = normalizeDimensions(opts);
+  const pdfDims = calculateDocDimensions(targetDims);
+  const pdfDoc = await PDFLibDocument.create();
+  pdfDoc.registerFontkit(PDFLibFontkit);
+  setPdfMetadata(pdfDoc, opts);
+  const page = pdfDoc.addPage([pdfDims.width, pdfDims.height]);
+
+  const overlayPdfBuf = await posterSvgToPdf(fullPosterDoc, pdfDims, opts);
+  const overlayPdfBytes = await PDFLibDocument.load(overlayPdfBuf);
+  const [overlayElement] = await pdfDoc.embedPdf(overlayPdfBytes);
+  page.drawPage(overlayElement, {
+    x: 0,
+    y: 0,
+  });
+
+  const pdfBytes = await pdfDoc.save();
+  return {
+    // Uint8Array to Buffer
+    data: Buffer.from(pdfBytes.buffer, 'binary'),
+    meta: {
+      posterWidth: posterDims.width,
+      posterHeight: posterDims.height,
+      targetWidthInch: targetDims.width,
+      targetHeightInch: targetDims.height,
+    },
+  };
+}
+
+// Generates a vector PDF from the following layers:
+// * PDF map returned by Mapnik render
+// * PDF poster overlay generated with SVGtoPDF
 async function generateVectorPdf(opts) {
   const posterSvgStr = await readPosterFile(_.extend({}, opts, { clientVersion: true }));
   const posterDims = await getPosterDimensions(opts);
@@ -259,12 +315,7 @@ async function generateVectorPdf(opts) {
   const mapPdfBuf = await mapCore.render(_.omit(mapOpts, _.isNil));
   const pdfDoc = await PDFLibDocument.create();
   pdfDoc.registerFontkit(PDFLibFontkit);
-  pdfDoc.setTitle(`Map poster ${opts.size}`);
-  pdfDoc.setSubject(posterMetaQuery(opts));
-  pdfDoc.setAuthor('Alvar Carto (alvarcarto.com). Map data by OpenStreetMap contributors.');
-  pdfDoc.setCreator('pdf-lib (https://github.com/Hopding/pdf-lib)');
-  pdfDoc.setCreationDate(new Date());
-  pdfDoc.setModificationDate(new Date());
+  setPdfMetadata(pdfDoc, opts);
 
   const mapPdfBytes = await PDFLibDocument.load(mapPdfBuf);
   const mapElement = await pdfDoc.embedPage(mapPdfBytes.getPages()[0]);
@@ -327,7 +378,12 @@ async function renderPngEmbedded(opts) {
 }
 
 async function renderVector(opts) {
-  const pdf = await generateVectorPdf(opts);
+  let pdf;
+  if (opts.pdfFromSvg) {
+    pdf = await generateVectorPdfFromOnlySvg(opts);
+  } else {
+    pdf = await generateVectorPdf(opts);
+  }
 
   logger.info(`Generated vector PDF for target size ${opts.size}`);
   logger.info('Meta:', pdf.meta);

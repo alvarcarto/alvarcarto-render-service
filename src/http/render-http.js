@@ -187,14 +187,23 @@ function parseSpotColor(color) {
 function _reqToOpts(req) {
   const size = req.query.size;
   const dims = parseSizeToPixelDimensions(size, req.query.orientation);
+  const spotColor = req.query.spotColor ? parseSpotColor(req.query.spotColor) : null;
   const opts = {
     format: req.query.format || 'png',
     mapStyle: req.query.mapStyle,
     posterStyle: req.query.posterStyle,
     primaryColor: req.query.primaryColor,
     size,
-    spotColor: req.query.spotColor ? parseSpotColor(req.query.spotColor) : null,
-    spotColorName: req.query.spotColorName,
+    spotColor,
+    spotColorName: spotColor !== null ? req.query.spotColorName : null,
+    // When spot color is defined, we use the "fully from svg" generation method
+    // for PDF, as it allows spot color to be changed for the map layer as well
+    // If you want to e.g. gold foil just the overlay contents, but leave map layer as
+    // a normal print, set this explicitly to false while using spot color in the request
+    // For example: &spotColor=cmyk(0,100,0,0)&spotColorName=copperfoil&pdfFromSvg=false
+    pdfFromSvg: _.isBoolean(req.query.pdfFromSvg)
+      ? req.query.pdfFromSvg
+      : spotColor !== null,
     orientation: req.query.orientation,
     useTileRender: req.query.useTileRender,
     resizeToWidth: req.query.resizeToWidth ? Number(req.query.resizeToWidth) : null,
