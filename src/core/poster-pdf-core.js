@@ -272,6 +272,10 @@ async function generateVectorPdfFromOnlySvg(opts) {
   const page = pdfDoc.addPage([pdfDims.width, pdfDims.height]);
 
   const overlayPdfBuf = await posterSvgToPdf(fullPosterDoc, pdfDims, opts);
+  if (config.SAVE_TEMP_FILES) {
+    const tmpPath = getTempPath(`${opts.uuid}-svgtopdf.pdf`);
+    await fs.writeFileAsync(tmpPath, overlayPdfBuf, { encoding: null });
+  }
   const overlayPdfBytes = await PDFLibDocument.load(overlayPdfBuf);
   const [overlayElement] = await pdfDoc.embedPdf(overlayPdfBytes);
   page.drawPage(overlayElement, {
@@ -302,7 +306,7 @@ async function generateVectorPdf(opts) {
   assertAspectRatio(posterDims, opts);
 
   const parsedPoster = parseSvgString(posterSvgStr);
-  const posterDoc = transformPosterSvgDoc(parsedPoster.doc, opts);
+  const posterDoc = await transformPosterSvgDoc(parsedPoster.doc, opts);
 
   const targetDims = normalizeDimensions(opts);
   const pdfDims = calculateDocDimensions(targetDims);

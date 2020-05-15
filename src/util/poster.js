@@ -1,8 +1,10 @@
 const BPromise = require('bluebird');
 const path = require('path');
+const glob = require('glob');
 const _ = require('lodash');
 const querystring = require('querystring');
 const fs = BPromise.promisifyAll(require('fs'));
+const fontkit = require('fontkit');
 const {
   addOrUpdateLines,
   getPosterStyle,
@@ -14,6 +16,9 @@ const xmldom = require('xmldom');
 const window = require('svgdom');
 const svgJs = require('svg.js');
 const config = require('../config');
+const logger = require('../util/logger')(__filename);
+
+BPromise.promisifyAll(fontkit);
 
 // This padding factor needs to match the settings in frontend
 const EMPTY_MAP_PADDING_FACTOR = 0.035;
@@ -56,14 +61,33 @@ async function getPosterDimensions(opts) {
   };
 }
 
+const openTypeFonts = glob.sync(`${config.FONT_DIR}/*.otf`);
+const trueTypeFonts = glob.sync(`${config.FONT_DIR}/*.ttf`);
+const FONT_FILES = trueTypeFonts.concat(openTypeFonts);
+
+function getFontMapping() {
+  const fontMapping = _.reduce(FONT_FILES, (memo, filePath) => {
+    const fontName = path.basename(filePath, path.extname(filePath));
+    const fileName = path.basename(filePath);
+    const newFonts = { [fontName]: fileName };
+    if (_.endsWith(fontName, '-Regular')) {
+      const baseName = fontName.split('-Regular')[0];
+      newFonts[baseName] = fileName;
+    }
+    return _.extend({}, memo, newFonts);
+  }, {});
+
+  return fontMapping;
+}
+
 function calculatePadding(dims) {
   const side = Math.min(dims.width, dims.height);
   return Math.floor(EMPTY_MAP_PADDING_FACTOR * side);
 }
 
-function transformPosterSvgDoc(svgDoc, opts = {}) {
+async function transformPosterSvgDoc(svgDoc, opts = {}) {
   if (opts.labelsEnabled) {
-    setTexts(svgDoc, opts);
+    await setTexts(svgDoc, opts);
   }
 
   changeDynamicAttributes(svgDoc, opts);
@@ -127,6 +151,18 @@ function matchFont(fontName, fontMapping) {
   throw new Error(`Font mapping is missing font: ${fontName}`);
 }
 
+function pickNotoVariation(fontFamily) {
+  const variations = ['-Black', '-Bold', '-DemiLight', '-Light', '-Thin', '-Medium', '-Regular'];
+
+  for (let i = 0; i < variations.length; i += 1) {
+    if (_.includes(fontFamily, variations[i])) {
+      return `NotoSansSC${variations[i]}`;
+    }
+  }
+
+  return 'NotoSansSC-Regular';
+}
+
 function getFirstFontFamily(fontFamily) {
   if (!_.isString(fontFamily) || fontFamily.trim().length === 0) {
     throw new Error(`Invalid font-family: ${fontFamily}`);
@@ -136,7 +172,7 @@ function getFirstFontFamily(fontFamily) {
   return cleaned;
 }
 
-function setTexts(svgDoc, opts) {
+async function setTexts(svgDoc, opts) {
   const { labelColor } = getMapStyle(opts.mapStyle);
   const { addLines, upperCaseLabels } = getPosterStyle(opts.posterStyle, opts.material);
 
@@ -144,7 +180,7 @@ function setTexts(svgDoc, opts) {
     ? opts.labelHeader.toUpperCase()
     : opts.labelHeader;
   const headerEl = svgDoc.getElementById('header');
-  setText(headerEl, labelHeader);
+  await setText(headerEl, labelHeader);
   setColor(headerEl, labelColor);
 
   const smallHeaderEl = svgDoc.getElementById('small-header');
@@ -152,7 +188,7 @@ function setTexts(svgDoc, opts) {
     const labelSmallHeader = upperCaseLabels
       ? opts.labelSmallHeader.toUpperCase()
       : opts.labelSmallHeader;
-    setText(smallHeaderEl, labelSmallHeader);
+    await setText(smallHeaderEl, labelSmallHeader);
     setColor(smallHeaderEl, labelColor);
 
     if (addLines) {
@@ -175,7 +211,7 @@ function setTexts(svgDoc, opts) {
     const labelText = upperCaseLabels
       ? opts.labelText.toUpperCase()
       : opts.labelText;
-    setText(textEl, labelText);
+    await setText(textEl, labelText);
     setColor(textEl, labelColor);
   }
 }
@@ -249,11 +285,66 @@ function getNodeDimensions(node) {
   };
 }
 
-function setText(textNode, value) {
+function trimQuotes(str) {
+  const cleaned = _.trimEnd(_.trimStart(str, '\'"'), '\'"');
+  return cleaned;
+}
+
+async function maybeSetFallbackFont(textNode, text) {
+  const tspanList = textNode.getElementsByTagName('tspan');
+
+  const textFontFamily = textNode.getAttribute('font-family');
+  const tspanFontFamily = tspanList.item(0).getAttribute('font-family');
+  const fontFamily = _.isString(tspanFontFamily) && tspanFontFamily.trim().length > 0
+    ? trimQuotes(tspanFontFamily.trim())
+    : trimQuotes(textFontFamily.trim());
+
+  const fontFamilyArr = _.map(fontFamily.split(','), i => i.trim());
+
+  await BPromise.each(fontFamilyArr, async (fontName) => {
+    const fontFile = matchFont(fontName, getFontMapping());
+    const fontPath = path.join(config.FONT_DIR, fontFile);
+    const font = await fontkit.openAsync(fontPath);
+
+    for (let i = 0; i < text.length; i += 1) {
+      const char = text[i];
+      // https://stackoverflow.com/questions/48009201/how-to-get-the-unicode-code-point-for-a-character-in-javascript
+      const codePointNums = Array.from(char).map(v => v.codePointAt(0));
+
+      for (let k = 0; k < codePointNums.length; k += 1) {
+        const codePointNum = codePointNums[k];
+        if (!font.hasGlyphForCodePoint(codePointNum)) {
+          const chosenNoto = pickNotoVariation(fontFamily);
+          const newFontFamily = `'${chosenNoto},${fontFamily}'`;
+          let msg = `Setting fallback font-family first (${newFontFamily}) for element #${textNode.getAttribute('id')},`;
+          msg += ` found '${char}' (code point ${codePointNum})`;
+          logger.info(msg);
+          tspanList.item(0).setAttribute('font-family', newFontFamily);
+          textNode.setAttribute('font-family', newFontFamily);
+
+          // We can stop iteration here, fall back font already sent
+          // We just assume that all glyphs are found from our fallback font
+          //
+          // To improve this support, we should separate the text to different elements
+          // based on what glyphs the text contains.
+          // For example "東京都 🙂" should be two separate elements where each have their own fonts
+          // All this is only necessary to support vector PDF format correctly.
+          // In most cases our dumb approach is good enough, our customer production already
+          // handles font mixups (via librsvg rendering)
+          return;
+        }
+      }
+    }
+  });
+}
+
+async function setText(textNode, value) {
   const tspanList = textNode.getElementsByTagName('tspan');
   if (tspanList.length < 1) {
     throw new Error(`Unexpected amount of tspan elements found: ${tspanList.length}`);
   }
+
+  await maybeSetFallbackFont(textNode, value);
 
   tspanList.item(0).textContent = value;
 }
@@ -405,8 +496,10 @@ module.exports = {
   calculatePadding,
   parseSizeToPixelDimensions,
   svgDocToString,
+  getFontMapping,
   getSvgDocFonts,
   getFirstFontFamily,
+  pickNotoVariation,
   getSvgElement,
   posterMetaQuery,
   dimensionsToDefaultScale,

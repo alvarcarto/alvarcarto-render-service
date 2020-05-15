@@ -147,7 +147,7 @@ async function _renderPoster(opts) {
     throw new Error(`Map image has incorrect dimensions: ${actual}, expected: ${expected}`);
   }
 
-  const newSvgString = transformPosterSvgDoc(parsed.doc, _.extend({}, opts, { serialize: true }));
+  const newSvgString = await transformPosterSvgDoc(parsed.doc, _.extend({}, opts, { serialize: true }));
   const tmpSvgPath = getTempPath(`${opts.uuid}.svg`);
 
   await fs.writeFileAsync(tmpSvgPath, newSvgString, { encoding: 'utf-8' });

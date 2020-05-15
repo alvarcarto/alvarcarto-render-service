@@ -92,7 +92,7 @@ async function render(_opts) {
   const posterDims = await getPosterDimensions(opts);
 
   const parsedPoster = parseSvgString(posterSvgStr);
-  const posterDoc = transformPosterSvgDoc(parsedPoster.doc, opts);
+  const posterDoc = await transformPosterSvgDoc(parsedPoster.doc, opts);
   // Mutating posterSvg also affects the posterDoc
   const posterSvg = getSvgElement(posterDoc);
 

@@ -2,7 +2,6 @@ const BPromise = require('bluebird');
 const _ = require('lodash');
 const glob = require('glob');
 const uuid = require('node-uuid');
-const path = require('path');
 const fs = BPromise.promisifyAll(require('fs'));
 const posterRasterCore = require('./poster-raster-core');
 const posterSvgCore = require('./poster-svg-core');
@@ -10,11 +9,11 @@ const posterPdfCore = require('./poster-pdf-core');
 const config = require('../config');
 const {
   getTempPath,
+  getFontMapping,
   SHARP_RASTER_IMAGE_TYPES,
 } = require('../util/poster');
 
 const globAsync = BPromise.promisify(glob);
-const FONT_FILES = glob.sync(`${config.FONT_DIR}/*.ttf`);
 
 async function render(_opts) {
   const opts = _.merge({
@@ -32,19 +31,8 @@ async function render(_opts) {
 }
 
 async function _renderPoster(opts) {
-  const fontMapping = _.reduce(FONT_FILES, (memo, filePath) => {
-    const fontName = path.basename(filePath, '.ttf');
-    const fileName = path.basename(filePath);
-    const newFonts = { [fontName]: fileName };
-    if (_.endsWith(fontName, '-Regular')) {
-      const baseName = fontName.split('-Regular')[0];
-      newFonts[baseName] = fileName;
-    }
-    return _.extend({}, memo, newFonts);
-  }, {});
-
   const newOpts = _.extend({}, opts, {
-    fontMapping,
+    fontMapping: getFontMapping(),
     // This render function is injected to the options
     // for pdf-png rendering, to eliminate circular dependency
     originalRender: render,

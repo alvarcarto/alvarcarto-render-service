@@ -10,6 +10,7 @@ const {
   getNodeDimensions,
   parseSizeToPixelDimensions,
   svgDocToString,
+  pickNotoVariation,
   NODE_TYPE_ELEMENT,
   traverse,
 } = require('../src/util/poster');
@@ -132,6 +133,7 @@ function transformSvg(parsed) {
   sanitizeSvgElements(parsed.doc);
   centerElements(parsed.doc, parsed.svg);
   fontFamiliesInQuotes(parsed.doc, parsed.svg);
+  addFallbackFonts(parsed.doc, parsed.svg);
 
   return BPromise.resolve()
     .tap(() => {
@@ -216,8 +218,32 @@ function fontFamiliesInQuotes(doc, startNode) {
 
     const fontFamily = node.getAttribute('font-family');
     if (_.isString(fontFamily) && fontFamily.trim().length > 0 && fontFamily.trim()[0] !== '\'') {
+      const cleaned = _.trimEnd(_.trimStart(fontFamily, '\'"'), '\'"');
       console.log(`Setting font-family in single quotes for element #${getNodeId(node)}`);
-      node.setAttribute('font-family', `'${fontFamily}'`);
+      node.setAttribute('font-family', `'${cleaned}'`);
+    }
+  });
+}
+
+function addFallbackFonts(doc, startNode) {
+  traverse(doc, startNode, (node) => {
+    if (node.nodeType !== NODE_TYPE_ELEMENT || !node.hasAttributes()) {
+      return;
+    }
+
+    const fontFamily = node.getAttribute('font-family');
+    if (_.isString(fontFamily) && fontFamily.trim().length > 0) {
+      const trimmed = fontFamily.trim();
+      console.log(`Adding fallback font-family for element #${getNodeId(node)}`);
+      if (trimmed[0] !== '\'' || trimmed[trimmed.length - 1] !== '\'') {
+        throw new Error(`Found a font-family definition without single quotes: ${fontFamily}`);
+      }
+
+      const cleaned = _.trimEnd(_.trimStart(trimmed, '\'"'), '\'"');
+      const notoFallback = pickNotoVariation(cleaned);
+      const newAttr = `'${cleaned},${notoFallback}'`;
+      node.setAttribute('font-family', newAttr);
+      console.log(`Font-family set as ${newAttr} for element #${getNodeId(node)}`);
     }
   });
 }
