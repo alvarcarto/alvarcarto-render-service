@@ -9,7 +9,7 @@ const AsyncLock = require('async-lock');
 const logger = require('../util/logger')(__filename);
 const { replacePostgisParametersFileSync, AUTOGEN_SUFFIX } = require('../util/mapnik');
 const config = require('../config');
-const rasterMapCore = require('./raster-map-core');
+const rasterMapCore = require('./map-core');
 
 let mapnikCache = {};
 if (cluster.isMaster) {

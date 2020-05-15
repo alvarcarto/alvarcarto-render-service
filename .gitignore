@@ -6,6 +6,11 @@ node_modules
 /*.png
 dist/*
 
+tmp-downloads/*
+!tmp-downloads/.gitkeep
+
+tmp-files/*
+!tmp-files/.gitkeep
 
 posters/dist/*
 !posters/dist/.gitkeep

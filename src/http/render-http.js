@@ -2,14 +2,19 @@ const BPromise = require('bluebird');
 const path = require('path');
 const _ = require('lodash');
 const uuid = require('node-uuid');
+const mimeTypes = require('mime-types');
 const fs = require('fs');
 const ex = require('../util/express');
 const posterCore = require('../core/poster-core');
-const mapCore = require('../core/raster-map-core');
+const mapCore = require('../core/map-core');
 const tileMapCore = require('../core/raster-tile-map-core');
-const placeItCore = require('../core/place-it-core');
 const config = require('../config');
 const ROLES = require('../enum/roles');
+const {
+  SHARP_RASTER_IMAGE_TYPES,
+  dimensionsToDefaultScale,
+  parseSizeToPixelDimensions,
+} = require('../util/poster');
 
 BPromise.promisifyAll(fs);
 
@@ -22,11 +27,15 @@ const SOCKET_TIMEOUT = 10 * 60 * 1000;
 
 const getRender = ex.createRoute((req, res) => {
   // Don't allow anon request to request vector formats
-  const customFormat = _.has(req.query, 'format') && _.includes(['png', 'jpg'], req.query.format);
+  const isAllowedFormat = _.has(req.query, 'format') && _.includes(SHARP_RASTER_IMAGE_TYPES, req.query.format);
   const resizeDefined = _.has(req.query, 'resizeToWidth') || _.has(req.query, 'resizeToHeight');
   const isAnon = _.get(req, 'user.role') !== ROLES.ADMIN;
-  if (isAnon && (!resizeDefined || customFormat)) {
+  if (isAnon && (!resizeDefined || !isAllowedFormat)) {
     ex.throwStatus(403, 'Anonymous requests must define a resize parameter.');
+  }
+
+  if (_.has(req.query, 'spotColor') && req.query.format !== 'pdf') {
+    ex.throwStatus(400, 'Option spotColor is only allowed when format is pdf');
   }
 
   const opts = _reqToOpts(req);
@@ -101,9 +110,9 @@ const getRenderMap = ex.createRoute((req, res) => {
 
   return imagePromise
     .then((image) => {
-      res.set('content-type', `image/${mapOpts.format}`);
+      res.set('content-type', getMimeType(mapOpts));
       if (req.query.download) {
-        const name = `alvarcarto-map-${width}x${height}`;
+        const name = `alvarcarto-map-${mapOpts.width}x${mapOpts.height}`;
         res.set('content-disposition', `attachment; filename=${name}.${mapOpts.format};`);
       }
       res.send(image);
@@ -145,40 +154,68 @@ const getRenderBackground = ex.createRoute((req, res) => {
     });
 });
 
-const getPlaceIt = ex.createRoute((req, res) => {
-  const opts = _.merge({}, _reqToOpts(req), {
-    photo: req.query.background,
-    frames: req.query.frames,
-  });
-  return placeItCore.render(opts)
-    .then((image) => {
-      res.set('content-type', getMimeType(opts));
-      if (req.query.download) {
-        const name = getAttachmentName(opts);
-        res.set('content-disposition', `attachment; filename=${name}.${opts.format};`);
-      }
-      res.send(image);
-    });
-});
+function parseSpotColor(color) {
+  const cmykRegex = /^cmyk\((.*)\)$/;
+  if (color.match(cmykRegex)) {
+    const inside = cmykRegex.exec(color)[1];
+    const numbers = _.map(inside.split(','), i => parseFloat(i));
+    if (numbers.length !== 4) {
+      ex.throwStatus(400, 'CMYK color must have exactly 4 numbers');
+    }
+    return {
+      type: 'cmyk',
+      value: numbers,
+    };
+  }
+
+  const rgbRegex = /^rgb\((.*)\)$/;
+  if (color.match(rgbRegex)) {
+    const inside = rgbRegex.exec(color)[1];
+    const numbers = _.map(inside.split(','), i => parseFloat(i));
+    if (numbers.length !== 3) {
+      ex.throwStatus(400, 'RGB color must have exactly 3 numbers');
+    }
+    return {
+      type: 'rgb',
+      value: numbers,
+    };
+  }
+
+  ex.throwStatus(400, 'Option spotColor incorrect format! Must be in format rgb(0, 0, 0) or cmyk(0, 0, 0, 0).');
+}
 
 function _reqToOpts(req) {
   const size = req.query.size;
+  const dims = parseSizeToPixelDimensions(size, req.query.orientation);
+  const spotColor = req.query.spotColor ? parseSpotColor(req.query.spotColor) : null;
   const opts = {
     format: req.query.format || 'png',
     mapStyle: req.query.mapStyle,
     posterStyle: req.query.posterStyle,
     primaryColor: req.query.primaryColor,
     size,
+    spotColor,
+    spotColorName: spotColor !== null ? req.query.spotColorName : null,
+    // When spot color is defined, we use the "fully from svg" generation method
+    // for PDF, as it allows spot color to be changed for the map layer as well
+    // If you want to e.g. gold foil just the overlay contents, but leave map layer as
+    // a normal print, set this explicitly to false while using spot color in the request
+    // For example: &spotColor=cmyk(0,100,0,0)&spotColorName=copperfoil&pdfFromSvg=false
+    pdfFromSvg: _.isBoolean(req.query.pdfFromSvg)
+      ? req.query.pdfFromSvg
+      : spotColor !== null,
     orientation: req.query.orientation,
     useTileRender: req.query.useTileRender,
     resizeToWidth: req.query.resizeToWidth ? Number(req.query.resizeToWidth) : null,
     resizeToHeight: req.query.resizeToHeight ? Number(req.query.resizeToHeight) : null,
     bounds: _reqToBounds(req),
-    scale: Number(req.query.scale) || _getDefaultScale(size),
+    // The order of width, height doesn't matter in dimensionsToDefaultScale function
+    scale: Number(req.query.scale) || dimensionsToDefaultScale(dims.width, dims.height),
     labelsEnabled: Boolean(req.query.labelsEnabled),
     labelHeader: req.query.labelHeader || '',
     labelSmallHeader: req.query.labelSmallHeader || '',
     labelText: req.query.labelText || '',
+    quality: Number(req.query.quality) || 100,
   };
   return opts;
 }
@@ -186,15 +223,14 @@ function _reqToOpts(req) {
 function _reqToRenderMapOpts(req) {
   const width = Number(req.query.width);
   const height = Number(req.query.height);
-
-  const minSide = Math.min(width, height);
   const mapOpts = {
     width,
     height,
     mapStyle: req.query.mapStyle,
     bounds: _reqToBounds(req),
-    scale: Number(req.query.scale) || Math.sqrt(minSide) / 20,
+    scale: Number(req.query.scale) || dimensionsToDefaultScale(width, height),
     format: req.query.format || 'png',
+    quality: Number(req.query.quality) || 100,
   };
 
   return mapOpts;
@@ -213,46 +249,17 @@ function _reqToBounds(req) {
   };
 }
 
-function _getDefaultScale(size) {
-  switch (size) {
-    case 'A6':
-      return 1;
-    case 'A5':
-      return 2;
-    case 'A4':
-      return 2.5;
-    case 'A3':
-      return 3;
-
-    // A5
-    case '14.8x21cm':
-      return 2;
-
-    case '30x40cm':
-      return 3;
-    case '50x70cm':
-      return 4;
-    case '70x100cm':
-      return 5;
-
-    case '12x18inch':
-      return 3;
-    case '18x24inch':
-      return 4;
-    case '24x36inch':
-      return 5;
-  }
-
-  throw new Error(`Unknown size: ${size}`);
-}
-
 function getAttachmentName(opts) {
-  const part1 = `${opts.labelHeader.toLowerCase()}-${opts.size.toLowerCase()}`
+  const part1 = `${opts.labelHeader.toLowerCase()}-${opts.size.toLowerCase()}`;
   return `${part1}-${opts.posterStyle.toLowerCase()}-${opts.mapStyle.toLowerCase()}`;
 }
 
 function getMimeType(opts) {
-  return `image/${opts.format}`;
+  let format = opts.format;
+  if (format === 'pdf-png') {
+    format = 'pdf';
+  }
+  return mimeTypes.contentType(format);
 }
 
 module.exports = {
@@ -260,5 +267,4 @@ module.exports = {
   getRenderCustom,
   getRenderMap,
   getRenderBackground,
-  getPlaceIt,
 };

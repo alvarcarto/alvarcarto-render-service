@@ -4,9 +4,13 @@ const _ = require('lodash');
 const validate = require('express-validation');
 const RateLimit = require('express-rate-limit');
 const express = require('express');
-const rasterRender = require('./http/raster-render-http');
+const render = require('./http/render-http');
 const config = require('./config');
 const ROLES = require('./enum/roles');
+const {
+  SHARP_RASTER_IMAGE_TYPES,
+  MAPNIK_RASTER_IMAGE_TYPES,
+} = require('./util/poster');
 
 const validTokens = config.API_KEY.split(',');
 
@@ -37,14 +41,19 @@ function createRouter() {
     max: 10,
   });
 
-  const rasterRenderSchema = {
+  const renderSchema = {
     query: {
-      format: Joi.string().valid(['png', 'jpg', 'pdf', 'svg']).optional(),
+      // If you add a new format, make sure it will work correctly in poster and mapnik render
+      // pdf-png is our own naming for a PDF that has png map embedded
+      format: Joi.string().valid(SHARP_RASTER_IMAGE_TYPES.concat(['pdf', 'pdf-png', 'svg'])).optional(),
+      quality: Joi.number().min(1).max(100),
+      spotColor: Joi.string().optional(),
+      spotColorName: Joi.string().optional(),
+      pdfFromSvg: Joi.boolean().optional(),
       size: Joi.string().valid([
         '30x40cm', '50x70cm', '70x100cm',
         '12x18inch', '18x24inch', '24x36inch',
-        'A6', 'A5', 'A4', 'A3',
-        '14.8x21cm',
+        'A6', 'A5', 'A4', 'A3'
       ]).required(),
       resizeToWidth: Joi.number().min(50).optional(),
       resizeToHeight: Joi.number().min(50).optional(),
@@ -71,22 +80,9 @@ function createRouter() {
       useTileRender: Joi.boolean().optional(),
     },
   };
-  router.get('/api/raster/render', validate(rasterRenderSchema), rasterRender.getRender);
+  router.get('/api/raster/render', validate(renderSchema), render.getRender);
 
-  const placeItSchema = _.merge({}, rasterRenderSchema, {
-    query: {
-      format: Joi.string().valid(['png', 'jpg']).optional(),
-      background: Joi.string().min(1).max(100).optional(),
-      frames: Joi.string().min(1).max(100).optional(),
-      resizeToWidth: Joi.number().min(50).max(1200).optional(),
-      resizeToHeight: Joi.number().min(50).max(1200).optional(),
-      download: Joi.boolean().optional(),
-      useTileRender: Joi.boolean().optional(),
-    },
-  });
-  router.get('/api/raster/placeit', validate(placeItSchema), rasterRender.getPlaceIt);
-
-  const renderCustomSchema = _.merge({}, rasterRenderSchema, {
+  const renderCustomSchema = _.merge({}, renderSchema, {
     query: {
       file: Joi.string().min(1).max(100).optional(),
       size: Joi.string().optional(),
@@ -94,11 +90,13 @@ function createRouter() {
       useTileRender: Joi.boolean().optional(),
     },
   });
-  router.get('/api/raster/render-custom', validate(renderCustomSchema), rasterRender.getRenderCustom);
+  router.get('/api/raster/render-custom', validate(renderCustomSchema), render.getRenderCustom);
 
   const renderMapSchema = {
     query: {
-      format: Joi.string().valid(['png', 'jpg', 'pdf', 'svg']).optional(),
+      // These must be currently supported by Mapnik and sharp
+      format: Joi.string().valid(MAPNIK_RASTER_IMAGE_TYPES.concat(['pdf', 'svg'])).optional(),
+      quality: Joi.number().min(1).max(100),
       width: Joi.number().integer().min(1).max(14000)
         .required(),
       height: Joi.number().integer().min(1).max(14000)
@@ -112,8 +110,8 @@ function createRouter() {
       useTileRender: Joi.boolean().optional(),
     },
   };
-  router.get('/api/raster/render-map', validate(renderMapSchema), rasterRender.getRenderMap);
-  router.get('/api/raster/render-background', apiLimiter, validate(renderMapSchema), rasterRender.getRenderBackground);
+  router.get('/api/raster/render-map', validate(renderMapSchema), render.getRenderMap);
+  router.get('/api/raster/render-background', apiLimiter, validate(renderMapSchema), render.getRenderBackground);
 
   const getBackgroundSchema = {
     params: {

@@ -5,24 +5,20 @@ const path = require('path');
 const fs = BPromise.promisifyAll(require('fs'));
 const download = require('download');
 const sharp = require('sharp');
-const xmldom = require('xmldom');
+const {
+  parseSvgString,
+  getNodeDimensions,
+  parseSizeToPixelDimensions,
+  svgDocToString,
+  NODE_TYPE_ELEMENT,
+  traverse,
+} = require('../src/util/poster');
 
 const IMAGES_BASE_URL = process.env.IMAGES_BASE_URL || 'https://alvarcarto-poster-assets.s3-eu-west-1.amazonaws.com';
 const FORCE_DOWNLOAD = process.env.FORCE_DOWNLOAD === 'true';
 const SKIP_DOWNLOAD = process.env.SKIP_DOWNLOAD === 'true';
 
-const NODE_TYPE_ELEMENT = 1;
-const ONE_CM_IN_INCH = 0.393700787;
-const PRINT_DPI = 300;
-
 const DIST_DIR = path.join(__dirname, '../posters/dist');
-
-const SIZES_IN_INCHES = {
-  A6: { width: 4.1, height: 5.8 },
-  A5: { width: 5.8, height: 8.3 },
-  A4: { width: 8.3, height: 11.7 },
-  A3: { width: 11.7, height: 16.5 },
-};
 
 function main() {
   const customFilePaths = glob.sync(path.join(__dirname, '../posters/custom') + '/*');
@@ -56,7 +52,7 @@ function _transformPoster(filePath) {
 
   return readFile(filePath)
     .then((svgString) => {
-      const parsed = parsePosterSvg(svgString);
+      const parsed = parseSvgString(svgString);
       if (!hasOnlyServerOrClientElements(parsed.doc, parsed.svg)) {
         return transformAndSave(parsed, fileMeta, filePath);
       }
@@ -65,12 +61,11 @@ function _transformPoster(filePath) {
       const baseFilePath = path.join(path.dirname(filePath), path.basename(filePath, '.svg'));
 
       // Parse again to get new dom trees, which are modified in-place
-      const clientParsed = parsePosterSvg(svgString);
+      const clientParsed = parseSvgString(svgString);
       removeNodesWhereIdContains(clientParsed.doc, clientParsed.svg, 'only-server');
 
-      const serverParsed = parsePosterSvg(svgString);
+      const serverParsed = parseSvgString(svgString);
       removeNodesWhereIdContains(serverParsed.doc, serverParsed.svg, 'only-client');
-
 
       return transformAndSave(clientParsed, fileMeta, filePath)
         .then(() => transformAndSave(serverParsed, fileMeta, `${baseFilePath}-server.svg`));
@@ -116,7 +111,7 @@ function transformAndSave(parsed, fileMeta, filePath) {
       if (!isCustom) {
         const { size, orientation } = fileMeta;
         const expectedDimensions = parseSizeToPixelDimensions(size, orientation);
-        const svgDimensions = getDimensions(parsed.svg);
+        const svgDimensions = getNodeDimensions(parsed.svg);
         const expected = `${expectedDimensions.width}x${expectedDimensions.height}`;
         const actual = `${svgDimensions.width}x${svgDimensions.height}`;
         if (expected !== actual) {
@@ -148,11 +143,6 @@ function transformSvg(parsed) {
 
       return replaceAndDownloadImages(parsed.doc, parsed.svg);
     });
-}
-
-function svgDocToString(svgDoc) {
-  const s = new xmldom.XMLSerializer();
-  return s.serializeToString(svgDoc);
 }
 
 function sanitizeSvgElements(svgDoc) {
@@ -307,19 +297,6 @@ async function replaceRectWithImage(doc, node, imageName) {
   parent.replaceChild(imageEl, node);
 }
 
-// Traverses whole node tree "down" depth-first starting from node.
-// Callback is called for each found node
-function traverse(doc, node, cb) {
-  cb(node);
-
-  if (node.hasChildNodes()) {
-    for (let i = 0; i < node.childNodes.length; ++i) {
-      const childNode = node.childNodes.item(i);
-      traverse(doc, childNode, cb);
-    }
-  }
-}
-
 function getNodeId(node) {
   if (node.nodeType !== NODE_TYPE_ELEMENT || !node.hasAttributes()) {
     return null;
@@ -335,33 +312,12 @@ function getNodeId(node) {
   return null;
 }
 
-function parsePosterSvg(svgString) {
-  const doc = new xmldom.DOMParser().parseFromString(svgString, 'text/xml');
-
-  const svgList = doc.getElementsByTagName('svg');
-  if (svgList.length !== 1) {
-    throw new Error(`Unexpected amount of svg tags found: ${svgList.length}`);
-  }
-
-  return {
-    svg: svgList.item(0),
-    doc,
-  };
-}
-
 function readFile(filePath) {
   return fs.readFileAsync(filePath, { encoding: 'utf8' });
 }
 
 function writeFile(filePath, content) {
   return fs.writeFileAsync(filePath, content, { encoding: 'utf8' });
-}
-
-function getDimensions(node) {
-  return {
-    width: parseInt(node.getAttribute('width'), 10),
-    height: parseInt(node.getAttribute('height'), 10),
-  };
 }
 
 function sanitizeText(textNode) {
@@ -383,51 +339,6 @@ function sanitizeText(textNode) {
 
 function removeNode(node) {
   node.parentNode.removeChild(node);
-}
-
-// Returns expected pixel dimensions for certain size, when
-// we are printing at certain `PRINT_DPI` resolution.
-function parseSizeToPixelDimensions(size, orientation) {
-  if (_.has(SIZES_IN_INCHES, size)) {
-    const { width, height } = SIZES_IN_INCHES[size];
-
-    return resolveOrientation({
-      width: Math.round(width * PRINT_DPI, 0),
-      height: Math.round(height * PRINT_DPI, 0),
-    }, orientation);
-  }
-
-  if (!_.isString(size) || !size.match(/[0-9]+x[0-9]+(cm|inch)/)) {
-    throw new Error(`Size should match /[0-9]+x[0-9]+(cm|inch)/, size: ${size}`);
-  }
-
-  const unit = size.slice(-2);
-  const dimensionString = size.slice(0, -2);
-  const splitted = dimensionString.split('x');
-  const width = parseInt(splitted[0], 10);
-  const height = parseInt(splitted[1], 10);
-  const widthInch = unit === 'cm' ? cmToInch(width) : width;
-  const heightInch = unit === 'cm' ? cmToInch(height) : height;
-
-  return resolveOrientation({
-    width: Math.round(widthInch * PRINT_DPI, 0),
-    height: Math.round(heightInch * PRINT_DPI, 0),
-  }, orientation);
-}
-
-function resolveOrientation(dimensions, orientation) {
-  if (orientation === 'landscape') {
-    return _.merge({}, dimensions, {
-      width: dimensions.height,
-      height: dimensions.width,
-    });
-  }
-
-  return dimensions;
-}
-
-function cmToInch(cm) {
-  return cm * ONE_CM_IN_INCH;
 }
 
 main();
