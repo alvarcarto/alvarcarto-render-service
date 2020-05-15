@@ -21,4 +21,5 @@ echo -e "Copying custom .json files ..\n"
 cp ./posters/custom/*.json ./posters/dist/custom/
 
 echo -e "Running custom transformation and validation for posters ..\n"
-node tools/transform-posters.js
+# config.js is required via dep tree, but we don't need them all to be correct at this build stage.
+SKIP_ENV_CHECKS=true node tools/transform-posters.js

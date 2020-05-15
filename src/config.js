@@ -28,17 +28,19 @@ const config = {
   TILE_URL: process.env.TILE_URL || 'https://tile-api.alvarcarto.com/tiles/{style}/{z}/{x}/{y}/tile.png',
 };
 
-if (!config.API_KEY) {
-  throw new Error('Configuration error, API_KEY env var not set');
-}
-if (_.endsWith(config.FONT_DIR, '/')) {
-  throw new Error('Configuration error, FONT_DIR must not have trailing slash');
-}
-if (_.endsWith(config.STYLE_DIR, '/')) {
-  throw new Error('Configuration error, STYLE_DIR must not have trailing slash');
-}
-if (!config.TILE_URL) {
-  throw new Error('Configuration error, TILE_URL env var not set');
+if (process.env.SKIP_ENV_CHECKS !== 'true') {
+  if (!config.API_KEY) {
+    throw new Error('Configuration error, API_KEY env var not set');
+  }
+  if (_.endsWith(config.FONT_DIR, '/')) {
+    throw new Error('Configuration error, FONT_DIR must not have trailing slash');
+  }
+  if (_.endsWith(config.STYLE_DIR, '/')) {
+    throw new Error('Configuration error, STYLE_DIR must not have trailing slash');
+  }
+  if (!config.TILE_URL) {
+    throw new Error('Configuration error, TILE_URL env var not set');
+  }
 }
 
 module.exports = config;
