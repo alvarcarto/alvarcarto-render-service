@@ -229,7 +229,7 @@ async function posterSvgToPdf(svgDoc, pdfDims, opts) {
         return [[0, 0, 0, 0], a];
       }
 
-      logger.info(`Set color ${raw} (${JSON.stringify(parsed)}) to spot color named ${opts.spotColorName}`);
+      logger.debug(`Set color ${raw} (${JSON.stringify(parsed)}) to spot color named ${opts.spotColorName}`);
       return [opts.spotColorName, 1];
     },
   });
