@@ -14,21 +14,21 @@ const {
   getTempPath,
 } = require('../util/poster');
 const config = require('../config');
+const logger = require('../util/logger')(__filename);
 
-
-async function render(opts) {
+async function render(originalOpts) {
   window.setFontDir(config.FONT_DIR)
-    .setFontFamilyMappings(opts.fontMapping);
+    .setFontFamilyMappings(originalOpts.fontMapping);
 
-  const isSmallWidth = _.isFinite(opts.resizeToWidth) && opts.resizeToWidth < 300;
-  const isSmallHeight = _.isFinite(opts.resizeToHeight) && opts.resizeToHeight < 300;
+  const isSmallWidth = _.isFinite(originalOpts.resizeToWidth) && originalOpts.resizeToWidth < 300;
+  const isSmallHeight = _.isFinite(originalOpts.resizeToHeight) && originalOpts.resizeToHeight < 300;
   if (isSmallWidth || isSmallHeight) {
-    opts.useTileRender = true;
+    originalOpts.useTileRender = true;
   }
 
   // Request a PNG from mapnik and re-encode it to requested format with sharp later.
   // Note that tile-renderer will always return png
-  const newOpts = _.extend({}, opts, {
+  const newOpts = _.extend({}, originalOpts, {
     format: 'png',
   });
   let image;
@@ -38,8 +38,8 @@ async function render(opts) {
     image = await _renderWithoutLabels(newOpts);
   }
 
-  if (opts.format !== 'png') {
-    image = await convertToFormat(image, newOpts);
+  if (originalOpts.format !== 'png') {
+    image = await convertToFormat(image, originalOpts);
   }
 
   return image;
@@ -80,6 +80,7 @@ async function _normalRender(opts) {
 }
 
 async function convertToFormat(pngBuf, opts) {
+  logger.info(`Converting png to format ${opts.format}`);
   return await sharp(pngBuf, { limitInputPixels: false })
     .toFormat(opts.format, { quality: opts.quality })
     .toBuffer();
