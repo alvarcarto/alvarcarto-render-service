@@ -1,4 +1,3 @@
-const fs = require('fs');
 const cluster = require('cluster');
 const BPromise = require('bluebird');
 const path = require('path');
@@ -14,6 +13,8 @@ const rasterMapCore = require('./map-core');
 let mapnikCache = {};
 if (cluster.isMaster) {
   logger.info('Skipping mapnik style preloading as this is the cluster master ..');
+} else if (config.NODE_ENV !== 'production') {
+  logger.info('Skipping mapnik style preloading because NODE_ENV != production (speeds boot-up) ..');
 } else {
   // Pre-load and initialize map for each mapnik style
   const files = _.filter(glob.sync(`${config.STYLE_DIR}/*.xml`), filePath => !_.endsWith(filePath, `${AUTOGEN_SUFFIX}.xml`));

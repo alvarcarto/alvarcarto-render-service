@@ -13,10 +13,12 @@ const {
   posterSizeToMiddleLineStrokeWidth,
 } = require('alvarcarto-common');
 const xmldom = require('xmldom');
-const window = require('svgdom');
+const svgdom = require('svgdom');
 const svgJs = require('svg.js');
 const config = require('../config');
 const logger = require('../util/logger')(__filename);
+
+const { createSVGWindow } = svgdom;
 
 BPromise.promisifyAll(fontkit);
 
@@ -114,6 +116,26 @@ function traverse(doc, node, cb) {
       traverse(doc, childNode, cb);
     }
   }
+}
+
+// Finds a node from the tree by going up the parent tree
+// Returns the first node where callback returns true
+function findTreeUp(node, cb) {
+  if (!node) {
+    return null;
+  }
+
+  let currentNode = node;
+  while (currentNode && !cb(currentNode)) {
+    currentNode = currentNode.parentNode;
+  }
+
+  const isMatchingNode = cb(currentNode);
+  if (!isMatchingNode) {
+    return null;
+  }
+
+  return currentNode;
 }
 
 function getSvgDocFonts(svgDoc) {
@@ -290,18 +312,46 @@ function trimQuotes(str) {
   return cleaned;
 }
 
+// Takes an element and finds the first node up from the tree which has font-family definition
+// (it can also return the el itself)
+function findElementWithFontFamily(el) {
+  const foundEl = findTreeUp(el, (node) => {
+    const attr = node.getAttribute('font-family');
+    if (!_.isString(attr)) {
+      return false;
+    }
+
+    return attr.trim().length > 0;
+  });
+  if (!foundEl) {
+    // This shouldn't happen in any poster style
+    throw new Error('Couldn\'t find any element in the tree which has font-family definition');
+  }
+  return foundEl;
+}
+
 async function maybeSetFallbackFont(textNode, text) {
   const tspanList = textNode.getElementsByTagName('tspan');
 
-  const textFontFamily = textNode.getAttribute('font-family');
-  const tspanFontFamily = tspanList.item(0).getAttribute('font-family');
-  const fontFamily = _.isString(tspanFontFamily) && tspanFontFamily.trim().length > 0
-    ? trimQuotes(tspanFontFamily.trim())
-    : trimQuotes(textFontFamily.trim());
-
+  const foundElement = findElementWithFontFamily(tspanList.item(0));
+  const fontFamily = trimQuotes(foundElement.getAttribute('font-family').trim());
   const fontFamilyArr = _.map(fontFamily.split(','), i => i.trim());
 
+  const fallbackNoto = pickNotoVariation(fontFamily);
+  if (_.startsWith(fontFamilyArr[0], 'NotoSansSC')) {
+    if (fontFamilyArr[0] !== fallbackNoto) {
+      logger.info(`Found element #${foundElement.getAttribute('id')} already had a different fallback font variation as the first font: '${fontFamily}'`);
+      logger.info('This might not be even a possible scenario');
+    }
+
+    return;
+  }
+
   await BPromise.each(fontFamilyArr, async (fontName) => {
+    if (fontName.trim().length === 0) {
+      return;
+    }
+
     const fontFile = matchFont(fontName, getFontMapping());
     const fontPath = path.join(config.FONT_DIR, fontFile);
     const font = await fontkit.openAsync(fontPath);
@@ -314,8 +364,7 @@ async function maybeSetFallbackFont(textNode, text) {
       for (let k = 0; k < codePointNums.length; k += 1) {
         const codePointNum = codePointNums[k];
         if (!font.hasGlyphForCodePoint(codePointNum)) {
-          const chosenNoto = pickNotoVariation(fontFamily);
-          const newFontFamily = `'${chosenNoto},${fontFamily}'`;
+          const newFontFamily = `'${fallbackNoto},${fontFamily}'`;
           let msg = `Setting fallback font-family first (${newFontFamily}) for element #${textNode.getAttribute('id')},`;
           msg += ` found '${char}' (code point ${codePointNum})`;
           logger.info(msg);
@@ -372,6 +421,13 @@ function getFirstTspan(textNode) {
 }
 
 function getBBoxForSvgElement(svgText, elId) {
+  const window = createSVGWindow();
+  // XXX: When manually testing, it seemed that font bounding boxes are resolved with
+  // "Open Sans-Regular" which is the default font of svgdom. It works well enough now
+  // but more wacky fonts in the future might need a proper fix
+  svgdom.config.setFontDir(config.FONT_DIR)
+    .setFontFamilyMappings(getFontMapping());
+
   const SVG = svgJs(window);
   const draw = SVG(window.document);
   draw.svg(svgText);

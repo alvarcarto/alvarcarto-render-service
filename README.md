@@ -68,3 +68,10 @@ Correct fonts are required for the viewer. Maybe embed fonts as base64?
 3. If render was done without labels, add a white padding on top of the map.
 
 Fonts need to be embedded in the PDF.
+
+
+### Possible improvements
+
+* SVG doesn't embed fonts
+* https://www.npmjs.com/package/text-to-svg
+* Font rendering in vector PDF to support texts which has glyphs from different fonts (this works with other render methods)

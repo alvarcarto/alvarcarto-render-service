@@ -2,7 +2,6 @@ const BPromise = require('bluebird');
 const _ = require('lodash');
 const sharp = require('sharp');
 const fs = BPromise.promisifyAll(require('fs'));
-const window = require('svgdom');
 const mapCore = require('./map-core');
 const mapCorePool = require('./map-core-pool');
 const rasterTileMapCore = require('./raster-tile-map-core');
@@ -17,9 +16,6 @@ const config = require('../config');
 const logger = require('../util/logger')(__filename);
 
 async function render(originalOpts) {
-  window.setFontDir(config.FONT_DIR)
-    .setFontFamilyMappings(originalOpts.fontMapping);
-
   const isSmallWidth = _.isFinite(originalOpts.resizeToWidth) && originalOpts.resizeToWidth < 300;
   const isSmallHeight = _.isFinite(originalOpts.resizeToHeight) && originalOpts.resizeToHeight < 300;
   if (isSmallWidth || isSmallHeight) {
