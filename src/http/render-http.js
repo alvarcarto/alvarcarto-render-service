@@ -27,7 +27,8 @@ const SOCKET_TIMEOUT = 10 * 60 * 1000;
 
 const getRender = ex.createRoute((req, res) => {
   // Don't allow anon request to request vector formats
-  const isAllowedFormat = _.has(req.query, 'format') && _.includes(SHARP_RASTER_IMAGE_TYPES, req.query.format);
+  const format = req.query.format || 'png';
+  const isAllowedFormat = _.includes(SHARP_RASTER_IMAGE_TYPES, format);
   const resizeDefined = _.has(req.query, 'resizeToWidth') || _.has(req.query, 'resizeToHeight');
   const isAnon = _.get(req, 'user.role') !== ROLES.ADMIN;
   if (isAnon && (!resizeDefined || !isAllowedFormat)) {
