@@ -73,6 +73,7 @@ async function _deleteFiles(opts) {
       console.log('unlinkAsync end', files[i]);
     } catch (err) {
       if (err.code !== 'ENOENT') {
+        logger.error(`Error deleting temp file (${files[i]}): ${err}`);
         throw err;
       }
     }
