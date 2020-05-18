@@ -29,13 +29,17 @@ async function render(originalOpts) {
   });
   let image;
   if (newOpts.labelsEnabled) {
+    console.log('_normalRender start');
     image = await _normalRender(newOpts);
+    console.log('_normalRender end');
   } else {
     image = await _renderWithoutLabels(newOpts);
   }
 
   if (originalOpts.format !== 'png') {
+    console.log('convertToFormat start');
     image = await convertToFormat(image, originalOpts);
+    console.log('convertToFormat end');
   }
 
   return image;
@@ -65,13 +69,17 @@ async function _renderWithoutLabels(opts) {
 }
 
 async function _normalRender(opts) {
+  console.log('_renderMapWithTempFileSaving start')
   const { mapImage } = await _renderMapWithTempFileSaving(opts);
+  console.log('_renderMapWithTempFileSaving end')
 
   const posterOpts = _.merge({}, opts, {
     mapImage,
   });
 
+  console.log('_renderPoster start')
   const pngBuf = await _renderPoster(posterOpts);
+  console.log('_renderPoster end')
   return pngBuf;
 }
 
@@ -103,6 +111,7 @@ async function _renderMap(opts) {
   // If no resize parameters are defined, use mapCore to avoid any possible issues with
   // pooling
   if (!opts.resizeToWidth && !opts.resizeToHeight) {
+    console.log('use mapCore')
     return {
       mapImage: await mapCore.render(_.omit(mapOpts, _.isNil)),
       dimensions,
@@ -131,10 +140,14 @@ async function _renderMap(opts) {
 }
 
 async function _renderPoster(opts) {
+  console.log('readPosterFile start')
   const svgString = await readPosterFile(opts);
+  console.log('readPosterFile end')
+  console.log('getPosterDimensions start')
   const dimensions = await getPosterDimensions(opts);
-  // TODO: no dimensions necessarily
+  console.log('getPosterDimensions end')
   const mapMeta = await sharp(opts.mapImage, { limitInputPixels: false }).metadata();
+  console.log('got mapMeta:', mapMeta)
 
   const parsed = parseSvgString(svgString);
   const expected = `${dimensions.width}x${dimensions.height}`;
@@ -143,20 +156,25 @@ async function _renderPoster(opts) {
     throw new Error(`Map image has incorrect dimensions: ${actual}, expected: ${expected}`);
   }
 
+  console.log('transformPosterSvgDoc start')
   const newSvgString = await transformPosterSvgDoc(parsed.doc, _.extend({}, opts, { serialize: true }));
+  console.log('transformPosterSvgDoc end')
   const tmpSvgPath = getTempPath(`${opts.uuid}.svg`);
 
   await fs.writeFileAsync(tmpSvgPath, newSvgString, { encoding: 'utf-8' });
+  console.log('sharp conversion svg to png start')
   const svgImage = await sharp(tmpSvgPath, { density: 72, limitInputPixels: false })
       .resize(dimensions.width, dimensions.height)
       .png()
       .toBuffer();
+  console.log('sharp conversion svg to png end')
 
   if (config.SAVE_TEMP_FILES) {
     const tmpPngPath = getTempPath(`${opts.uuid}-svg.png`);
     await fs.writeFileAsync(tmpPngPath, svgImage, { encoding: null });
   }
 
+  console.log('sharp composite start')
   const finalImage = await sharp(opts.mapImage, { limitInputPixels: false })
     .composite([{
       input: svgImage,
@@ -165,6 +183,7 @@ async function _renderPoster(opts) {
     }])
     .png()
     .toBuffer();
+  console.log('sharp composite end')
 
   if (config.SAVE_TEMP_FILES) {
     const tmpPngPath = getTempPath(`${opts.uuid}-combined.png`);
