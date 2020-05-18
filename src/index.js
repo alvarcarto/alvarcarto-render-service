@@ -39,6 +39,10 @@ function startServer() {
     // Give a small time frame to clean up
     setTimeout(process.exit, 100);
   });
+
+  process.on('unhandledRejection', (err, p) => {
+    logger.error(`Unhandled Rejection at: Promise ${p}, error: ${err}`);
+  });
 }
 
 function startCluster() {
