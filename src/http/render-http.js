@@ -25,7 +25,7 @@ BPromise.promisifyAll(fs);
 //       or some other timeout inside mapnik node bindings or mapnik
 const SOCKET_TIMEOUT = 10 * 60 * 1000;
 
-const getRender = ex.createRoute((req, res) => {
+const getRender = ex.createRoute(async (req, res) => {
   // Don't allow anon request to request vector formats
   const format = req.query.format || 'png';
   const isAllowedFormat = _.includes(SHARP_RASTER_IMAGE_TYPES, format);
@@ -54,16 +54,14 @@ const getRender = ex.createRoute((req, res) => {
     res.setTimeout(SOCKET_TIMEOUT);
   }
 
-  return posterCore.render(opts)
-    .then((image) => {
-      res.set('content-type', getMimeType(opts));
-      if (req.query.download) {
-        const name = getAttachmentName(opts);
-        res.set('content-disposition', `attachment; filename=${name}.${opts.format};`);
-      }
+  const image = await posterCore.render(opts);
+  res.set('content-type', getMimeType(opts));
+  if (req.query.download) {
+    const name = getAttachmentName(opts);
+    res.set('content-disposition', `attachment; filename=${name}.${opts.format};`);
+  }
 
-      res.send(image);
-    });
+  res.send(image);
 });
 
 const getRenderCustom = ex.createRoute(async (req, res) => {
@@ -77,7 +75,7 @@ const getRenderCustom = ex.createRoute(async (req, res) => {
   const file = req.query.file;
   const fileBasePath = path.join(__dirname, '../../posters/dist/custom', file);
 
-  const content = fs.readFileAsync(`${fileBasePath}.json`, { encoding: 'utf8' });
+  const content = await fs.readFileAsync(`${fileBasePath}.json`, { encoding: 'utf8' });
   const settings = JSON.parse(content);
   const opts = _.merge({}, _reqToOpts(req), {
     custom: {
@@ -96,7 +94,7 @@ const getRenderCustom = ex.createRoute(async (req, res) => {
   res.send(image);
 });
 
-const getRenderMap = ex.createRoute((req, res) => {
+const getRenderMap = ex.createRoute(async (req, res) => {
   if (_.get(req, 'user.role') !== ROLES.ADMIN) {
     ex.throwStatus(403, 'Anonymous requests not allowed.');
   }
@@ -109,18 +107,16 @@ const getRenderMap = ex.createRoute((req, res) => {
     ? tileMapCore.render(_.omit(mapOpts, _.isNil))
     : mapCore.render(_.omit(mapOpts, _.isNil));
 
-  return imagePromise
-    .then((image) => {
-      res.set('content-type', getMimeType(mapOpts));
-      if (req.query.download) {
-        const name = `alvarcarto-map-${mapOpts.width}x${mapOpts.height}`;
-        res.set('content-disposition', `attachment; filename=${name}.${mapOpts.format};`);
-      }
-      res.send(image);
-    });
+  const image = await imagePromise;
+  res.set('content-type', getMimeType(mapOpts));
+  if (req.query.download) {
+    const name = `alvarcarto-map-${mapOpts.width}x${mapOpts.height}`;
+    res.set('content-disposition', `attachment; filename=${name}.${mapOpts.format};`);
+  }
+  res.send(image);
 });
 
-const getRenderBackground = ex.createRoute((req, res) => {
+const getRenderBackground = ex.createRoute(async (req, res) => {
   if (!_.startsWith(_.get(req, 'query.mapStyle', ''), 'bg-')) {
     ex.throwStatus(403, 'Only background styles are allowed.');
   }
@@ -139,20 +135,13 @@ const getRenderBackground = ex.createRoute((req, res) => {
   req.setTimeout(SOCKET_TIMEOUT);
   res.setTimeout(SOCKET_TIMEOUT);
 
-  return tileMapCore.render(_.omit(mapOpts, _.isNil))
-    .then((image) => {
-      const name = `${uuid.v4()}.png`;
-      const filePath = path.join(config.BACKGROUNDS_DIR, name);
-      return BPromise.props({
-        file: fs.writeFileAsync(filePath, image, { encoding: null }),
-        name,
-      });
-    })
-    .then(({ name }) => {
-      res.json({
-        path: `/api/backgrounds/${name}`,
-      });
-    });
+  const image = await tileMapCore.render(_.omit(mapOpts, _.isNil));
+  const name = `${uuid.v4()}.png`;
+  const filePath = path.join(config.BACKGROUNDS_DIR, name);
+  await fs.writeFileAsync(filePath, image, { encoding: null });
+  res.json({
+    path: `/api/backgrounds/${name}`,
+  });
 });
 
 function parseSpotColor(color) {

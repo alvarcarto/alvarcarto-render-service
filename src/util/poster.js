@@ -268,10 +268,10 @@ async function readPosterFile(opts = {}) {
   const serverFileExists = await fileExists(serverAbsPath);
 
   if (serverFileExists && !opts.clientVersion) {
-    return fs.readFileAsync(serverAbsPath, { encoding: 'utf8' });
+    return await fs.readFileAsync(serverAbsPath, { encoding: 'utf8' });
   }
 
-  return fs.readFileAsync(clientAbsPath, { encoding: 'utf8' });
+  return await fs.readFileAsync(clientAbsPath, { encoding: 'utf8' });
 }
 
 function fileExists(filePath) {
