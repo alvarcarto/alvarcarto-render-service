@@ -75,6 +75,8 @@ async function _deleteFiles(opts) {
       if (err.code !== 'ENOENT') {
         logger.error(`Error deleting temp file (${files[i]}): ${err}`);
         throw err;
+      } else {
+        logger.info(`Temp file was already deleted: ${files[i]}`);
       }
     }
   }
