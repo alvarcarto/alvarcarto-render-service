@@ -12,6 +12,7 @@ const {
   getFontMapping,
   SHARP_RASTER_IMAGE_TYPES,
 } = require('../util/poster');
+const logger = require('../util/logger')(__filename);
 
 const globAsync = BPromise.promisify(glob);
 
@@ -64,10 +65,12 @@ async function _deleteFiles(opts) {
   }
   const pattern = getTempPath(filePattern);
   const files = await globAsync(pattern);
-
+  logger.info(`Deleting ${files.length} temporary files`);
   for (let i = 0; i < files.length; i += 0) {
     try {
+      console.log('unlinkAsync start', files[i]);
       await fs.unlinkAsync(files[i]);
+      console.log('unlinkAsync end', files[i]);
     } catch (err) {
       if (err.code !== 'ENOENT') {
         throw err;
