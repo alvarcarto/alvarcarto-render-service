@@ -54,17 +54,14 @@ const getRender = ex.createRoute((req, res) => {
     res.setTimeout(SOCKET_TIMEOUT);
   }
 
-  console.log('posterCore.render start')
   return posterCore.render(opts)
     .then((image) => {
-      console.log('posterCore.render got image back')
       res.set('content-type', getMimeType(opts));
       if (req.query.download) {
         const name = getAttachmentName(opts);
         res.set('content-disposition', `attachment; filename=${name}.${opts.format};`);
       }
 
-      console.log('res.send(image)')
       res.send(image);
     });
 });
