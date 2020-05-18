@@ -28,9 +28,7 @@ async function render(_opts) {
     const poster = await _renderPoster(opts);
     return poster;
   } finally {
-    console.log('_deleteFiles start')
     await _deleteFiles(opts);
-    console.log('_deleteFiles end')
   }
 }
 
@@ -69,9 +67,7 @@ async function _deleteFiles(opts) {
   logger.info(`Deleting ${files.length} temporary files`);
   for (let i = 0; i < files.length; i += 1) {
     try {
-      console.log('unlinkAsync start', files[i]);
       await fs.unlinkAsync(files[i]);
-      console.log('unlinkAsync end', files[i]);
     } catch (err) {
       if (err.code !== 'ENOENT') {
         logger.error(`Error deleting temp file (${files[i]}): ${err}`);
