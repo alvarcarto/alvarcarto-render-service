@@ -64,7 +64,10 @@ async function _deleteFiles(opts) {
   }
   const pattern = getTempPath(filePattern);
   const files = await globAsync(pattern);
-  logger.info(`Deleting ${files.length} temporary files`);
+  if (files.length > 0) {
+    logger.info(`Deleting ${files.length} temporary files`);
+  }
+
   for (let i = 0; i < files.length; i += 1) {
     try {
       await fs.unlinkAsync(files[i]);
