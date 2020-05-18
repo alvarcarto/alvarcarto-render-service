@@ -26,7 +26,9 @@ async function render(_opts) {
   try {
     return await _renderPoster(opts);
   } finally {
+    console.log('_deleteFiles start')
     await _deleteFiles(opts);
+    console.log('_deleteFiles end')
   }
 }
 
