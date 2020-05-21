@@ -14,6 +14,9 @@ const {
   SHARP_RASTER_IMAGE_TYPES,
   dimensionsToDefaultScale,
   parseSizeToPixelDimensions,
+  svgDocToString,
+  ensureFontFamiliesNotInQuotes,
+  parseSvgString,
 } = require('../util/poster');
 
 BPromise.promisifyAll(fs);
@@ -114,6 +117,20 @@ const getRenderMap = ex.createRoute(async (req, res) => {
     res.set('content-disposition', `attachment; filename=${name}.${mapOpts.format};`);
   }
   res.send(image);
+});
+
+const getPosterFile = ex.createRoute(async (req, res) => {
+  if (!_.endsWith(req.params.fileName, 'svg')) {
+    ex.throwStatus(400, 'Requested poster must be an svg');
+  }
+
+  const absPath = path.join(__dirname, '../../posters/dist/', req.params.fileName);
+  const fileContent = await fs.readFileAsync(absPath, { encoding: 'utf-8' });
+  const parsed = parseSvgString(fileContent);
+  ensureFontFamiliesNotInQuotes(parsed.doc, parsed.svg);
+  const newSvg = svgDocToString(parsed.doc);
+  res.set('content-type', mimeTypes.contentType('svg'));
+  res.send(newSvg);
 });
 
 const getRenderBackground = ex.createRoute(async (req, res) => {
@@ -257,4 +274,5 @@ module.exports = {
   getRenderCustom,
   getRenderMap,
   getRenderBackground,
+  getPosterFile,
 };

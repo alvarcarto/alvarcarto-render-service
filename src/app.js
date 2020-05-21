@@ -41,7 +41,6 @@ function createApp() {
   // Initialize routes
   const router = createRouter();
   app.use('/', router);
-  app.use('/posters', express.static(path.join(__dirname, '../posters/dist')));
 
   app.use(errorLogger());
   app.use(errorResponder());

@@ -125,6 +125,15 @@ function createRouter() {
     const absPath = path.join(config.BACKGROUNDS_DIR, req.params.fileName);
     res.download(absPath);
   });
+
+  const getPosterFile = {
+    params: {
+      fileName: Joi.string()
+        .regex(/^[0-9A-Za-z-]+\.svg$/i)
+        .required(),
+    },
+  };
+  router.use('/posters/:fileName', validate(getPosterFile), render.getPosterFile);
   return router;
 }
 

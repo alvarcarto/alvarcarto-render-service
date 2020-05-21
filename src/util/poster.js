@@ -312,6 +312,19 @@ function trimQuotes(str) {
   return cleaned;
 }
 
+function ensureFontFamiliesNotInQuotes(doc, startNode) {
+  traverse(doc, startNode, (node) => {
+    if (node.nodeType !== NODE_TYPE_ELEMENT || !node.hasAttributes()) {
+      return;
+    }
+
+    const fontFamily = node.getAttribute('font-family');
+    if (_.isString(fontFamily) && fontFamily.trim().length > 0) {
+      node.setAttribute('font-family', trimQuotes(node.getAttribute('font-family')));
+    }
+  });
+}
+
 // Takes an element and finds the first node up from the tree which has font-family definition
 // (it can also return the el itself)
 function findElementWithFontFamily(el) {
@@ -548,6 +561,7 @@ module.exports = {
   traverse,
   readPosterFile,
   getTempPath,
+  ensureFontFamiliesNotInQuotes,
   matchFont,
   calculatePadding,
   parseSizeToPixelDimensions,
