@@ -61,7 +61,8 @@ const getRender = ex.createRoute(async (req, res) => {
   res.set('content-type', getMimeType(opts));
   if (req.query.download) {
     const name = getAttachmentName(opts);
-    res.set('content-disposition', `attachment; filename=${name}.${opts.format};`);
+    const ext = getExtension(opts.format);
+    res.set('content-disposition', `attachment; filename=${name}.${ext};`);
   }
 
   res.send(image);
@@ -92,7 +93,8 @@ const getRenderCustom = ex.createRoute(async (req, res) => {
   res.set('content-type', getMimeType(opts));
   if (req.query.download) {
     const name = 'alvarcarto-custom';
-    res.set('content-disposition', `attachment; filename=${name}.${opts.format};`);
+    const ext = getExtension(opts.format);
+    res.set('content-disposition', `attachment; filename=${name}.${ext};`);
   }
   res.send(image);
 });
@@ -114,7 +116,8 @@ const getRenderMap = ex.createRoute(async (req, res) => {
   res.set('content-type', getMimeType(mapOpts));
   if (req.query.download) {
     const name = `alvarcarto-map-${mapOpts.width}x${mapOpts.height}`;
-    res.set('content-disposition', `attachment; filename=${name}.${mapOpts.format};`);
+    const ext = getExtension(mapOpts.format);
+    res.set('content-disposition', `attachment; filename=${name}.${ext};`);
   }
   res.send(image);
 });
@@ -267,6 +270,14 @@ function getMimeType(opts) {
     format = 'pdf';
   }
   return mimeTypes.contentType(format);
+}
+
+function getExtension(format) {
+  if (format === 'pdf-png') {
+    return 'pdf';
+  }
+
+  return format.toLowerCase();
 }
 
 module.exports = {
