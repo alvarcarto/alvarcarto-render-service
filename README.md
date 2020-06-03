@@ -41,7 +41,7 @@ The render service supports different output formats. They are rendered differen
 2. Render the poster style SVG as png image. (transparency is needed until this point)
 
     We use the `-server.svg` version here to use the properly dithered pre-made gradient to avoid
-    gradient banding when printing.
+    gradient banding when printing. See this issue for more: https://github.com/lovell/sharp/issues/867
 
 3. Combine these images and possible re-encode to JPG
 
